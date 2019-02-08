@@ -26,5 +26,7 @@ public:
 	glm::vec2	getVelocity() const { return m_velocity; }
 	float		getMass() const { return m_mass; }
 
+	void		reduceMass(float reduction) { m_mass -= reduction; }
+
 };
 

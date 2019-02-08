@@ -6,7 +6,8 @@
 #include <list>
 #include <iostream>
 
-PhysicsScene::PhysicsScene() :
+PhysicsScene::PhysicsScene(bool collisionEnabled) :
+	m_isCollisionEnabled(collisionEnabled),
 	m_timeStep(0.01f),
 	m_gravity(0, 0)
 {
@@ -59,29 +60,32 @@ void PhysicsScene::Update(float deltaTime)
 		accumulatedTime -= m_timeStep;
 
 		//BAD Check for collisions (ideally you'd want to have some sort of scene management in place)
-		for (auto actor : m_actors) 
+		if (m_isCollisionEnabled)
 		{
-			for (auto other : m_actors)
+			for (auto actor : m_actors) 
 			{
-				//Ignore if it's the same actor
-				if (actor == other)
-					continue;
-				//Ignore if they're both the final actors in the list??? 
-				if (std::find(dirty.begin(), dirty.end(), actor) != dirty.end() &&
-					std::find(dirty.begin(), dirty.end(), other) != dirty.end())
-					continue;
-
-				//Handle Collision
-				RigidBody* rigid = (RigidBody*)(actor);
-				if (rigid->CheckCollision(other) == true)
+				for (auto other : m_actors)
 				{
-					rigid->ApplyForceToActor((RigidBody*)other, rigid->getVelocity() * rigid->getMass());
-					dirty.push_back(rigid);
-					dirty.push_back(other);
+					//Ignore if it's the same actor
+					if (actor == other)
+						continue;
+					//Ignore if they're both the final actors in the list??? 
+					if (std::find(dirty.begin(), dirty.end(), actor) != dirty.end() &&
+						std::find(dirty.begin(), dirty.end(), other) != dirty.end())
+						continue;
+
+					//Handle Collision
+					RigidBody* rigid = (RigidBody*)(actor);
+					if (rigid->CheckCollision(other) == true)
+					{
+						rigid->ApplyForceToActor((RigidBody*)other, rigid->getVelocity() * rigid->getMass());
+						dirty.push_back(rigid);
+						dirty.push_back(other);
+					}
 				}
 			}
+			dirty.clear();
 		}
-		dirty.clear();
 	}
 }
 

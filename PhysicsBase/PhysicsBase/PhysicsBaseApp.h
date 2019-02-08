@@ -6,6 +6,7 @@
 #include "PhysicsObject.h"
 
 #include "Circle.h"
+#include <vector>
 
 class PhysicsBaseApp : public aie::Application {
 public:
@@ -27,4 +28,11 @@ protected:
 	PhysicsScene* m_physicsScene;
 
 	Circle *ballSml, *ballMed, *ballLge;
+	
+	//Rocket test
+	float fuelMass;
+	float fuelTank;
+	float fuelSize;
+	Circle *rocket;
+	std::vector<Circle*> particles;
 };
