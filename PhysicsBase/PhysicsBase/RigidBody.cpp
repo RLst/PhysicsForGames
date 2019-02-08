@@ -1,15 +1,14 @@
 #include "RigidBody.h"
 
-
-
+#include <iostream>
 
 RigidBody::RigidBody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float rotation, float mass) :
+	PhysicsObject(shapeID),	//Avoids PhysicsObject requiring a default ctr
 	m_position(position),
 	m_velocity(velocity),
 	m_rotation(rotation),
 	m_mass(mass)
 {
-	m_shapeID = shapeID;
 }
 
 RigidBody::~RigidBody()
@@ -18,13 +17,19 @@ RigidBody::~RigidBody()
 
 void RigidBody::FixedUpdate(glm::vec2 gravity, float timeStep)
 {
-
-
+	ApplyForce(gravity * m_mass * timeStep);
+	m_position += m_velocity * timeStep;
 }
 
 void RigidBody::Debug()
 {
-
+#ifdef _DEBUG
+	std::cout << "ObjID: " << m_shapeID << std::endl;
+	std::cout << "mass: " << m_mass << std::endl;
+	std::cout << "x: " << m_position.x << ", y: " << m_position.y << std::endl;
+	std::cout << "vx: " << m_velocity.x << ", vy: " << m_velocity.y << std::endl;
+	std::cout << "ang: " << m_rotation << std::endl;
+#endif
 }
 
 void RigidBody::ApplyForce(glm::vec2 newForce)

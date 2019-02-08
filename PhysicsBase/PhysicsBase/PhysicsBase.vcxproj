@@ -167,6 +167,7 @@
     <ClCompile Include="Circle.cpp" />
     <ClCompile Include="PhysicsBaseApp.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="PhysicsScene.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="RigidBody.cpp" />

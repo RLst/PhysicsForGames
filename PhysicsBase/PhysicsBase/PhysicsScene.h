@@ -19,6 +19,7 @@ public:
 	bool RemoveActor(PhysicsObject* actor);
 	void Update(float deltaTime);
 	void UpdateGizmos();
+	void DebugScene();
 
 	void setGravity(const glm::vec2 gravity) { m_gravity = gravity; }
 	glm::vec2 getGravity() const { return m_gravity; }

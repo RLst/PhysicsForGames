@@ -5,6 +5,8 @@
 #include <Gizmos.h>
 #include <glm/ext.hpp>
 
+#include "Circle.h"
+
 PhysicsBaseApp::PhysicsBaseApp() {
 
 }
@@ -28,8 +30,15 @@ bool PhysicsBaseApp::startup()
 	m_font = new aie::Font("./font/consolas.ttf", 32);
 #endif
 
+	//Initialize the physics scene
 	m_physicsScene = new PhysicsScene();
+	m_physicsScene->setGravity({ 0, 0 });
 	m_physicsScene->setTimeStep(0.01f);
+
+	//Test Newton's first law
+	Circle* ball;
+	ball = new Circle(glm::vec2(-40, 0), glm::vec2(10, 30), 3.0f, 10, glm::vec4(1, 0, 0, 1));
+	m_physicsScene->AddActor(ball);
 
 	return true;
 }

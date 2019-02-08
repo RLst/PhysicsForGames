@@ -4,7 +4,7 @@
 class Plane : public PhysicsObject
 {
 public:
-	Plane();
+	Plane() = default;
 	virtual ~Plane();
 };
 
