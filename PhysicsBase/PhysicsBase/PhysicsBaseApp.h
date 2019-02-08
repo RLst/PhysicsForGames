@@ -5,6 +5,8 @@
 #include "PhysicsScene.h"
 #include "PhysicsObject.h"
 
+#include "Circle.h"
+
 class PhysicsBaseApp : public aie::Application {
 public:
 
@@ -24,4 +26,5 @@ protected:
 
 	PhysicsScene* m_physicsScene;
 
+	Circle *ballSml, *ballMed, *ballLge;
 };

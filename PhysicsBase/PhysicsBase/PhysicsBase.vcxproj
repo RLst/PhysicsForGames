@@ -175,6 +175,7 @@
   <ItemGroup>
     <ClInclude Include="Box.h" />
     <ClInclude Include="Circle.h" />
+    <ClInclude Include="GameDefines.h" />
     <ClInclude Include="PhysicsBaseApp.h" />
     <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="PhysicsScene.h" />

@@ -71,6 +71,7 @@ void PhysicsScene::Update(float deltaTime)
 					std::find(dirty.begin(), dirty.end(), other) != dirty.end())
 					continue;
 
+				//Handle Collision
 				RigidBody* rigid = (RigidBody*)(actor);
 				if (rigid->CheckCollision(other) == true)
 				{

@@ -4,11 +4,9 @@
 #include "Input.h"
 #include <Gizmos.h>
 #include <glm/ext.hpp>
-
-#include "Circle.h"
+#include "GameDefines.h"
 
 PhysicsBaseApp::PhysicsBaseApp() {
-
 }
 
 PhysicsBaseApp::~PhysicsBaseApp() {
@@ -35,10 +33,17 @@ bool PhysicsBaseApp::startup()
 	m_physicsScene->setGravity({ 0, 0 });
 	m_physicsScene->setTimeStep(0.01f);
 
-	//Test Newton's first law
-	Circle* ball;
-	ball = new Circle(glm::vec2(-40, 0), glm::vec2(10, 30), 3.0f, 10, glm::vec4(1, 0, 0, 1));
-	m_physicsScene->AddActor(ball);
+	////Test Newton's first law
+	//ball10 = new Circle(glm::vec2(-40, 0), glm::vec2(10, 30), 3.0f, 10, glm::vec4(1, 0, 0, 1));
+	//m_physicsScene->AddActor(ball10);
+
+	//Test Newton's Third Law
+	ballSml = new Circle(glm::vec2(-50, 20), glm::vec2(0,0), 5.0f, 5, pkr::colour::red);
+	ballMed = new Circle(glm::vec2(50, -20), glm::vec2(0,0), 10.0f, 10, pkr::colour::orange);
+	ballLge = new Circle(glm::vec2(0, 0), glm::vec2(0, 0), 20.0f, 20, pkr::colour::violet);
+	m_physicsScene->AddActor(ballSml);
+	m_physicsScene->AddActor(ballMed);
+	m_physicsScene->AddActor(ballLge);
 
 	return true;
 }
@@ -56,6 +61,15 @@ void PhysicsBaseApp::update(float deltaTime) {
 	aie::Input* input = aie::Input::getInstance();
 
 	aie::Gizmos::clear();
+
+	//Apply force towards the other actor
+	if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT))
+	{
+		//Seek (destination - current)
+		auto force = ballMed->getPosition() - ballSml->getPosition();
+		//ballMed->ApplyForceToActor(ballSml, force);
+		ballSml->ApplyForce(force);
+	}
 
 	m_physicsScene->Update(deltaTime);
 	m_physicsScene->UpdateGizmos();
