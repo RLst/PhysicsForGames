@@ -1,4 +1,4 @@
-#include "PhysicsBaseApp.h"
+#include "PhysicsTutorial.h"
 #include "Texture.h"
 #include "Font.h"
 #include "Input.h"
@@ -8,20 +8,20 @@
 
 #include <iostream>
 
-PhysicsBaseApp::PhysicsBaseApp() {
+PhysicsTutorial::PhysicsTutorial() {
 }
 
-PhysicsBaseApp::~PhysicsBaseApp() {
+PhysicsTutorial::~PhysicsTutorial() {
 
 }
 
-void PhysicsBaseApp::shutdown() {
+void PhysicsTutorial::shutdown() {
 	delete m_font;
 	delete m_2dRenderer;
 	delete m_physicsScene;
 }
 
-bool PhysicsBaseApp::startup() 
+bool PhysicsTutorial::startup() 
 {
 	//Increase 2D line count to maximize the number of objects we can draw
 	aie::Gizmos::create(255U, 255U, 65535U, 65535U);
@@ -63,7 +63,7 @@ bool PhysicsBaseApp::startup()
 	return true;
 }
 
-void PhysicsBaseApp::update(float deltaTime) {
+void PhysicsTutorial::update(float deltaTime) {
 
 	// input example
 	aie::Input* input = aie::Input::getInstance();
@@ -106,7 +106,7 @@ void PhysicsBaseApp::update(float deltaTime) {
 		quit();
 }
 
-void PhysicsBaseApp::draw() {
+void PhysicsTutorial::draw() {
 
 	// wipe the screen to the background colour
 	clearScreen();

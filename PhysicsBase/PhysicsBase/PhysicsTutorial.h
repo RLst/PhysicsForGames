@@ -8,11 +8,11 @@
 #include "Circle.h"
 #include <vector>
 
-class PhysicsBaseApp : public aie::Application {
+class PhysicsTutorial : public aie::Application {
 public:
 
-	PhysicsBaseApp();
-	virtual ~PhysicsBaseApp();
+	PhysicsTutorial();
+	virtual ~PhysicsTutorial();
 
 	bool startup() override;
 	void shutdown() override;
