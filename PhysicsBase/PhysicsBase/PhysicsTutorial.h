@@ -31,8 +31,8 @@ protected:
 	
 	//Rocket test
 	float fuelMass;
-	float fuelTank;
-	float fuelSize;
+	float fuelTankMass;		//in kgs
+	float rocketMass;
 	Circle *rocket;
 	std::vector<Circle*> particles;
 };

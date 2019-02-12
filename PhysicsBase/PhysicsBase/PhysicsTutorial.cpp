@@ -37,7 +37,7 @@ bool PhysicsTutorial::startup()
 #endif
 
 	//Initialize the physics scene
-	m_physicsScene = new PhysicsScene(false);	//Collision off
+	m_physicsScene = new PhysicsScene(false);
 	m_physicsScene->setGravity({ 0, -0 });
 	m_physicsScene->setTimeStep(0.01f);
 
@@ -54,10 +54,10 @@ bool PhysicsTutorial::startup()
 	//m_physicsScene->AddActor(ballLge);
 
 	//Simulating a Rocket
-	fuelMass = 10.0f;
-	fuelTank = 10000.0f;
-	fuelSize = 5.0f;
-	rocket = new Circle(glm::vec2(500, 500), glm::vec2(0, 0), 1000 + fuelTank, 20, pkr::colour::blue);
+	fuelMass = 5.0f;
+	fuelTankMass = 1000.f;
+	rocketMass = 50.f;
+	rocket = new Circle(glm::vec2(500, 500), glm::vec2(0, 0), rocketMass + fuelTankMass, 20, pkr::colour::blue);
 	m_physicsScene->AddActor(rocket);
 
 	return true;
@@ -79,23 +79,25 @@ void PhysicsTutorial::update(float deltaTime) {
 		////ballMed->ApplyForceToActor(ballLge, force);
 
 		//Rocket test
-		///Reduce the mass of the rocket by M to sim fuel being used as long as there is fuel left
-		if (rocket->getMass() > fuelTank)
+		if (rocket->getMass() > rocketMass)		//750 > 500
+		{
+			///Reduce the mass of the rocket by M to sim fuel being used as long as there is fuel left
 			rocket->reduceMass(fuelMass);
 
-		///Create thrust particle
-		particles.push_back(new Circle(rocket->getPosition(), v2(0, 0), fuelMass, fuelSize, pkr::colour::orange));
-		m_physicsScene->AddActor(particles.back());
+			///Create thrust particle
+			particles.push_back(new Circle(rocket->getPosition(), v2(0, 0), fuelMass, 1.5f, pkr::colour::orange));
+			m_physicsScene->AddActor(particles.back());
 
-		///Apply force to exhaust gas
-		static int mx, my;
-		input->getMouseXY(&mx, &my);
-		auto mousePos = v2(mx, my);
-		auto thrust = rocket->getPosition() - mousePos;
-		particles.back()->ApplyForceToActor(rocket, thrust);
+			///Apply force to exhaust gas
+			static int mx, my;
+			input->getMouseXY(&mx, &my);
+			auto mousePos = v2(mx, my);
+			auto thrust = rocket->getPosition() - mousePos;
+			particles.back()->ApplyForceToActor(rocket, thrust);
 
-		std::cout << "MousePos: " << mousePos.x << ", " << mousePos.y << std::endl;
-		std::cout << "RocketMass: " << rocket->getMass() << std::endl;
+			std::cout << "MousePos: " << mousePos.x << ", " << mousePos.y << std::endl;
+			std::cout << "RocketMass: " << rocket->getMass() << std::endl;
+		}
 	}
 
 	m_physicsScene->Update(deltaTime);
