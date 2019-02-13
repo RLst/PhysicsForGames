@@ -53,12 +53,16 @@ bool PhysicsTutorial::startup()
 	//m_physicsScene->AddActor(ballMed);
 	//m_physicsScene->AddActor(ballLge);
 
+	/*
 	//Simulating a Rocket
 	fuelMass = 5.0f;
 	fuelTankMass = 1000.f;
 	rocketMass = 50.f;
 	rocket = new Circle(glm::vec2(500, 500), glm::vec2(0, 0), rocketMass + fuelTankMass, 20, pkr::colour::blue);
 	m_physicsScene->AddActor(rocket);
+	*/
+
+	setupContinuousDemo(v2(50, 50), 45.0f, 40.0f, -9.81f);
 
 	return true;
 }
@@ -68,7 +72,7 @@ void PhysicsTutorial::update(float deltaTime) {
 	// input example
 	aie::Input* input = aie::Input::getInstance();
 
-	aie::Gizmos::clear();
+	//aie::Gizmos::clear();
 
 	//Apply force towards the other actor
 	if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT))
@@ -78,8 +82,9 @@ void PhysicsTutorial::update(float deltaTime) {
 		//ballSml->ApplyForce(force);
 		////ballMed->ApplyForceToActor(ballLge, force);
 
+		/*
 		//Rocket test
-		if (rocket->getMass() > rocketMass)		//750 > 500
+		if (rocket->getMass() > rocketMass)		//Rocket runs out of thrust
 		{
 			///Reduce the mass of the rocket by M to sim fuel being used as long as there is fuel left
 			rocket->reduceMass(fuelMass);
@@ -97,7 +102,9 @@ void PhysicsTutorial::update(float deltaTime) {
 
 			std::cout << "MousePos: " << mousePos.x << ", " << mousePos.y << std::endl;
 			std::cout << "RocketMass: " << rocket->getMass() << std::endl;
-		}
+		} */
+
+
 	}
 
 	m_physicsScene->Update(deltaTime);
@@ -118,11 +125,39 @@ void PhysicsTutorial::draw() {
 
 	// draw your stuff here!
 	static float aspectRatio = 16 / 9.0f;
-	aie::Gizmos::draw2D(glm::ortho<float>(0, 1440, 0 / aspectRatio, 840, -1.0f, 1.0f));
+	aie::Gizmos::draw2D(glm::ortho<float>(0, 500, 0 / aspectRatio, 500 / aspectRatio, -1, 1));
+	//aie::Gizmos::draw2D(glm::ortho<float>(0, 1440, 0 / aspectRatio, 840, -1.0f, 1.0f));
 	
 	// output some text, uses the last used colour
 	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
 
 	// done drawing sprites
 	m_2dRenderer->end();
+}
+
+void PhysicsTutorial::setupContinuousDemo(glm::vec2 startPos, float inclination, float speed, float gravity)
+{
+	float t = 0;
+	float tStep = 0.1f;
+	int steps = 10;
+	float radius = 1.0f;
+	int segments = 12;
+	glm::vec4 colour = pkr::colour::yellow;
+
+	v2 vel0;
+	vel0.x = speed * cosf(inclination * 3.14f / 180.0f);
+	vel0.y = speed * sinf(inclination * 3.14f / 180.0f);
+
+	while (t <= steps)
+	{
+		//Calc the x,y position of the projectile at time t
+		v2 pos, vel;
+		pos.x = startPos.x + vel0.x * t;
+		pos.y = startPos.y + vel0.y * t + 0.5f * gravity * t * t;
+
+		aie::Gizmos::add2DCircle(pos, radius, segments, colour);
+
+		t += tStep;
+	}
+
 }

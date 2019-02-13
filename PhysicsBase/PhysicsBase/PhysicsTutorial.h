@@ -20,6 +20,9 @@ public:
 	void update(float deltaTime) override;
 	void draw() override;
 
+	//Tutorials
+	void setupContinuousDemo(glm::vec2 startPos, float inclination, float speed, float gravity);
+
 protected:
 
 	aie::Renderer2D*	m_2dRenderer;
