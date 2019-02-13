@@ -27,4 +27,7 @@ namespace pkr
 		const col white = col(1, 1, 1, 1);
 		const col gray = col(0.5f, 0.5f, 0.5f, 1);
 	}
+
+	static float DegsToRad(float degrees) { return degrees * PI / 180.0f; }
+	static float RadsToDeg(float radians) { return radians * 180.0f / PI; }
 }

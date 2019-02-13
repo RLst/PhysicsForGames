@@ -1,17 +1,22 @@
 #include "PhysicsTutorial.h"
+
+//aie
 #include "Texture.h"
 #include "Font.h"
 #include "Input.h"
 #include <Gizmos.h>
-#include "GameDefines.h"
 
+//std
+#include <iostream>
+
+//gl
 #include <glm/ext.hpp>
 
+#include "GameDefines.h"
 #include "PhysicsScene.h"
 #include "Circle.h"
 #include "Plane.h"
 
-#include <iostream>
 
 PhysicsTutorial::PhysicsTutorial() {
 }
@@ -43,19 +48,23 @@ bool PhysicsTutorial::startup()
 
 	//Initialize the physics scene
 	m_physicsScene = new PhysicsScene(false);
-	m_physicsScene->setGravity({ 0, -9.81 });
-	m_physicsScene->setTimeStep(0.01f);
+	m_physicsScene->setGravity({ 0, -10.0f });
+	m_physicsScene->setTimeStep(fixedTimeStep);
 
 	////Projectile Motion Tutorial 2
 	float mass = 1.0f;
-	float radius = 1.0f;
-	float speed = 30.0f;
+	float radius = 3.0f;
+	float speed = 40.0f;
 	vec2 startPos(50, 50);
-	float inclination = 45.0f * PI / 180.0f;
-	vec2 velocity(speed * cosf(inclination), speed * sinf(inclination));
+	float inclination = 45.0f;
 
+	vec2 velocity(speed * cosf(pkr::DegsToRad(inclination)), speed * sinf(pkr::DegsToRad(inclination)));
+
+	//Analytical solution
+	setupContinuousDemo(startPos, inclination, speed, -10.0f);
+
+	//Numerical integration
 	m_physicsScene->AddActor(new Circle(startPos, velocity, mass, radius, pkr::colour::red));
-	setupContinuousDemo(startPos, inclination, speed, -9.81f);
 
 	return true;
 }
@@ -80,7 +89,6 @@ void PhysicsTutorial::update(float deltaTime) {
 		float inclination = atan2f(my, mx) * 180.0f / PI;
 
 		setupContinuousDemo(startPos, inclination, speed, -9.81f);
-
 	}
 
 	m_physicsScene->Update(deltaTime);
@@ -112,16 +120,20 @@ void PhysicsTutorial::draw() {
 
 void PhysicsTutorial::setupContinuousDemo(glm::vec2 startPos, float inclination, float speed, float gravity)
 {
-	float t = 0;
-	float tStep = 0.5f;
-	int steps = 12;
-	float radius = 1.0f;
+	//Analytical solution
+	///Circle properties
+	float radius = 3.0f;
 	int segments = 12;
 	col colour = pkr::colour::yellow;
 
+	//Time and steps
+	float t = 0;
+	float tStep = fixedTimeStep;
+	int steps = 300;
+
 	vec2 vel0;
-	vel0.x = speed * cosf(inclination * PI / 180.0f);
-	vel0.y = speed * sinf(inclination * PI / 180.0f);
+	vel0.x = speed * cosf(pkr::DegsToRad(inclination));
+	vel0.y = speed * sinf(pkr::DegsToRad(inclination));
 
 	while (t <= steps * tStep)
 	{
