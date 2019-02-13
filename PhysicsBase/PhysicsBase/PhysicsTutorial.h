@@ -30,12 +30,12 @@ protected:
 
 	PhysicsScene* m_physicsScene;
 
-	Circle *ballSml, *ballMed, *ballLge;
+	//Circle *ballSml, *ballMed, *ballLge;
 	
 	//Rocket test
-	float fuelMass;
-	float fuelTankMass;		//in kgs
-	float rocketMass;
-	Circle *rocket;
-	std::vector<Circle*> particles;
+	//float fuelMass;
+	//float fuelTankMass;		//in kgs
+	//float rocketMass;
+	//Circle *rocket;
+	//std::vector<Circle*> particles;
 };

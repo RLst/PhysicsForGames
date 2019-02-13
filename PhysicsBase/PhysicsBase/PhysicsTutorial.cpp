@@ -6,6 +6,7 @@
 #include <glm/ext.hpp>
 #include "GameDefines.h"
 
+
 #include <iostream>
 
 PhysicsTutorial::PhysicsTutorial() {
@@ -62,7 +63,7 @@ bool PhysicsTutorial::startup()
 	m_physicsScene->AddActor(rocket);
 	*/
 
-	setupContinuousDemo(v2(50, 50), 45.0f, 40.0f, -9.81f);
+	setupContinuousDemo(vec2(50, 50), 45.0f, 50.f, -9.81f);
 
 	return true;
 }
@@ -139,19 +140,19 @@ void PhysicsTutorial::setupContinuousDemo(glm::vec2 startPos, float inclination,
 {
 	float t = 0;
 	float tStep = 0.1f;
-	int steps = 10;
+	int steps = 70;
 	float radius = 1.0f;
 	int segments = 12;
-	glm::vec4 colour = pkr::colour::yellow;
+	col colour = pkr::colour::yellow;
 
-	v2 vel0;
-	vel0.x = speed * cosf(inclination * 3.14f / 180.0f);
-	vel0.y = speed * sinf(inclination * 3.14f / 180.0f);
+	vec2 vel0;
+	vel0.x = speed * cosf(inclination * PI / 180.0f);
+	vel0.y = speed * sinf(inclination * PI / 180.0f);
 
-	while (t <= steps)
+	while (t <= steps * tStep)
 	{
 		//Calc the x,y position of the projectile at time t
-		v2 pos, vel;
+		vec2 pos;
 		pos.x = startPos.x + vel0.x * t;
 		pos.y = startPos.y + vel0.y * t + 0.5f * gravity * t * t;
 
@@ -159,5 +160,4 @@ void PhysicsTutorial::setupContinuousDemo(glm::vec2 startPos, float inclination,
 
 		t += tStep;
 	}
-
 }
