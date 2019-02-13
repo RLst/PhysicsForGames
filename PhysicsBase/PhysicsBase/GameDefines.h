@@ -1,26 +1,30 @@
 #pragma once
 #include <glm/ext.hpp>
 
-
 ////////////////
 // Type defs //
 //////////////
-typedef glm::vec2 v2;
-typedef glm::vec4 Col;
 
+using glm::vec2;
+using glm::vec3;
+using glm::vec4;
+
+typedef glm::vec4 col;
+
+const float PI = 3.14159f;
 
 namespace pkr
 {
 	namespace colour
 	{
-		Col red = Col(1, 0, 0, 1);
-		Col blue = Col(0, 1, 0, 1);
-		Col green = Col(0, 0, 1, 1);
-		Col yellow = Col(1, 1, 0, 1);
-		Col orange = Col(1, 0.5f, 0, 1);
-		Col cyan = Col(0, 1, 1, 1);
-		Col violet = Col(1, 0, 1, 1);
-		Col white = Col(1, 1, 1, 1);
-		Col gray = Col(0.5f, 0.5f, 0.5f, 1);
+		const col red = col(1, 0, 0, 1);
+		const col blue = col(0, 1, 0, 1);
+		const col green = col(0, 0, 1, 1);
+		const col yellow = col(1, 1, 0, 1);
+		const col orange = col(1, 0.5f, 0, 1);
+		const col cyan = col(0, 1, 1, 1);
+		const col violet = col(1, 0, 1, 1);
+		const col white = col(1, 1, 1, 1);
+		const col gray = col(0.5f, 0.5f, 0.5f, 1);
 	}
 }
