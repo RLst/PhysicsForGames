@@ -3,9 +3,13 @@
 #include "Font.h"
 #include "Input.h"
 #include <Gizmos.h>
-#include <glm/ext.hpp>
 #include "GameDefines.h"
 
+#include <glm/ext.hpp>
+
+#include "PhysicsScene.h"
+#include "Circle.h"
+#include "Plane.h"
 
 #include <iostream>
 
@@ -42,17 +46,18 @@ bool PhysicsTutorial::startup()
 	m_physicsScene->setGravity({ 0, -0 });
 	m_physicsScene->setTimeStep(0.01f);
 
-	////Test Newton's first law
-	//ball10 = new Circle(glm::vec2(-40, 0), glm::vec2(10, 30), 3.0f, 10, glm::vec4(1, 0, 0, 1));
-	//m_physicsScene->AddActor(ball10);
+	/*/Test Newton's first law
+	ball10 = new Circle(glm::vec2(-40, 0), glm::vec2(10, 30), 3.0f, 10, glm::vec4(1, 0, 0, 1));
+	m_physicsScene->AddActor(ball10);
 
-	////Test Newton's Third Law
-	//ballSml = new Circle(glm::vec2(-50, 20), glm::vec2(0,0), 5.0f, 5, pkr::colour::red);
-	//ballMed = new Circle(glm::vec2(50, -20), glm::vec2(0,0), 10.0f, 10, pkr::colour::orange);
-	//ballLge = new Circle(glm::vec2(0, 0), glm::vec2(0, 0), 20.0f, 20, pkr::colour::cyan);
-	//m_physicsScene->AddActor(ballSml);
-	//m_physicsScene->AddActor(ballMed);
-	//m_physicsScene->AddActor(ballLge);
+	//Test Newton's Third Law
+	ballSml = new Circle(glm::vec2(-50, 20), glm::vec2(0,0), 5.0f, 5, pkr::colour::red);
+	ballMed = new Circle(glm::vec2(50, -20), glm::vec2(0,0), 10.0f, 10, pkr::colour::orange);
+	ballLge = new Circle(glm::vec2(0, 0), glm::vec2(0, 0), 20.0f, 20, pkr::colour::cyan);
+	m_physicsScene->AddActor(ballSml);
+	m_physicsScene->AddActor(ballMed);
+	m_physicsScene->AddActor(ballLge);
+	*/
 
 	/*
 	//Simulating a Rocket
@@ -63,7 +68,9 @@ bool PhysicsTutorial::startup()
 	m_physicsScene->AddActor(rocket);
 	*/
 
-	setupContinuousDemo(vec2(50, 50), 45.0f, 50.f, -9.81f);
+	//setupContinuousDemo(vec2(50, 50), 45.0f, 50.f, -9.81f);
+
+	
 
 	return true;
 }
@@ -73,18 +80,19 @@ void PhysicsTutorial::update(float deltaTime) {
 	// input example
 	aie::Input* input = aie::Input::getInstance();
 
-	//aie::Gizmos::clear();
+	aie::Gizmos::clear();
 
 	//Apply force towards the other actor
 	if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT))
 	{
-		////Seek (destination - current)
-		//auto force = ballMed->getPosition() - ballSml->getPosition();
-		//ballSml->ApplyForce(force);
-		////ballMed->ApplyForceToActor(ballLge, force);
-
 		/*
-		//Rocket test
+		//Seek (destination - current)
+		auto force = ballMed->getPosition() - ballSml->getPosition();
+		ballSml->ApplyForce(force);
+		//ballMed->ApplyForceToActor(ballLge, force);
+		*/
+
+		/*/Rocket test
 		if (rocket->getMass() > rocketMass)		//Rocket runs out of thrust
 		{
 			///Reduce the mass of the rocket by M to sim fuel being used as long as there is fuel left
@@ -105,6 +113,16 @@ void PhysicsTutorial::update(float deltaTime) {
 			std::cout << "RocketMass: " << rocket->getMass() << std::endl;
 		} */
 
+		vec2 startPos = vec2(50, 50);
+		//Calc vector of mouse
+		float mx = input->getMouseX() - startPos.x;
+		float my = input->getMouseY() - startPos.y;
+		float speedFactor = 0.090f;
+		float speed = sqrtf(mx * mx + my * my) * speedFactor;		//hypotenuse (pythagoras)
+		//Calc "inclination" of mouse
+		float inclination = atan2f(my, mx) * 180.0f / PI;
+
+		setupContinuousDemo(startPos, inclination, speed, -9.81f);
 
 	}
 
@@ -127,7 +145,7 @@ void PhysicsTutorial::draw() {
 	// draw your stuff here!
 	static float aspectRatio = 16 / 9.0f;
 	aie::Gizmos::draw2D(glm::ortho<float>(0, 500, 0 / aspectRatio, 500 / aspectRatio, -1, 1));
-	//aie::Gizmos::draw2D(glm::ortho<float>(0, 1440, 0 / aspectRatio, 840, -1.0f, 1.0f));
+	//aie::Gizmos::draw2D(glm::ortho<float>(0, 1440, 0 / aspectRatio, 900, -1.0f, 1.0f));
 	
 	// output some text, uses the last used colour
 	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);

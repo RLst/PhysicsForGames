@@ -2,11 +2,14 @@
 
 #include "Application.h"
 #include "Renderer2D.h"
-#include "PhysicsScene.h"
-#include "PhysicsObject.h"
 
-#include "Circle.h"
+#include <glm/ext.hpp>
 #include <vector>
+
+//Should forward declare pointers, not #include headers
+class PhysicsScene;
+class Circle;
+class Plane;
 
 class PhysicsTutorial : public aie::Application {
 public:
@@ -32,10 +35,14 @@ protected:
 
 	//Circle *ballSml, *ballMed, *ballLge;
 	
-	//Rocket test
-	//float fuelMass;
-	//float fuelTankMass;		//in kgs
-	//float rocketMass;
-	//Circle *rocket;
-	//std::vector<Circle*> particles;
+	/*/Rocket test
+	float fuelMass;
+	float fuelTankMass;		//in kgs
+	float rocketMass;
+	Circle *rocket;
+	std::vector<Circle*> particles;
+	*/
+
+	//Plane test
+	Plane* plane;
 };
