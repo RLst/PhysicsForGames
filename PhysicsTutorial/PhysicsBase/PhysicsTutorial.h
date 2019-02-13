@@ -32,17 +32,4 @@ protected:
 	aie::Font*			m_font;
 
 	PhysicsScene* m_physicsScene;
-
-	//Circle *ballSml, *ballMed, *ballLge;
-	
-	/*/Rocket test
-	float fuelMass;
-	float fuelTankMass;		//in kgs
-	float rocketMass;
-	Circle *rocket;
-	std::vector<Circle*> particles;
-	*/
-
-	//Plane test
-	Plane* plane;
 };
