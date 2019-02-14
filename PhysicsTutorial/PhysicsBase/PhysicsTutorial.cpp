@@ -174,10 +174,10 @@ void PhysicsTutorial::BilliardBallSimulation()
 
 	int cushionSize = 25;
 	//Cushions to stop the balls
-	Plane *topCushion = new Plane(vec2(0, -1), -235 - cushionSize);
+	Plane *topCushion = new Plane(vec2(0, -1), -285 + cushionSize);
 	Plane *bottomCushion = new Plane(vec2(0, 1), cushionSize);
 	Plane *leftCushion = new Plane(vec2(1, 0), cushionSize);
-	Plane *rightCushion = new Plane(vec2(-1, 0), -450 - cushionSize);
+	Plane *rightCushion = new Plane(vec2(-1, 0), -500 + cushionSize);
 
 
 	//Cue balls
