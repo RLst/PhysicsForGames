@@ -51,20 +51,6 @@ bool PhysicsTutorial::startup()
 	m_physicsScene->setGravity({ 0, -10.0f });
 	m_physicsScene->setTimeStep(fixedTimeStep);
 
-	////Projectile Motion Tutorial 2
-	float mass = 1.0f;
-	float radius = 3.0f;
-	float speed = 40.0f;
-	vec2 startPos(50, 50);
-	float inclination = 45.0f;
-
-	vec2 velocity(speed * cosf(pkr::DegsToRad(inclination)), speed * sinf(pkr::DegsToRad(inclination)));
-
-	//Analytical solution
-	setupContinuousDemo(startPos, inclination, speed, -10.0f);
-
-	//Numerical integration
-	m_physicsScene->AddActor(new Circle(startPos, velocity, mass, radius, pkr::colour::red));
 
 	return true;
 }
@@ -79,16 +65,7 @@ void PhysicsTutorial::update(float deltaTime) {
 	//Apply force towards the other actor
 	if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT))
 	{
-		vec2 startPos = vec2(50, 50);
-		//Calc vector of mouse
-		float mx = input->getMouseX() - startPos.x;
-		float my = input->getMouseY() - startPos.y;
-		float speedFactor = 0.090f;
-		float speed = sqrtf(mx * mx + my * my) * speedFactor;		//hypotenuse (pythagoras)
-		//Calc "inclination" of mouse
-		float inclination = atan2f(my, mx) * 180.0f / PI;
 
-		setupContinuousDemo(startPos, inclination, speed, -9.81f);
 	}
 
 	m_physicsScene->Update(deltaTime);
@@ -118,7 +95,7 @@ void PhysicsTutorial::draw() {
 	m_2dRenderer->end();
 }
 
-void PhysicsTutorial::setupContinuousDemo(glm::vec2 startPos, float inclination, float speed, float gravity)
+void PhysicsTutorial::SetupContinuousDemo(glm::vec2 startPos, float inclination, float speed, float gravity)
 {
 	//Analytical solution
 	///Circle properties

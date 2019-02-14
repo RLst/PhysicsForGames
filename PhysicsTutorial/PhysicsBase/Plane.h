@@ -16,7 +16,7 @@ private:
 	float m_orig_distanceToOrigin;
 
 public:
-	Plane() = default;
+	Plane();
 	Plane(glm::vec2 normal, float distance);
 	//Plane(glm::vec2 normal, )
 	~Plane();

@@ -24,7 +24,7 @@ public:
 	void draw() override;
 
 	//Tutorials
-	void setupContinuousDemo(glm::vec2 startPos, float inclination, float speed, float gravity);
+	void SetupContinuousDemo(glm::vec2 startPos, float inclination, float speed, float gravity);
 
 protected:
 

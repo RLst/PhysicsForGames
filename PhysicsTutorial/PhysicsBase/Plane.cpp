@@ -1,11 +1,19 @@
 #include "Plane.h"
 #include <Gizmos.h>
 
+Plane::Plane() :
+	PhysicsObject(ShapeType::PLANE),
+	m_distanceToOrigin(0),
+	m_normal(glm::vec2(0, 1))	//Ground zero facing up
+{
+}
+
 Plane::Plane(glm::vec2 normal, float distance) :
-	PhysicsObject(PLANE),
+	PhysicsObject(ShapeType::PLANE),
 	m_normal(normal),
 	m_distanceToOrigin(distance)
 {
+	//Origs for reset function
 	m_orig_normal = m_normal;
 	m_orig_distanceToOrigin = m_distanceToOrigin;
 }

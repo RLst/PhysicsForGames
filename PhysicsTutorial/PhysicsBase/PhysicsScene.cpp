@@ -6,10 +6,11 @@
 #include <list>
 #include <iostream>
 
-PhysicsScene::PhysicsScene(bool collisionEnabled) :
-	m_isCollisionEnabled(collisionEnabled),
-	m_timeStep(0.01f),
-	m_gravity(0, 0)
+
+PhysicsScene::PhysicsScene(float timeStep, glm::vec2 gravity, bool collisionEnabled) :
+	m_timeStep(timeStep),
+	m_gravity(gravity),
+	m_isCollisionEnabled(collisionEnabled)
 {
 }
 
@@ -21,6 +22,13 @@ PhysicsScene::~PhysicsScene()
 		delete actor;
 	}
 }
+
+static fn collisionFunctionArray[] =
+{
+	PhysicsScene::Plane2Plane, 	PhysicsScene::Plane2Circle,		PhysicsScene::Plane2Box,
+	PhysicsScene::Circle2Plane, PhysicsScene::Circle2Circle,	PhysicsScene::Circle2Box,
+	PhysicsScene::Box2Plane,	PhysicsScene::Box2Circle,		PhysicsScene::Box2Box
+};
 
 void PhysicsScene::AddActor(PhysicsObject * actor)
 {
@@ -106,4 +114,35 @@ void PhysicsScene::DebugScene()
 		actor->Debug();
 		++count;
 	}
+}
+
+void PhysicsScene::CheckForCollisions()
+{
+	int actorCount = m_actors.size();
+
+	//Need to check for collisions against all objects except this one
+	for (int outer = 0; outer < actorCount-1; ++outer)
+	{
+		for (int inner = outer + 1; inner < actorCount; ++inner)
+		{
+			PhysicsObject* object1 = m_actors[outer];
+			PhysicsObject* object2 = m_actors[inner];
+			int shapeID1 = object1->GetShapeID();
+			int shapeID2 = object2->GetShapeID();
+
+			//Using function pointers
+			int functionIDX = (shapeID1 * SHAPE_COUNT) + shapeID2;
+			fn fpCollision = collisionFunctionArray[functionIDX];
+			if (fpCollision != nullptr)
+			{
+				//did a collision occur
+				fpCollision(object1, object2);
+			}
+		}
+	}
+}
+
+bool PhysicsScene::Plane2Plane(PhysicsObject *, PhysicsObject *)
+{
+	return false;
 }
