@@ -50,7 +50,8 @@ bool PhysicsTutorial::startup()
 	m_physicsScene = new PhysicsScene();
 	m_physicsScene->setTimeStep(fixedTimeStep);
 
-	Circle2CircleTest();
+	//Circle2CircleTest();
+	Circle2PlaneTest();
 
 	return true;
 }
@@ -133,6 +134,35 @@ void PhysicsTutorial::Circle2CircleTest()
 	float radius = 10;
 
 	//spawn in two circles and make them collide
+	m_physicsScene->setGravity(pkr::zero2);
 	m_physicsScene->AddActor(new Circle(vec2(250 - distanceApart, 150), vec2(collideSpeed, 0), mass, radius, pkr::colour::violet));
 	m_physicsScene->AddActor(new Circle(vec2(250 + distanceApart, 150), vec2(-collideSpeed, 0), mass, radius, pkr::colour::orange));
+}
+
+void PhysicsTutorial::Circle2PlaneTest()
+{
+	int numberOfCircles = 10;
+	float mass = 10;
+	float radius = 10;
+	
+	glm::vec2 spawnRangeX(10, 490);
+	glm::vec2 spawnRangeY(0, 250);
+
+	m_physicsScene->setGravity(vec2(0, -9.81f));
+
+	//Make the plane
+	m_physicsScene->AddActor(new Plane(vec2(0,1), 50));
+	
+	//Spawn in a bunch of circles in random places and let them drop on the plane
+	std::vector<Circle*> circles;
+	for (int i = 0; i < numberOfCircles; ++i)
+	{
+		circles.push_back(new Circle(
+			vec2(pkr::random(spawnRangeX.x, spawnRangeX.y), pkr::random(spawnRangeY.x, spawnRangeY.y)),
+			pkr::zero2,
+			mass,
+			radius,
+			pkr::colour::random()));
+		m_physicsScene->AddActor(circles.back());
+	}
 }

@@ -28,7 +28,7 @@ void Plane::Debug()
 
 void Plane::MakeGizmo()
 {
-	float lineSegmentLength = 300;
+	float lineSegmentLength = 1000;
 	vec2 centerPoint = m_normal * m_distanceToOrigin;
 		//Easy to rotate normal through 90 degrees around z
 	vec2 parallel(m_normal.y, -m_normal.x);

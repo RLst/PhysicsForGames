@@ -71,33 +71,35 @@ void PhysicsScene::Update(float deltaTime)
 		}
 		accumulatedTime -= m_timeStep;
 
-		//BAD Check for collisions (ideally you'd want to have some sort of scene management in place)
-		if (m_isCollisionEnabled)
-		{
-			for (auto actor : m_actors) 
-			{
-				for (auto other : m_actors)
-				{
-					//Ignore if it's the same actor
-					if (actor == other)
-						continue;
-					//Ignore if they're both the final actors in the list??? 
-					if (std::find(dirty.begin(), dirty.end(), actor) != dirty.end() &&
-						std::find(dirty.begin(), dirty.end(), other) != dirty.end())
-						continue;
+		CheckForCollisions();
 
-					//Handle Collision
-					RigidBody* rigid = (RigidBody*)(actor);
-					if (rigid->CheckCollision(other) == true)
-					{
-						rigid->ApplyForceToActor((RigidBody*)other, rigid->getVelocity() * rigid->getMass());
-						dirty.push_back(rigid);
-						dirty.push_back(other);
-					}
-				}
-			}
-			dirty.clear();
-		}
+		//BAD Check for collisions (ideally you'd want to have some sort of scene management in place)
+		//if (m_isCollisionEnabled)
+		//{
+		//	for (auto actor : m_actors) 
+		//	{
+		//		for (auto other : m_actors)
+		//		{
+		//			//Ignore if it's the same actor
+		//			if (actor == other)
+		//				continue;
+		//			//Ignore if they're both the final actors in the list??? 
+		//			if (std::find(dirty.begin(), dirty.end(), actor) != dirty.end() &&
+		//				std::find(dirty.begin(), dirty.end(), other) != dirty.end())
+		//				continue;
+
+		//			//Handle Collision
+		//			RigidBody* rigid = (RigidBody*)(actor);
+		//			if (rigid->CheckCollision(other) == true)
+		//			{
+		//				rigid->ApplyForceToActor((RigidBody*)other, rigid->getVelocity() * rigid->getMass());
+		//				dirty.push_back(rigid);
+		//				dirty.push_back(other);
+		//			}
+		//		}
+		//	}
+		//	dirty.clear();
+		//}
 	}
 }
 
@@ -146,23 +148,50 @@ void PhysicsScene::CheckForCollisions()
 	}
 }
 
-bool PhysicsScene::Plane2Plane(PhysicsObject *, PhysicsObject *)
+bool PhysicsScene::Plane2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	return false;
 }
 
-bool PhysicsScene::Plane2Circle(PhysicsObject *, PhysicsObject *)
+bool PhysicsScene::Plane2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
+{
+	return Circle2Plane(obj2, obj1);
+	//Plane *plane = (Plane*)obj1;
+	//Circle *circle = (Circle*)obj2;
+}
+
+bool PhysicsScene::Plane2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	return false;
 }
 
-bool PhysicsScene::Plane2Box(PhysicsObject *, PhysicsObject *)
+bool PhysicsScene::Circle2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 {
-	return false;
-}
+	Circle *circle = (Circle*)obj1;
+	Plane *plane = (Plane*)obj2;
 
-bool PhysicsScene::Circle2Plane(PhysicsObject *, PhysicsObject *)
-{
+	//If we are successful then test for collision
+	if (circle != nullptr && plane != nullptr)
+	{
+		glm::vec2 collisionNormal = plane->GetNormal();
+		float circleToPlaneDistance = glm::dot(circle->getPosition(), plane->GetNormal()) - plane->GetDistance();
+
+		//If we are behind plane then we flip the normal
+		if (circleToPlaneDistance < 0)
+		{
+			collisionNormal *= -1.0f;
+			circleToPlaneDistance *= -1.0f;
+		}
+
+		float intersection = circle->getRadius() - circleToPlaneDistance;
+		if (intersection > 0)
+		{
+			//Set circle velocity to zero here
+			circle->tempSetVelocity(glm::vec2());	//default to (0,0)?
+
+			return true;	//Collided
+		}
+	}
 	return false;
 }
 
@@ -190,22 +219,22 @@ bool PhysicsScene::Circle2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 	return false;
 }
 
-bool PhysicsScene::Circle2Box(PhysicsObject *, PhysicsObject *)
+bool PhysicsScene::Circle2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	return false;
 }
 
-bool PhysicsScene::Box2Plane(PhysicsObject *, PhysicsObject *)
+bool PhysicsScene::Box2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	return false;
 }
 
-bool PhysicsScene::Box2Circle(PhysicsObject *, PhysicsObject *)
+bool PhysicsScene::Box2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	return false;
 }
 
-bool PhysicsScene::Box2Box(PhysicsObject *, PhysicsObject *)
+bool PhysicsScene::Box2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	return false;
 }
