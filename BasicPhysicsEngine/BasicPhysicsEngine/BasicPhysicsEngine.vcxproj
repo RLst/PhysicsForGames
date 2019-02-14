@@ -168,6 +168,7 @@
     <ClCompile Include="Circle.cpp" />
     <ClCompile Include="BasicPhysicsEngine.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PhysicsMaterial.cpp" />
     <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="PhysicsScene.cpp" />
     <ClCompile Include="Plane.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="Circle.h" />
     <ClInclude Include="GameDefines.h" />
     <ClInclude Include="BasicPhysicsEngine.h" />
+    <ClInclude Include="PhysicsMaterial.h" />
     <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="PhysicsScene.h" />
     <ClInclude Include="Plane.h" />
