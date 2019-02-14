@@ -145,8 +145,8 @@ void PhysicsTutorial::Circle2PlaneTest()
 	float mass = 10;
 	float radius = 10;
 	
-	glm::vec2 spawnRangeX(10, 490);
-	glm::vec2 spawnRangeY(0, 250);
+	glm::ivec2 spawnRangeX(10, 490);
+	glm::ivec2 spawnRangeY(0, 250);
 
 	m_physicsScene->setGravity(vec2(0, -9.81f));
 

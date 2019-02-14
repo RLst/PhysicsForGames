@@ -124,7 +124,7 @@ void PhysicsScene::DebugScene()
 
 void PhysicsScene::CheckForCollisions()
 {
-	int actorCount = m_actors.size();
+	auto actorCount = m_actors.size();
 
 	//Need to check for collisions against all objects except this one
 	for (int outer = 0; outer < actorCount-1; ++outer)
@@ -156,8 +156,6 @@ bool PhysicsScene::Plane2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 bool PhysicsScene::Plane2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	return Circle2Plane(obj2, obj1);
-	//Plane *plane = (Plane*)obj1;
-	//Circle *circle = (Circle*)obj2;
 }
 
 bool PhysicsScene::Plane2Box(PhysicsObject * obj1, PhysicsObject * obj2)
