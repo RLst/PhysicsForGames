@@ -173,10 +173,10 @@ void PhysicsTutorial::BilliardBallSimulation()
 
 	int cushionSize = 25;
 	//Cushions to stop the balls
-	Plane *topCushion = new Plane(vec2(0, -1), -285 + cushionSize);
-	Plane *bottomCushion = new Plane(vec2(0, 1), cushionSize);
-	Plane *leftCushion = new Plane(vec2(1, 0), cushionSize);
-	Plane *rightCushion = new Plane(vec2(-1, 0), -500 + cushionSize);
+	Plane *topCushion = new Plane(vec2(0.0f, -1.0f), (float)-285 + cushionSize);
+	Plane *bottomCushion = new Plane(vec2(0.0f, 1.0f), (float)cushionSize);
+	Plane *leftCushion = new Plane(vec2(1.0f, 0.0f), (float)cushionSize);
+	Plane *rightCushion = new Plane(vec2(-1.0f, 0.0f), (float)-500 + cushionSize);
 	m_physicsScene->AddActor(topCushion);
 	m_physicsScene->AddActor(bottomCushion);
 	m_physicsScene->AddActor(leftCushion);
@@ -184,13 +184,13 @@ void PhysicsTutorial::BilliardBallSimulation()
 
 	//Cue balls
 	float radius = 7.5f;
-	int numberOfBalls = 30;
+	int numberOfBalls = 20;
 
-	Circle *cueBall = new Circle(glm::vec2(100, 150), vec2(1000.0f, 0.0f), 0.170f, radius, pkr::colour::white);
+	Circle *cueBall = new Circle(glm::vec2(100, 150), vec2(900.0f, 0.0f), 0.170f, radius, pkr::colour::white);
 	m_physicsScene->AddActor(cueBall);
 
 	for (int i = 0; i < numberOfBalls; ++i)
 	{
-		m_physicsScene->AddActor(new Circle(vec2( pkr::random(cushionSize+radius, 500-cushionSize-radius), pkr::random(cushionSize+radius, 285-cushionSize-radius)), vec2(0, 0), 0.160f, radius, pkr::colour::random()));
+		m_physicsScene->AddActor(new Circle(vec2(pkr::random(cushionSize+radius, 500-cushionSize-radius), pkr::random(cushionSize+radius, 285-cushionSize-radius)), vec2(0, 0), 0.160f, radius, pkr::colour::random()));
 	}
 }

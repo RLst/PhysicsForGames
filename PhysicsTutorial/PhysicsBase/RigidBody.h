@@ -1,19 +1,37 @@
 #pragma once
 #include "PhysicsObject.h"
+#include <algorithm>
 
 class RigidBody : public PhysicsObject
 {
 protected:
-	glm::vec2	m_position;
-	glm::vec2	m_velocity;
+	//Mass
 	float		m_mass;
-	float		m_rotation;		//2D so we only need a single float to represent our rotation
 
+	//Displacement
+	glm::vec2	m_position;
+	float		m_rotation;		//2D so we only need a single float to represent our rotation
+	
+	//Velocity
+	glm::vec2	m_velocity;
+	float		m_angularVelocity;
+
+	//Drag
 	float		m_linearDrag;
 	float		m_angularDrag;
+	const float MIN_LINEAR_THRESHOLD;		//Why can't this be static?
+	const float MIN_ANGULAR_THRESHOLD;
+
+	//Restitution
+	float		m_elasticity;
 
 public:
-	RigidBody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float rotation, float mass);
+	RigidBody(ShapeType shapeID,
+		glm::vec2 position, glm::vec2 velocity,
+		float rotation, float mass,
+		float linearDrag = 0.15f, float angDrag = 0.15f,	//Default drags
+		float elasticity = 1.0f,
+		float minLinearThreshold = 0.1f, float minAngularThreshold = 0.01f);
 	virtual ~RigidBody();
 
 	void		FixedUpdate(glm::vec2 gravity, float timeStep) override;
@@ -25,13 +43,23 @@ public:
 	virtual bool	CheckCollision(PhysicsObject* other) = 0;
 	void			ResolveCollision(RigidBody* other);
 
+	//Properties
+	float		getMass() const { return m_mass; }
+	void		reduceMass(const float reduction) { m_mass -= reduction; }	//Used for rocket sim; unrealistic
 	glm::vec2	getPosition() const { return m_position; }
 	float		getRotation() const { return m_rotation; }
 	glm::vec2	getVelocity() const { return m_velocity; }
-	float		getMass() const { return m_mass; }
+	float		getAngVelocity() const { return m_angularVelocity; }
 
-	void		reduceMass(float reduction) { m_mass -= reduction; }
+	float		getLinearDrag() const { return m_linearDrag; }
+	void		setLinearDrag(const float lDrag) { m_linearDrag = std::clamp(lDrag, 0.0f, 1.0f); }
+	float		getAngularDrag() const { return m_angularDrag; }
+	void		setAngularDrag(const float angDrag) { m_angularDrag = std::clamp(angDrag, 0.0f, 1.0f); }
 
+	float		getElasticity() const { return m_elasticity; }
+	void		setElasticity(const float elasiticity) { m_elasticity = elasiticity; }
+
+	//Other / Tests
 	void		setVelocity(const glm::vec2 vel) { m_velocity = vel; }
 };
 

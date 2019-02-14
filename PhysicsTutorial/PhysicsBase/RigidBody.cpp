@@ -2,13 +2,23 @@
 
 #include <iostream>
 
-RigidBody::RigidBody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float rotation, float mass) :
+RigidBody::RigidBody(ShapeType shapeID, 
+	glm::vec2 position, glm::vec2 velocity, 
+	float rotation, float mass, 
+	float linearDrag, float angularDrag,
+	float elasticity,
+	float minLinearThreshold, float minAngularThreshold) :
 	PhysicsObject(shapeID),	//Avoids PhysicsObject requiring a default ctr
 	m_position(position),
 	m_velocity(velocity),
 	m_rotation(rotation),
-	m_mass(mass)
+	m_mass(mass),
+	m_elasticity(elasticity),
+	MIN_LINEAR_THRESHOLD(minLinearThreshold),
+	MIN_ANGULAR_THRESHOLD(minAngularThreshold)
 {
+	setLinearDrag(linearDrag);
+	setAngularDrag(angularDrag);
 }
 
 RigidBody::~RigidBody()
@@ -19,11 +29,26 @@ void RigidBody::FixedUpdate(glm::vec2 gravity, float timeStep)
 {
 	ApplyForce(gravity * m_mass * timeStep);
 	m_position += m_velocity * timeStep;
+	m_velocity -= m_velocity * m_linearDrag * timeStep;
+	m_angularVelocity -= m_angularVelocity * m_angularDrag * timeStep;
+
+	//Increase stability by stopping movement if velocities are low
+	if (glm::length(m_velocity) < MIN_LINEAR_THRESHOLD)
+	{
+		m_velocity = glm::vec2(0, 0);
+	}
+	if (fabsf(m_angularVelocity) < MIN_ANGULAR_THRESHOLD)
+	{
+		m_angularVelocity = 0;
+	}
+
+	//Debug();
 }
 
 void RigidBody::Debug()
 {
 #ifdef _DEBUG
+	//system("cls");
 	std::cout << "ObjID: " << m_shapeID << std::endl;
 	std::cout << "mass: " << m_mass << std::endl;
 	std::cout << "x: " << m_position.x << ", y: " << m_position.y << std::endl;
@@ -54,8 +79,8 @@ void RigidBody::ResolveCollision(RigidBody * other)
 	glm::vec2 relVelocity = other->getVelocity() - m_velocity;
 
 	//Super formula (impulse magnitude)
-	float elasticity = 0.99f;		//TODO
-
+	float elasticity = (m_elasticity + other->getElasticity()) / 2.0f;
+	
 	float j = glm::dot(-(1 + elasticity) * (relVelocity), normal) / glm::dot(normal, normal * ((1 / m_mass) + (1 / other->getMass())));
 
 	glm::vec2 force = normal * j;

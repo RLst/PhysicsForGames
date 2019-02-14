@@ -5,21 +5,22 @@
 Plane::Plane() :
 	PhysicsObject(ShapeType::PLANE),
 	m_distanceToOrigin(0),
-	m_normal(glm::vec2(0, 1))	//Ground zero facing up
+	m_normal(glm::vec2(0, 1)),	//Ground zero facing up
+	m_elasticity(0.9f)
 {
 }
 
-Plane::Plane(glm::vec2 normal, float distance) :
+Plane::Plane(glm::vec2 normal, float distance, float elasticity) :
 	PhysicsObject(ShapeType::PLANE),
 	m_normal(normal),
-	m_distanceToOrigin(distance)
+	m_distanceToOrigin(distance),
+	m_elasticity(elasticity)
 {
 }
 
 Plane::~Plane()
 {
 }
-
 
 void Plane::MakeGizmo()
 {
@@ -39,7 +40,7 @@ void Plane::ResolveCollision(RigidBody * other)
 	glm::vec2 relVelocity = other->getVelocity();
 
 	//Super formula (impulse magnitude)
-	float elasticity = 0.99f;		//TODO
+	float elasticity = (m_elasticity + other->getElasticity()) / 2.0f;
 	float j = glm::dot(-(1 + elasticity) * (relVelocity), m_normal) / (1 / other->getMass());
 
 	glm::vec2 force = m_normal * j;
