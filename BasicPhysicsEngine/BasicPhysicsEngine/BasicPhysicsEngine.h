@@ -11,11 +11,11 @@ class PhysicsScene;
 class Circle;
 class Plane;
 
-class PhysicsTutorial : public aie::Application {
+class BasicPhysicsEngine : public aie::Application {
 public:
 
-	PhysicsTutorial();
-	virtual ~PhysicsTutorial();
+	BasicPhysicsEngine();
+	virtual ~BasicPhysicsEngine();
 
 	bool startup() override;
 	void shutdown() override;

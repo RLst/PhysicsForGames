@@ -1,4 +1,4 @@
-#include "PhysicsTutorial.h"
+#include "BasicPhysicsEngine.h"
 
 //aie
 #include "Texture.h"
@@ -18,20 +18,20 @@
 #include "Plane.h"
 
 
-PhysicsTutorial::PhysicsTutorial() {
+BasicPhysicsEngine::BasicPhysicsEngine() {
 }
 
-PhysicsTutorial::~PhysicsTutorial() {
+BasicPhysicsEngine::~BasicPhysicsEngine() {
 
 }
 
-void PhysicsTutorial::shutdown() {
+void BasicPhysicsEngine::shutdown() {
 	delete m_font;
 	delete m_2dRenderer;
 	delete m_physicsScene;
 }
 
-bool PhysicsTutorial::startup() 
+bool BasicPhysicsEngine::startup() 
 {
 	//Increase 2D line count to maximize the number of objects we can draw
 	aie::Gizmos::create(255U, 255U, 65535U, 65535U);
@@ -57,7 +57,7 @@ bool PhysicsTutorial::startup()
 	return true;
 }
 
-void PhysicsTutorial::update(float deltaTime) {
+void BasicPhysicsEngine::update(float deltaTime) {
 
 	// input example
 	aie::Input* input = aie::Input::getInstance();
@@ -77,7 +77,7 @@ void PhysicsTutorial::update(float deltaTime) {
 		quit();
 }
 
-void PhysicsTutorial::draw() {
+void BasicPhysicsEngine::draw() {
 
 	// wipe the screen to the background colour
 	clearScreen();
@@ -96,7 +96,7 @@ void PhysicsTutorial::draw() {
 	m_2dRenderer->end();
 }
 
-void PhysicsTutorial::SetupContinuousDemo(glm::vec2 startPos, float inclination, float speed, float gravity)
+void BasicPhysicsEngine::SetupContinuousDemo(glm::vec2 startPos, float inclination, float speed, float gravity)
 {
 	//Analytical solution
 	///Circle properties
@@ -126,7 +126,7 @@ void PhysicsTutorial::SetupContinuousDemo(glm::vec2 startPos, float inclination,
 	}
 }
 
-void PhysicsTutorial::Circle2CircleTest()
+void BasicPhysicsEngine::Circle2CircleTest()
 {
 	float collideSpeed = 100;
 	float distanceApart = 100;
@@ -139,7 +139,7 @@ void PhysicsTutorial::Circle2CircleTest()
 	m_physicsScene->AddActor(new Circle(vec2(250 + distanceApart, 150), vec2(-collideSpeed, 0), mass, radius, pkr::colour::orange));
 }
 
-void PhysicsTutorial::Circle2PlaneTest()
+void BasicPhysicsEngine::Circle2PlaneTest()
 {
 	int numberOfCircles = 10;
 	float mass = 10;
@@ -167,7 +167,7 @@ void PhysicsTutorial::Circle2PlaneTest()
 	}
 }
 
-void PhysicsTutorial::BilliardBallSimulation()
+void BasicPhysicsEngine::BilliardBallSimulation()
 {
 	m_physicsScene->setGravity(pkr::zero2);		//Balls sitting on a table, no gravity
 
