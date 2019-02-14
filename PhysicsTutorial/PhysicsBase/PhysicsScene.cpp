@@ -208,9 +208,8 @@ bool PhysicsScene::Circle2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 		//If distance is less than the combined radius of both spheres,
 		if (distance < circle1->getRadius() + circle2->getRadius())
 		{
-			//then a collision occured so set the velocity of both spheres to 0 (for now)
-			circle1->tempSetVelocity(vec2(0, 0));
-			circle2->tempSetVelocity(vec2(0, 0));
+			//Resolve collision
+			circle1->ResolveCollision(circle2);
 			return true;
 		}
 	}

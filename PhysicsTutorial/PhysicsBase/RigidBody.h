@@ -20,6 +20,7 @@ public:
 	void		ApplyForceToActor(RigidBody* actor2, glm::vec2 force);
 
 	virtual bool CheckCollision(PhysicsObject* other) = 0;
+	void		ResolveCollision(RigidBody* other);
 
 	glm::vec2	getPosition() const { return m_position; }
 	float		getRotation() const { return m_rotation; }

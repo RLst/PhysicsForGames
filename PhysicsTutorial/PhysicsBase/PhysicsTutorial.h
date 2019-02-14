@@ -29,7 +29,7 @@ public:
 	//Tests
 	void Circle2CircleTest();
 	void Circle2PlaneTest();
-	void TempUpdate(float deltaTime);
+	void BilliardBallSimulation();
 
 protected:
 

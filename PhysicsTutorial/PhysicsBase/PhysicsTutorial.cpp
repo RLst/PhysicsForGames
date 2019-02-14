@@ -51,7 +51,8 @@ bool PhysicsTutorial::startup()
 	m_physicsScene->setTimeStep(fixedTimeStep);
 
 	//Circle2CircleTest();
-	Circle2PlaneTest();
+	//Circle2PlaneTest();
+	BilliardBallSimulation();
 
 	return true;
 }
@@ -165,4 +166,33 @@ void PhysicsTutorial::Circle2PlaneTest()
 			pkr::colour::random()));
 		m_physicsScene->AddActor(circles.back());
 	}
+}
+
+void PhysicsTutorial::BilliardBallSimulation()
+{
+	m_physicsScene->setGravity(pkr::zero2);		//Balls sitting on a table, no gravity
+
+	int cushionSize = 25;
+	//Cushions to stop the balls
+	Plane *topCushion = new Plane(vec2(0, -1), -235 - cushionSize);
+	Plane *bottomCushion = new Plane(vec2(0, 1), cushionSize);
+	Plane *leftCushion = new Plane(vec2(1, 0), cushionSize);
+	Plane *rightCushion = new Plane(vec2(-1, 0), -450 - cushionSize);
+
+
+	//Cue balls
+	Circle *cueBall = new Circle(glm::vec2(100, 150), vec2(66.11f, 0), 0.170f, 5.0f, pkr::colour::white);
+	Circle *poolBall1 = new Circle(vec2(200, 151), pkr::zero2, 0.160f, 5, pkr::colour::red);
+	Circle *poolBall2 = new Circle(vec2(250, 166), pkr::zero2, 0.160f, 5, pkr::colour::orange);
+	Circle *poolBall3 = new Circle(vec2(300, 164), pkr::zero2, 0.160f, 5, pkr::colour::yellow);
+
+	//Add to physics scene
+	m_physicsScene->AddActor(topCushion);
+	m_physicsScene->AddActor(bottomCushion);
+	m_physicsScene->AddActor(leftCushion);
+	m_physicsScene->AddActor(rightCushion);
+	m_physicsScene->AddActor(cueBall);
+	m_physicsScene->AddActor(poolBall1);
+	m_physicsScene->AddActor(poolBall2);
+	m_physicsScene->AddActor(poolBall3);
 }
