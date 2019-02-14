@@ -20,13 +20,10 @@ Plane::~Plane()
 {
 }
 
-void Plane::Debug()
-{
-}
 
 void Plane::MakeGizmo()
 {
-	float lineSegmentLength = 1000;
+	float lineSegmentLength = 1500;
 	vec2 centerPoint = m_normal * m_distanceToOrigin;
 		//Easy to rotate normal through 90 degrees around z
 	vec2 parallel(m_normal.y, -m_normal.x);
@@ -42,8 +39,7 @@ void Plane::ResolveCollision(RigidBody * other)
 	glm::vec2 relVelocity = other->getVelocity();
 
 	//Super formula (impulse magnitude)
-	float elasticity = 0.95f;		//TODO
-
+	float elasticity = 0.99f;		//TODO
 	float j = glm::dot(-(1 + elasticity) * (relVelocity), m_normal) / (1 / other->getMass());
 
 	glm::vec2 force = m_normal * j;

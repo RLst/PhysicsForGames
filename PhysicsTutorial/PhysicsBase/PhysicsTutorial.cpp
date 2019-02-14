@@ -67,7 +67,6 @@ void PhysicsTutorial::update(float deltaTime) {
 	//Apply force towards the other actor
 	if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT))
 	{
-
 	}
 
 	m_physicsScene->Update(deltaTime);
@@ -178,21 +177,20 @@ void PhysicsTutorial::BilliardBallSimulation()
 	Plane *bottomCushion = new Plane(vec2(0, 1), cushionSize);
 	Plane *leftCushion = new Plane(vec2(1, 0), cushionSize);
 	Plane *rightCushion = new Plane(vec2(-1, 0), -500 + cushionSize);
-
-
-	//Cue balls
-	Circle *cueBall = new Circle(glm::vec2(100, 150), vec2(66.11f, 0), 0.170f, 5.0f, pkr::colour::white);
-	Circle *poolBall1 = new Circle(vec2(200, 151), pkr::zero2, 0.160f, 5, pkr::colour::red);
-	Circle *poolBall2 = new Circle(vec2(250, 166), pkr::zero2, 0.160f, 5, pkr::colour::orange);
-	Circle *poolBall3 = new Circle(vec2(300, 164), pkr::zero2, 0.160f, 5, pkr::colour::yellow);
-
-	//Add to physics scene
 	m_physicsScene->AddActor(topCushion);
 	m_physicsScene->AddActor(bottomCushion);
 	m_physicsScene->AddActor(leftCushion);
 	m_physicsScene->AddActor(rightCushion);
+
+	//Cue balls
+	float radius = 7.5f;
+	int numberOfBalls = 30;
+
+	Circle *cueBall = new Circle(glm::vec2(100, 150), vec2(1000.0f, 0.0f), 0.170f, radius, pkr::colour::white);
 	m_physicsScene->AddActor(cueBall);
-	m_physicsScene->AddActor(poolBall1);
-	m_physicsScene->AddActor(poolBall2);
-	m_physicsScene->AddActor(poolBall3);
+
+	for (int i = 0; i < numberOfBalls; ++i)
+	{
+		m_physicsScene->AddActor(new Circle(vec2( pkr::random(cushionSize+radius, 500-cushionSize-radius), pkr::random(cushionSize+radius, 285-cushionSize-radius)), vec2(0, 0), 0.160f, radius, pkr::colour::random()));
+	}
 }

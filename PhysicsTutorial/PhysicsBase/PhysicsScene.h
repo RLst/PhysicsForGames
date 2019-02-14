@@ -3,6 +3,7 @@
 #include <vector>
 
 class PhysicsObject;
+
 typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 class PhysicsScene

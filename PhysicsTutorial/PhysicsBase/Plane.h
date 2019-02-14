@@ -18,7 +18,7 @@ public:
 	~Plane();
 
 	void		FixedUpdate(glm::vec2 gravity, float timeStep) override {};
-	void		Debug() override;
+	void		Debug() override {}
 	void		MakeGizmo() override;
 	void		ResolveCollision(RigidBody* other);
 
