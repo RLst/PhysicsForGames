@@ -50,7 +50,7 @@ bool PhysicsTutorial::startup()
 	m_physicsScene = new PhysicsScene();
 	m_physicsScene->setTimeStep(fixedTimeStep);
 
-	TempStartup();
+	Circle2CircleTest();
 
 	return true;
 }
@@ -125,7 +125,7 @@ void PhysicsTutorial::SetupContinuousDemo(glm::vec2 startPos, float inclination,
 	}
 }
 
-void PhysicsTutorial::TempStartup()
+void PhysicsTutorial::Circle2CircleTest()
 {
 	float collideSpeed = 100;
 	float distanceApart = 100;

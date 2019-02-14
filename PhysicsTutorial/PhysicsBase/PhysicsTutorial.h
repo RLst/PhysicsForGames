@@ -27,7 +27,7 @@ public:
 	void SetupContinuousDemo(glm::vec2 startPos, float inclination, float speed, float gravity);
 
 	//Temps
-	void TempStartup();
+	void Circle2CircleTest();
 	void TempUpdate(float deltaTime);
 
 protected:
