@@ -47,10 +47,10 @@ bool PhysicsTutorial::startup()
 #endif
 
 	//Initialize the physics scene
-	m_physicsScene = new PhysicsScene(false);
-	m_physicsScene->setGravity({ 0, -10.0f });
+	m_physicsScene = new PhysicsScene();
 	m_physicsScene->setTimeStep(fixedTimeStep);
 
+	TempStartup();
 
 	return true;
 }
@@ -60,7 +60,7 @@ void PhysicsTutorial::update(float deltaTime) {
 	// input example
 	aie::Input* input = aie::Input::getInstance();
 
-	//aie::Gizmos::clear();
+	aie::Gizmos::clear();
 
 	//Apply force towards the other actor
 	if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT))
@@ -123,4 +123,16 @@ void PhysicsTutorial::SetupContinuousDemo(glm::vec2 startPos, float inclination,
 
 		t += tStep;
 	}
+}
+
+void PhysicsTutorial::TempStartup()
+{
+	float collideSpeed = 100;
+	float distanceApart = 100;
+	float mass = 10;
+	float radius = 10;
+
+	//spawn in two circles and make them collide
+	m_physicsScene->AddActor(new Circle(vec2(250 - distanceApart, 150), vec2(collideSpeed, 0), mass, radius, pkr::colour::violet));
+	m_physicsScene->AddActor(new Circle(vec2(250 + distanceApart, 150), vec2(-collideSpeed, 0), mass, radius, pkr::colour::orange));
 }

@@ -6,6 +6,9 @@
 #include <list>
 #include <iostream>
 
+#include "Plane.h"
+#include "Circle.h"
+#include "Box.h"
 
 PhysicsScene::PhysicsScene(float timeStep, glm::vec2 gravity, bool collisionEnabled) :
 	m_timeStep(timeStep),
@@ -23,6 +26,7 @@ PhysicsScene::~PhysicsScene()
 	}
 }
 
+//Setup the collision function array
 static fn collisionFunctionArray[] =
 {
 	PhysicsScene::Plane2Plane, 	PhysicsScene::Plane2Circle,		PhysicsScene::Plane2Box,
@@ -131,7 +135,7 @@ void PhysicsScene::CheckForCollisions()
 			int shapeID2 = object2->GetShapeID();
 
 			//Using function pointers
-			int functionIDX = (shapeID1 * SHAPE_COUNT) + shapeID2;
+			int functionIDX = (shapeID1 * SHAPE_COUNT) + shapeID2;	//Auto select the correct function
 			fn fpCollision = collisionFunctionArray[functionIDX];
 			if (fpCollision != nullptr)
 			{
@@ -143,6 +147,65 @@ void PhysicsScene::CheckForCollisions()
 }
 
 bool PhysicsScene::Plane2Plane(PhysicsObject *, PhysicsObject *)
+{
+	return false;
+}
+
+bool PhysicsScene::Plane2Circle(PhysicsObject *, PhysicsObject *)
+{
+	return false;
+}
+
+bool PhysicsScene::Plane2Box(PhysicsObject *, PhysicsObject *)
+{
+	return false;
+}
+
+bool PhysicsScene::Circle2Plane(PhysicsObject *, PhysicsObject *)
+{
+	return false;
+}
+
+bool PhysicsScene::Circle2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
+{
+	//Try to cast object to circle and circle
+	Circle *circle1 = (Circle*)(obj1);
+	Circle *circle2 = (Circle*)(obj2);
+
+	//If we are successful then test for collision
+	if (circle1 != nullptr && circle2 != nullptr)
+	{
+		//Get distance between 2 circles
+		float distance = glm::distance(circle1->getPosition(), circle2->getPosition());
+
+		//If distance is less than the combined radius of both spheres,
+		if (distance < circle1->getRadius() + circle2->getRadius())
+		{
+			//then a collision occured so set the velocity of both spheres to 0 (for now)
+			circle1->tempSetVelocity(vec2(0, 0));
+			circle2->tempSetVelocity(vec2(0, 0));
+			return true;
+		}
+	}
+	return false;
+}
+
+bool PhysicsScene::Circle2Box(PhysicsObject *, PhysicsObject *)
+{
+	return false;
+}
+
+bool PhysicsScene::Box2Plane(PhysicsObject *, PhysicsObject *)
+{
+	return false;
+}
+
+bool PhysicsScene::Box2Circle(PhysicsObject *, PhysicsObject *)
+{
+	return false;
+}
+
+bool PhysicsScene::Box2Box(PhysicsObject *, PhysicsObject *)
 {
 	return false;
 }

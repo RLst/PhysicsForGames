@@ -38,7 +38,6 @@ public:
 	static bool Circle2Box(PhysicsObject*, PhysicsObject*);
 	static bool Box2Plane(PhysicsObject*, PhysicsObject*);
 	static bool Box2Circle(PhysicsObject*, PhysicsObject*);
-	static bool Box2Circle(PhysicsObject*, PhysicsObject*);
 	static bool Box2Box(PhysicsObject*, PhysicsObject*);
 
 	void		setGravity(const glm::vec2 gravity) { m_gravity = gravity; }

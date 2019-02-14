@@ -28,5 +28,7 @@ public:
 
 	void		reduceMass(float reduction) { m_mass -= reduction; }
 
+	//TEMP
+	void		tempSetVelocity(const glm::vec2 vel) { m_velocity = vel; }
 };
 

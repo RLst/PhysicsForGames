@@ -26,6 +26,10 @@ public:
 	//Tutorials
 	void SetupContinuousDemo(glm::vec2 startPos, float inclination, float speed, float gravity);
 
+	//Temps
+	void TempStartup();
+	void TempUpdate(float deltaTime);
+
 protected:
 
 	aie::Renderer2D*	m_2dRenderer;
