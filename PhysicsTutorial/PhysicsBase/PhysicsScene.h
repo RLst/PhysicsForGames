@@ -30,7 +30,7 @@ public:
 
 	//Collision detection
 	void		CheckForCollisions();
-	static bool	Plane2Plane(PhysicsObject*, PhysicsObject*);
+	static bool	Plane2Plane(PhysicsObject*, PhysicsObject*) { return false;	} //DO NOT REMOVE! Place holder
 	static bool Plane2Circle(PhysicsObject*, PhysicsObject*);
 	static bool Plane2Box(PhysicsObject*, PhysicsObject*);
 	static bool Circle2Plane(PhysicsObject*, PhysicsObject*);

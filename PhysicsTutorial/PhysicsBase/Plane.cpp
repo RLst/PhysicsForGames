@@ -1,5 +1,6 @@
 #include "Plane.h"
 #include <Gizmos.h>
+#include "RigidBody.h"
 
 Plane::Plane() :
 	PhysicsObject(ShapeType::PLANE),
@@ -13,9 +14,6 @@ Plane::Plane(glm::vec2 normal, float distance) :
 	m_normal(normal),
 	m_distanceToOrigin(distance)
 {
-	//Origs for reset function
-	m_orig_normal = m_normal;
-	m_orig_distanceToOrigin = m_distanceToOrigin;
 }
 
 Plane::~Plane()
@@ -38,8 +36,17 @@ void Plane::MakeGizmo()
 	aie::Gizmos::add2DLine(start, end, colour);
 }
 
-void Plane::ResetPosition()
+void Plane::ResolveCollision(RigidBody * other)
 {
-	m_normal = m_orig_normal;
-	m_distanceToOrigin = m_orig_distanceToOrigin;
+	//glm::vec2 normal = glm::normalize(other->getPosition() - m_position);
+	glm::vec2 relVelocity = other->getVelocity();
+
+	//Super formula (impulse magnitude)
+	float elasticity = 0.95f;		//TODO
+
+	float j = glm::dot(-(1 + elasticity) * (relVelocity), m_normal) / (1 / other->getMass());
+
+	glm::vec2 force = m_normal * j;
+
+	other->ApplyForce(force);
 }

@@ -29,7 +29,7 @@ PhysicsScene::~PhysicsScene()
 //Setup the collision function array
 static fn collisionFunctionArray[] =
 {
-	PhysicsScene::Plane2Plane, 	PhysicsScene::Plane2Circle,		PhysicsScene::Plane2Box,
+	PhysicsScene::Plane2Plane,	PhysicsScene::Plane2Circle,		PhysicsScene::Plane2Box,
 	PhysicsScene::Circle2Plane, PhysicsScene::Circle2Circle,	PhysicsScene::Circle2Box,
 	PhysicsScene::Box2Plane,	PhysicsScene::Box2Circle,		PhysicsScene::Box2Box
 };
@@ -71,35 +71,7 @@ void PhysicsScene::Update(float deltaTime)
 		}
 		accumulatedTime -= m_timeStep;
 
-		CheckForCollisions();
-
-		//BAD Check for collisions (ideally you'd want to have some sort of scene management in place)
-		//if (m_isCollisionEnabled)
-		//{
-		//	for (auto actor : m_actors) 
-		//	{
-		//		for (auto other : m_actors)
-		//		{
-		//			//Ignore if it's the same actor
-		//			if (actor == other)
-		//				continue;
-		//			//Ignore if they're both the final actors in the list??? 
-		//			if (std::find(dirty.begin(), dirty.end(), actor) != dirty.end() &&
-		//				std::find(dirty.begin(), dirty.end(), other) != dirty.end())
-		//				continue;
-
-		//			//Handle Collision
-		//			RigidBody* rigid = (RigidBody*)(actor);
-		//			if (rigid->CheckCollision(other) == true)
-		//			{
-		//				rigid->ApplyForceToActor((RigidBody*)other, rigid->getVelocity() * rigid->getMass());
-		//				dirty.push_back(rigid);
-		//				dirty.push_back(other);
-		//			}
-		//		}
-		//	}
-		//	dirty.clear();
-		//}
+		CheckForCollisions();	//And also resolve collisions
 	}
 }
 
@@ -148,11 +120,6 @@ void PhysicsScene::CheckForCollisions()
 	}
 }
 
-bool PhysicsScene::Plane2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
-{
-	return false;
-}
-
 bool PhysicsScene::Plane2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	return Circle2Plane(obj2, obj1);
@@ -184,10 +151,9 @@ bool PhysicsScene::Circle2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 		float intersection = circle->getRadius() - circleToPlaneDistance;
 		if (intersection > 0)
 		{
-			//Set circle velocity to zero here
-			circle->tempSetVelocity(glm::vec2());	//default to (0,0)?
-
-			return true;	//Collided
+			//Objects have collided
+			plane->ResolveCollision(circle);
+			return true;
 		}
 	}
 	return false;
