@@ -1,5 +1,6 @@
 #pragma once
 #include <glm/ext.hpp>
+#include <algorithm>
 
 ////////////////
 // Type defs //
@@ -15,45 +16,75 @@ const float PI = 3.14159f;
 
 namespace pkr
 {
+	int random(int min, int max);
+
+	//Colour stuff
+	enum Colours {
+		COLOUR_RED = 0,
+		COLOUR_GREEN,
+		COLOUR_BLUE,
+		COLOUR_CYAN,
+		COLOUR_MAGENTA,
+		COLOUR_YELLOW,
+		COLOUR_ORANGE,
+		COLOUR_LIMEGREEN,
+		COLOUR_MINT,
+		COLOUR_DODGERBLUE,
+		COLOUR_INDIGO,
+		COLOUR_PURPLE,
+		COLOUR_FUSCHIA,
+		COLOUR_COUNT
+	};
+
+	class colour
+	{
+	private:
+		colour() = default;
+	public:
+		static col get(Colours colour)
+		{
+			switch (colour)
+			{
+			case COLOUR_RED: return col(1, 0, 0, 1); break;
+			case COLOUR_GREEN: return col(0, 1, 0, 1); break;
+			case COLOUR_BLUE: return col(0, 0, 1, 1); break;
+			case COLOUR_CYAN: return col(0, 1, 1, 1); break;
+			case COLOUR_MAGENTA: return col(1, 0, 1, 1); break;
+			case COLOUR_YELLOW: return col(1, 1, 0, 1); break;
+			case COLOUR_ORANGE: return col(1, 0.5f, 0, 1); break;
+			case COLOUR_LIMEGREEN: return col(0.5f, 1, 0, 1); break;
+			case COLOUR_MINT: return col(0, 1, 0.5f, 1); break;
+			case COLOUR_DODGERBLUE: return col(0, 0.5f, 1, 1); break;
+			case COLOUR_INDIGO: return col(0.25f, 0, 1, 1); break;
+			case COLOUR_PURPLE: return col(0.5f, 0, 1, 1); break;
+			case COLOUR_FUSCHIA: return col(1, 0, 0.5f, 1); break;
+			default: return col(1, 1, 1, 0.5f); break;
+			}
+		}
+
+		static col random()
+		{
+			int rnd = pkr::random(0, Colours::COLOUR_COUNT - 1);
+			return get((Colours)rnd);
+		}
+
+		static col shade(float intensity)
+		{
+			std::clamp(intensity, 0.0f, 1.0f);
+			return col(intensity, intensity, intensity, 1);
+		}
+	};
+
+	//Utilities
 	static int random(int min, int max)
 	{
 		return rand() % (max - min + 1) + min;
 	}
 
-	namespace colour
-	{
-		const col red = col(1, 0, 0, 1);
-		const col blue = col(0, 1, 0, 1);
-		const col green = col(0, 0, 1, 1);
-		const col yellow = col(1, 1, 0, 1);
-		const col orange = col(1, 0.5f, 0, 1);
-		const col cyan = col(0, 1, 1, 1);
-		const col violet = col(1, 0, 1, 1);
-		const col white = col(1, 1, 1, 1);
-		const col gray = col(0.5f, 0.5f, 0.5f, 1);
-
-		static col random()
-		{
-			int rnd = pkr::random(0, 8);
-			switch (rnd)
-			{
-			case 0: return red; break;
-			case 1: return blue; break;
-			case 2: return green; break;
-			case 3: return yellow; break;
-			case 4: return orange; break;
-			case 5: return cyan; break;
-			case 6: return violet; break;
-			case 7: return white; break;
-			case 8: return gray; break;
-			default: return col(1, 1, 1, 1);
-			}
-		}
-	}
-
 	static float DegsToRad(float degrees) { return degrees * PI / 180.0f; }
 	static float RadsToDeg(float radians) { return radians * 180.0f / PI; }
 
+	//Zero values
 	const vec2 zero2 = vec2(0, 0);
 	const vec3 zero3 = vec3(0, 0, 0);
 	const vec4 zero4 = vec4(0, 0, 0, 0);

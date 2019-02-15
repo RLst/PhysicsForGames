@@ -102,7 +102,7 @@ void BasicPhysicsEngine::SetupContinuousDemo(glm::vec2 startPos, float inclinati
 	///Circle properties
 	float radius = 3.0f;
 	int segments = 12;
-	col colour = pkr::colour::yellow;
+	col colour = pkr::colour::get(pkr::COLOUR_RED);
 
 	//Time and steps
 	float t = 0;
@@ -135,8 +135,8 @@ void BasicPhysicsEngine::Circle2CircleTest()
 
 	//spawn in two circles and make them collide
 	m_physicsScene->setGravity(pkr::zero2);
-	m_physicsScene->AddActor(new Circle(vec2(250 - distanceApart, 150), vec2(collideSpeed, 0), mass, radius, pkr::colour::violet));
-	m_physicsScene->AddActor(new Circle(vec2(250 + distanceApart, 150), vec2(-collideSpeed, 0), mass, radius, pkr::colour::orange));
+	m_physicsScene->AddActor(new Circle(vec2(250 - distanceApart, 150), vec2(collideSpeed, 0), mass, radius, pkr::colour::get(pkr::COLOUR_PURPLE)));
+	m_physicsScene->AddActor(new Circle(vec2(250 + distanceApart, 150), vec2(-collideSpeed, 0), mass, radius, pkr::colour::get(pkr::COLOUR_ORANGE)));
 }
 
 void BasicPhysicsEngine::Circle2PlaneTest()
@@ -162,7 +162,7 @@ void BasicPhysicsEngine::Circle2PlaneTest()
 			pkr::zero2,
 			mass,
 			radius,
-			pkr::colour::random()));
+			pkr::colour::colour::random()));
 		m_physicsScene->AddActor(circles.back());
 	}
 }
@@ -186,7 +186,7 @@ void BasicPhysicsEngine::BilliardBallSimulation()
 	float radius = 7.5f;
 	int numberOfBalls = 20;
 
-	Circle *cueBall = new Circle(glm::vec2(100, 150), vec2(900.0f, 0.0f), 0.170f, radius, pkr::colour::white);
+	Circle *cueBall = new Circle(glm::vec2(100, 150), vec2(2000.f, 500.0f), 0.170f, radius, pkr::colour::shade(0));
 	m_physicsScene->AddActor(cueBall);
 
 	for (int i = 0; i < numberOfBalls; ++i)
