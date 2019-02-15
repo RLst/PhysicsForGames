@@ -70,7 +70,7 @@ namespace pkr
 
 		static col shade(float intensity)
 		{
-			std::clamp(intensity, 0.0f, 1.0f);
+			intensity = std::clamp(intensity, 0.0f, 1.0f);
 			return col(intensity, intensity, intensity, 1);
 		}
 	};
