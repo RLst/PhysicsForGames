@@ -43,6 +43,12 @@ public:
 	virtual bool	CheckCollision(PhysicsObject* other) = 0;
 	void			ResolveCollision(RigidBody* other);
 
+	//Internal use
+	void		displace(const glm::vec2 displacement);	//To prevent sticking etc
+
+	//Other / Tests
+	void		setVelocity(const glm::vec2 vel) { m_velocity = vel; }
+
 	//Properties
 	float		getMass() const { return m_mass; }
 	void		reduceMass(const float reduction) { m_mass -= reduction; }	//Used for rocket sim; unrealistic
@@ -58,8 +64,5 @@ public:
 
 	float		getElasticity() const { return m_elasticity; }
 	void		setElasticity(const float elasiticity) { m_elasticity = elasiticity; }
-
-	//Other / Tests
-	void		setVelocity(const glm::vec2 vel) { m_velocity = vel; }
 };
 
