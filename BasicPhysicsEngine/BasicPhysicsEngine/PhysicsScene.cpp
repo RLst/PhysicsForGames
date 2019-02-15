@@ -141,21 +141,12 @@ bool PhysicsScene::Circle2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 		glm::vec2 collisionNormal = plane->GetNormal();
 		float circleToPlaneDistance = glm::dot(circle->getPosition(), plane->GetNormal()) - plane->GetDistance();
 
-		/////This makes the plane double sided
-		////If we are behind plane then we flip the normal
-		//if (circleToPlaneDistance < 0)
-		//{
-		//	collisionNormal *= -1.0f;
-		//	circleToPlaneDistance *= -1.0f;
-		//}
-
 		float intersection = circle->getRadius() - circleToPlaneDistance;
 		//If there is any intersecion it means the objects have collided
 		if (intersection > 0.0f)
 		{
 			//Move circle out from the plane to prevent sticking
-			auto moveOutVector = plane->GetNormal() * intersection;
-			circle->displace(moveOutVector);
+			circle->displace(plane->GetNormal() * intersection);
 
 			//Objects have collided
 			plane->ResolveCollision(circle);
