@@ -26,7 +26,7 @@ public:
 	void		AddActor(PhysicsObject* actor);
 	bool		RemoveActor(PhysicsObject* actor);
 	void		Update(float deltaTime);
-	void		UpdateGizmos();
+	void		UpdateGizmos();		//Redraws gizmos
 	void		DebugScene();
 
 	// Collision detection //

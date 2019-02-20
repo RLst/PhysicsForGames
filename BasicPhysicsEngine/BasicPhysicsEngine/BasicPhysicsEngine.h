@@ -30,6 +30,7 @@ public:
 	void Circle2CircleTest();
 	void Circle2PlaneTest();
 	void BilliardBallSimulation();
+	void AABBTest();
 
 protected:
 

@@ -16,6 +16,7 @@
 #include "PhysicsScene.h"
 #include "Circle.h"
 #include "Plane.h"
+#include "Box.h"
 
 
 BasicPhysicsEngine::BasicPhysicsEngine() {
@@ -52,7 +53,8 @@ bool BasicPhysicsEngine::startup()
 
 	//Circle2CircleTest();
 	//Circle2PlaneTest();
-	BilliardBallSimulation();
+	//BilliardBallSimulation();
+	AABBTest();
 
 	return true;
 }
@@ -192,5 +194,52 @@ void BasicPhysicsEngine::BilliardBallSimulation()
 	for (int i = 0; i < numberOfBalls; ++i)
 	{
 		m_physicsScene->AddActor(new Circle(vec2(pkr::random(cushionSize+radius, 500-cushionSize-radius), pkr::random(cushionSize+radius, 285-cushionSize-radius)), vec2(0, 0), 0.160f, radius, pkr::colour::random()));
+	}
+}
+
+void BasicPhysicsEngine::AABBTest()
+{
+	m_physicsScene->setGravity(pkr::zero2);
+
+	int cushionSize = 25;
+	//Cushions to stop the balls
+	Plane *topCushion = new Plane(vec2(0.0f, -1.0f), (float)-285 + cushionSize);
+	Plane *bottomCushion = new Plane(vec2(0.0f, 1.0f), (float)cushionSize);
+	Plane *leftCushion = new Plane(vec2(1.0f, 0.0f), (float)cushionSize);
+	Plane *rightCushion = new Plane(vec2(-1.0f, 0.0f), (float)-500 + cushionSize);
+	m_physicsScene->AddActor(topCushion);
+	m_physicsScene->AddActor(bottomCushion);
+	m_physicsScene->AddActor(leftCushion);
+	m_physicsScene->AddActor(rightCushion);
+
+	//Circles and AABBs
+	float speed = 50.f;
+	float mass = 10.f;
+
+	int numberOfCircles = 10;
+	int maxRadius = 10;
+
+	int numberOfBoxes = 30;
+	int maxWidth = 20;
+	int maxHeight = 20;
+
+	for (int i = 0; i < numberOfCircles; ++i)
+	{
+		m_physicsScene->AddActor(new Circle(
+			vec2(pkr::random(100, 400), pkr::random(100, 300)),
+			vec2(pkr::random(-speed, speed), pkr::random(-speed, speed)),
+			mass,
+			pkr::random(0, maxRadius),
+			pkr::colour::nice_random()));
+	}
+	for (int i = 0; i < numberOfBoxes; ++i)
+	{
+		m_physicsScene->AddActor(new Box(
+			vec2(pkr::random(100, 400), pkr::random(100, 300)),
+			vec2(pkr::random(-speed, speed), pkr::random(-speed, speed)),
+			mass,
+			pkr::random(5, maxWidth),
+			pkr::random(5, maxHeight),
+			pkr::colour::nice_random()));
 	}
 }

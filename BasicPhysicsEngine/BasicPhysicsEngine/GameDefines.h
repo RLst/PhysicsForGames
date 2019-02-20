@@ -70,6 +70,24 @@ namespace pkr
 			return get((Colours)rnd);
 		}
 
+		static col nice_random()
+		{
+			int rnd = pkr::random(1, 6);
+			switch (rnd)
+			{
+			case 0:
+			case 1: return get(COLOUR_RED); break;
+			case 2: return get(COLOUR_YELLOW); break;
+			case 3: return get(COLOUR_ORANGE); break;
+			case 4: return get(COLOUR_LIMEGREEN); break;
+			case 5: return get(COLOUR_DODGERBLUE); break;
+			case 7:
+			case 6: return get(COLOUR_PURPLE); break;
+			//case 6: return get(COLOUR_MINT); break;
+			default: return shade(1);	//default to white
+			}
+		}
+
 		static col shade(float intensity)
 		{
 			intensity = std::clamp(intensity, 0.0f, 1.0f);

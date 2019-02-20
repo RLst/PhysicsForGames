@@ -227,22 +227,20 @@ bool PhysicsScene::Box2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 			////Boxes (AABB's) have collided! 
 
 			//Check for intesection and move out from each other
-			glm::vec2 intersection;
-
-			//Horizontal
-			if (box2->getMax().x - box1->getMin().x >= 0)
-			{
-				//intersection.x = (box2->getMax().x - box1->getMin().x) ? box1->getMax() : box1.get 
-			}
-			else if (box1->getMax().x - box2->getMin().x < 0)
-			{
-
-			}
-
-			//Vertical
-			float horizontalIntersection;
+			//glm::vec2 intersection;
+			////Horizontal
+			//if (box2->getMax().x - box1->getMin().x >= 0)
+			//{
+			//	//intersection.x = (box2->getMax().x - box1->getMin().x) ? box1->getMax() : box1.get 
+			//}
+			//else if (box1->getMax().x - box2->getMin().x < 0)
+			//{
+			//}
+			////Vertical
+			//float horizontalIntersection;
 
 			//Resolve collision
+			box1->ResolveCollision(box2);
 
 			return true;
 		}
