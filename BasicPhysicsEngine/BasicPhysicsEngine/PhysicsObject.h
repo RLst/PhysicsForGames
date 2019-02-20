@@ -7,6 +7,7 @@ enum ShapeType
 	PLANE = 0,
 	CIRCLE,
 	BOX,
+	SAT,
 	SHAPE_COUNT
 };
 

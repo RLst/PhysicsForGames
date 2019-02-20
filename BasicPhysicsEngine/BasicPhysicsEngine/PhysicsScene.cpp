@@ -26,14 +26,6 @@ PhysicsScene::~PhysicsScene()
 	}
 }
 
-//Setup the collision function array
-static fn collisionFunctionArray[] =
-{
-	PhysicsScene::Plane2Plane,	PhysicsScene::Plane2Circle,		PhysicsScene::Plane2Box,
-	PhysicsScene::Circle2Plane, PhysicsScene::Circle2Circle,	PhysicsScene::Circle2Box,
-	PhysicsScene::Box2Plane,	PhysicsScene::Box2Circle,		PhysicsScene::Box2Box
-};
-
 void PhysicsScene::AddActor(PhysicsObject * actor)
 {
 	m_actors.push_back(actor);
@@ -94,6 +86,15 @@ void PhysicsScene::DebugScene()
 	}
 }
 
+//Setup the collision function array
+static fn collisionFunctionArray[] =
+{
+	PhysicsScene::Plane2Plane,	PhysicsScene::Plane2Circle,		PhysicsScene::Plane2Box,	PhysicsScene::Plane2SAT,
+	PhysicsScene::Circle2Plane, PhysicsScene::Circle2Circle,	PhysicsScene::Circle2Box,	PhysicsScene::Circle2SAT,
+	PhysicsScene::Box2Plane,	PhysicsScene::Box2Circle,		PhysicsScene::Box2Box,		PhysicsScene::Box2SAT,
+	PhysicsScene::SAT2Plane,	PhysicsScene::SAT2Circle,		PhysicsScene::SAT2BOX,		PhysicsScene::SAT2SAT,
+};
+
 void PhysicsScene::CheckForCollisions()
 {
 	//Need to check for collisions against all objects except this one
@@ -101,10 +102,6 @@ void PhysicsScene::CheckForCollisions()
 	{
 		for (int inner = outer + 1; inner < m_actors.size(); ++inner)
 		{
-			//Start SAT algorithm here?
-
-
-
 			PhysicsObject* object1 = m_actors[outer];
 			PhysicsObject* object2 = m_actors[inner];
 			int shapeID1 = object1->GetShapeID();
@@ -122,20 +119,12 @@ void PhysicsScene::CheckForCollisions()
 	}
 }
 
+//bool PhysicsScene::Plane2Plane(N/A)
+
 bool PhysicsScene::Plane2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 {
-	return Circle2Plane(obj2, obj1);
-}
-
-bool PhysicsScene::Plane2Box(PhysicsObject * obj1, PhysicsObject * obj2)
-{
-	return false;
-}
-
-bool PhysicsScene::Circle2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
-{
-	Circle *circle = (Circle*)obj1;
-	Plane *plane = (Plane*)obj2;
+	Plane *plane = (Plane*)obj1;
+	Circle *circle = (Circle*)obj2;
 
 	//If we are successful then test for collision
 	if (circle != nullptr && plane != nullptr)
@@ -156,6 +145,22 @@ bool PhysicsScene::Circle2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 		}
 	}
 	return false;
+}
+
+bool PhysicsScene::Plane2Box(PhysicsObject * obj1, PhysicsObject * obj2)
+{
+	return false;
+}
+
+bool PhysicsScene::Plane2SAT(PhysicsObject *, PhysicsObject *)
+{
+	return false;
+}
+
+bool PhysicsScene::Circle2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
+{
+	//Re-route
+	return Plane2Circle(obj2, obj1);
 }
 
 bool PhysicsScene::Circle2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
@@ -186,6 +191,11 @@ bool PhysicsScene::Circle2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 	return false;
 }
 
+bool PhysicsScene::Circle2SAT(PhysicsObject *, PhysicsObject *)
+{
+	return false;
+}
+
 bool PhysicsScene::Box2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	return false;
@@ -197,6 +207,70 @@ bool PhysicsScene::Box2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 }
 
 bool PhysicsScene::Box2Box(PhysicsObject * obj1, PhysicsObject * obj2)
+{
+	//Try to cast object to box and box
+	Box *box1 = (Box*)(obj1);
+	Box *box2 = (Box*)(obj2);
+
+	//If cast successful..
+	if (box1 != nullptr && box2 != nullptr)
+	{
+		//FIND INTERSECTION... DO LATER
+		//float xIntersection = box1->getMin().x - box2->getMax().x;
+		//if (box1->getMin().x - box2->getMax().x > 0)
+		//float yIntersection;
+
+		//..then test for collision
+		if (box1->getMin().x < box2->getMax().x && box1->getMax().x > box2->getMin().x &&
+			box1->getMin().y < box2->getMax().y && box1->getMax().y > box2->getMin().y)
+		{
+			////Boxes (AABB's) have collided! 
+
+			//Check for intesection and move out from each other
+			glm::vec2 intersection;
+
+			//Horizontal
+			if (box2->getMax().x - box1->getMin().x >= 0)
+			{
+				//intersection.x = (box2->getMax().x - box1->getMin().x) ? box1->getMax() : box1.get 
+			}
+			else if (box1->getMax().x - box2->getMin().x < 0)
+			{
+
+			}
+
+			//Vertical
+			float horizontalIntersection;
+
+			//Resolve collision
+
+			return true;
+		}
+	}
+	return false;
+}
+
+bool PhysicsScene::Box2SAT(PhysicsObject *, PhysicsObject *)
+{
+	return false;
+}
+
+bool PhysicsScene::SAT2Plane(PhysicsObject *, PhysicsObject *)
+{
+	return false;
+}
+
+bool PhysicsScene::SAT2Circle(PhysicsObject *, PhysicsObject *)
+{
+	return false;
+}
+
+bool PhysicsScene::SAT2BOX(PhysicsObject *, PhysicsObject *)
+{
+	return false;
+}
+
+bool PhysicsScene::SAT2SAT(PhysicsObject *, PhysicsObject *)
 {
 	return false;
 }

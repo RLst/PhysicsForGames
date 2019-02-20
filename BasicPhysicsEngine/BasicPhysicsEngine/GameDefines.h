@@ -2,17 +2,19 @@
 #include <glm/ext.hpp>
 #include <algorithm>
 
-////////////////
-// Type defs //
-//////////////
+//Constants
+const float PI = 3.14159f;
 
+//Usings
 using glm::vec2;
 using glm::vec3;
 using glm::vec4;
 
+//Typedefs
 typedef glm::vec4 col;
-
-const float PI = 3.14159f;
+typedef glm::vec2 axis2;		//???
+typedef glm::vec2 projection2;	//???
+typedef glm::vec2 point2;
 
 namespace pkr
 {

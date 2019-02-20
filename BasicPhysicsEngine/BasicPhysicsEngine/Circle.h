@@ -14,7 +14,7 @@ public:
 	void		MakeGizmo() override;
 	bool		CheckCollision(PhysicsObject* other) override;
 
-	float		getRadius() { return m_radius; }
-	glm::vec4	getColour() { return m_colour; }
+	float		getRadius() const { return m_radius; }
+	glm::vec4	getColour() const { return m_colour; }
 };
 

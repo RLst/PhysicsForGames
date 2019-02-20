@@ -83,9 +83,9 @@ void RigidBody::ResolveCollision(RigidBody * other)
 	glm::vec2 normal = glm::normalize(other->getPosition() - m_position);
 	glm::vec2 relVelocity = other->getVelocity() - m_velocity;
 
-	//Super formula (impulse magnitude)
 	float elasticity = (m_elasticity + other->getElasticity()) / 2.0f;
 	
+	//Super formula (impulse magnitude)
 	float j = glm::dot(-(1 + elasticity) * (relVelocity), normal) / glm::dot(normal, normal * ((1 / m_mass) + (1 / other->getMass())));
 
 	glm::vec2 force = normal * j;

@@ -18,7 +18,7 @@ void Circle::MakeGizmo()
 	aie::Gizmos::add2DCircle(m_position, m_radius, 35, m_colour);
 }
 
-bool Circle::CheckCollision(PhysicsObject * other)
+bool Circle::CheckCollision(PhysicsObject * other)	//TODO Should this still be used???
 {
 	//For now only 2 spheres can collide together
 

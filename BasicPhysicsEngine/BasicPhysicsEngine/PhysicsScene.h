@@ -29,17 +29,28 @@ public:
 	void		UpdateGizmos();
 	void		DebugScene();
 
-	//Collision detection
+	// Collision detection //
 	void		CheckForCollisions();
 	static bool	Plane2Plane(PhysicsObject*, PhysicsObject*) { return false;	} //DO NOT REMOVE! Place holder
 	static bool Plane2Circle(PhysicsObject*, PhysicsObject*);
 	static bool Plane2Box(PhysicsObject*, PhysicsObject*);
+	static bool Plane2SAT(PhysicsObject*, PhysicsObject*);
+
 	static bool Circle2Plane(PhysicsObject*, PhysicsObject*);
 	static bool Circle2Circle(PhysicsObject*, PhysicsObject*);
 	static bool Circle2Box(PhysicsObject*, PhysicsObject*);
+	static bool Circle2SAT(PhysicsObject*, PhysicsObject*);
+
 	static bool Box2Plane(PhysicsObject*, PhysicsObject*);
 	static bool Box2Circle(PhysicsObject*, PhysicsObject*);
 	static bool Box2Box(PhysicsObject*, PhysicsObject*);
+	static bool Box2SAT(PhysicsObject*, PhysicsObject*);
+
+	static bool SAT2Plane(PhysicsObject*, PhysicsObject*);
+	static bool SAT2Circle(PhysicsObject*, PhysicsObject*);
+	static bool SAT2BOX(PhysicsObject*, PhysicsObject*);
+	static bool SAT2SAT(PhysicsObject*, PhysicsObject*);
+	///////////////////////
 
 	void		setGravity(const glm::vec2 gravity) { m_gravity = gravity; }
 	glm::vec2	getGravity() const { return m_gravity; }
