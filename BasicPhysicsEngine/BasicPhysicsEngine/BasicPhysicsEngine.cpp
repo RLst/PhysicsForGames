@@ -219,7 +219,7 @@ void BasicPhysicsEngine::AABBTest()
 	int numberOfCircles = 10;
 	int maxRadius = 10;
 
-	int numberOfBoxes = 30;
+	int numberOfBoxes = 10;
 	int maxWidth = 20;
 	int maxHeight = 20;
 

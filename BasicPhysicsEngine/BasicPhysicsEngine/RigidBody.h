@@ -40,7 +40,7 @@ public:
 	void		ApplyForce(glm::vec2 force);
 	void		ApplyForceToActor(RigidBody* actor2, glm::vec2 force);
 
-	virtual bool	CheckCollision(PhysicsObject* other) = 0;
+	//virtual bool	CheckCollision(PhysicsObject* other) = 0;	//TODO Is this even required???
 	void			ResolveCollision(RigidBody* other);
 
 	//Internal use

@@ -18,10 +18,10 @@ void Box::MakeGizmo()
 	aie::Gizmos::add2DAABBFilled(m_position, m_extents, m_colour);	//TODO &extents == m_max???
 }
 
-bool Box::CheckCollision(PhysicsObject * other)
-{
-	return false;
-}
+//bool Box::CheckCollision(PhysicsObject * other)
+//{
+//	return false;
+//}
 
 glm::vec2 Box::getMin() const
 {

@@ -12,7 +12,7 @@ public:
 	~Circle();
 
 	void		MakeGizmo() override;
-	bool		CheckCollision(PhysicsObject* other) override;
+	//bool		CheckCollision(PhysicsObject* other) override { return false; };
 
 	float		getRadius() const { return m_radius; }
 	glm::vec4	getColour() const { return m_colour; }

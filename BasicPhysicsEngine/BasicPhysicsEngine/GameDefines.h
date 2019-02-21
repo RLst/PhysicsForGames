@@ -101,6 +101,10 @@ namespace pkr
 		return rand() % (max - min + 1) + min;
 	}
 
+	static float min(float a, float b) { return a < b ? a : b; }
+	static float max(float a, float b) { return a > b ? a : b; }
+	static float clamp(float val, float minVal, float maxVal) { return max(minVal, min(maxVal, val)); }
+
 	static float DegsToRad(float degrees) { return degrees * PI / 180.0f; }
 	static float RadsToDeg(float radians) { return radians * 180.0f / PI; }
 

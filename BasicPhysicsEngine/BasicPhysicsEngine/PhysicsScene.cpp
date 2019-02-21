@@ -137,6 +137,7 @@ bool PhysicsScene::Plane2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 		if (intersection > 0.0f)
 		{
 			//Move circle out from the plane to prevent sticking
+			//(The plane is static so it is easier to move object out)
 			circle->displace(plane->GetNormal() * intersection);
 
 			//Objects have collided
@@ -172,7 +173,8 @@ bool PhysicsScene::Circle2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 	//If we are successful then test for collision
 	if (circle1 != nullptr && circle2 != nullptr)
 	{
-		//Get distance between 2 circles
+		//Get distance between 2 circles 
+		//TODO can this be optimised with sqrDist?
 		float distance = glm::distance(circle1->getPosition(), circle2->getPosition());
 
 		//If distance is less than the combined radius of both spheres,
@@ -215,30 +217,19 @@ bool PhysicsScene::Box2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 	//If cast successful..
 	if (box1 != nullptr && box2 != nullptr)
 	{
-		//FIND INTERSECTION... DO LATER
-		//float xIntersection = box1->getMin().x - box2->getMax().x;
-		//if (box1->getMin().x - box2->getMax().x > 0)
-		//float yIntersection;
+		//Find any overlap (collision)
+		float xOverlap = pkr::min(box1->getMax().x, box2->getMax().x) - pkr::max(box1->getMin().x, box2->getMin().x);
+		float yOverlap = pkr::min(box1->getMax().y, box2->getMax().y) - pkr::max(box1->getMin().y, box2->getMin().y);
 
-		//..then test for collision
-		if (box1->getMin().x < box2->getMax().x && box1->getMax().x > box2->getMin().x &&
-			box1->getMin().y < box2->getMax().y && box1->getMax().y > box2->getMin().y)
+		//If there is over lap then there is collision
+		if (xOverlap > 0 && yOverlap > 0)
 		{
 			////Boxes (AABB's) have collided! 
-
-			//Check for intesection and move out from each other
-			//glm::vec2 intersection;
-			////Horizontal
-			//if (box2->getMax().x - box1->getMin().x >= 0)
-			//{
-			//	//intersection.x = (box2->getMax().x - box1->getMin().x) ? box1->getMax() : box1.get 
-			//}
-			//else if (box1->getMax().x - box2->getMin().x < 0)
-			//{
-			//}
-			////Vertical
-			//float horizontalIntersection;
-
+		
+			//Move out of each other's boundary 
+			//TODO Not as straightforward as I initially thought
+			//box1->displace(glm::vec2(-xOverlap, -yOverlap));
+			
 			//Resolve collision
 			box1->ResolveCollision(box2);
 
