@@ -15,7 +15,7 @@ Circle::~Circle()
 
 void Circle::MakeGizmo()
 {
-	aie::Gizmos::add2DCircle(m_position, m_radius, 35, m_colour);
+	aie::Gizmos::add2DCircle(m_position, m_radius, 22, m_colour);
 }
 
 //bool Circle::CheckCollision(PhysicsObject * other)	//TODO Should this still be used???

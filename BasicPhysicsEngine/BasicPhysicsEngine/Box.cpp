@@ -23,12 +23,12 @@ void Box::MakeGizmo()
 //	return false;
 //}
 
-glm::vec2 Box::getMin() const
+std::vector<glm::vec2> Box::vertices() const
 {
-	return m_position - m_extents;
-}
-
-glm::vec2 Box::getMax() const
-{
-	return m_position + m_extents;
+	std::vector<glm::vec2> corners(4);
+	corners[0] = min();
+	corners[1] = { min().x, max().y };
+	corners[2] = max();
+	corners[3] = { max().x, min().y };
+	return corners;
 }

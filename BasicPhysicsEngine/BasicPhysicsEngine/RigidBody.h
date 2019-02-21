@@ -52,7 +52,7 @@ public:
 	//Properties
 	float		getMass() const { return m_mass; }
 	void		reduceMass(const float reduction) { m_mass -= reduction; }	//Used for rocket sim; unrealistic
-	glm::vec2	getPosition() const { return m_position; }
+	glm::vec2	position() const { return m_position; }
 	float		getRotation() const { return m_rotation; }
 	glm::vec2	getVelocity() const { return m_velocity; }
 	float		getAngVelocity() const { return m_angularVelocity; }

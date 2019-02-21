@@ -10,6 +10,14 @@ Plane::Plane() :
 {
 }
 
+Plane::Plane(float x, float y, float distance, float elasticity) :
+	PhysicsObject(ShapeType::PLANE),
+	m_normal(x, y),
+	m_distanceToOrigin(distance),
+	m_elasticity(elasticity)
+{
+}
+
 Plane::Plane(glm::vec2 normal, float distance, float elasticity) :
 	PhysicsObject(ShapeType::PLANE),
 	m_normal(normal),
@@ -36,7 +44,7 @@ void Plane::MakeGizmo()
 
 void Plane::ResolveCollision(RigidBody * other)
 {
-	//glm::vec2 normal = glm::normalize(other->getPosition() - m_position);
+	//glm::vec2 normal = glm::normalize(other->position() - m_position);
 	glm::vec2 relVelocity = other->getVelocity();
 
 	//Super formula (impulse magnitude)

@@ -16,6 +16,7 @@ protected:
 
 public:
 	Plane();	//Default at ground zero
+	Plane(float x, float y, float distance, float elasticity = 0.9f);
 	Plane(glm::vec2 normal, float distance, float elasticity = 0.9f);
 	~Plane();
 

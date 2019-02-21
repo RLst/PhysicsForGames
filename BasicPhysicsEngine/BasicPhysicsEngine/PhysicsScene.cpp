@@ -10,6 +10,11 @@
 #include "Circle.h"
 #include "Box.h"
 
+#include <vector>
+
+typedef std::vector<glm::vec2> Vertices2;
+typedef glm::vec2 Vertex2;
+
 PhysicsScene::PhysicsScene(float timeStep, glm::vec2 gravity, bool collisionEnabled) :
 	m_timeStep(timeStep),
 	m_gravity(gravity),
@@ -130,14 +135,14 @@ bool PhysicsScene::Plane2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 	if (circle != nullptr && plane != nullptr)
 	{
 		glm::vec2 collisionNormal = plane->GetNormal();
-		float circleToPlaneDistance = glm::dot(circle->getPosition(), plane->GetNormal()) - plane->GetDistance();
+		float circleToPlaneDistance = glm::dot(circle->position(), collisionNormal) - plane->GetDistance();
 
-		float intersection = circle->getRadius() - circleToPlaneDistance;
+		float intersection = circle->radius() - circleToPlaneDistance;
 		//If there is any intersecion it means the objects have collided
 		if (intersection > 0.0f)
 		{
-			//Move circle out from the plane to prevent sticking
-			//(The plane is static so it is easier to move object out)
+			//Move circle out from the edge to prevent sticking
+			//(The edge is static so it is easier to move object out)
 			circle->displace(plane->GetNormal() * intersection);
 
 			//Objects have collided
@@ -173,12 +178,24 @@ bool PhysicsScene::Circle2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 	//If we are successful then test for collision
 	if (circle1 != nullptr && circle2 != nullptr)
 	{
-		//Get distance between 2 circles 
-		//TODO can this be optimised with sqrDist?
-		float distance = glm::distance(circle1->getPosition(), circle2->getPosition());
+		////Get distance between 2 circles 
+		////UNOPTIMISED!!!
+		//float distance = glm::distance(circle1->position(), circle2->position());
+		//
+		////If distance is less than the combined radius of both spheres,
+		//if (distance < circle1->radius() + circle2->radius())
+		//{
+		//	//Resolve collision
+		//	circle1->ResolveCollision(circle2);
+		//	return true;
+		//}
 
-		//If distance is less than the combined radius of both spheres,
-		if (distance < circle1->getRadius() + circle2->getRadius())
+		//OPTIMISED!!!
+		float dx = circle2->position().x - circle1->position().x;
+		float dy = circle2->position().y - circle1->position().y;
+		float radii = circle1->radius() + circle2->radius();
+		if (glm::dot(vec2(dx, dy), vec2(dx, dy)) < radii * radii)
+		//if ((dx * dx) + (dy * dy) < radii * radii)
 		{
 			//Resolve collision
 			circle1->ResolveCollision(circle2);
@@ -190,6 +207,27 @@ bool PhysicsScene::Circle2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 
 bool PhysicsScene::Circle2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 {
+	//Try to cast objects to their types
+	Circle* circle = (Circle*)obj1;
+	Box *box = (Box*)obj2;
+
+	//If casts were successful...
+	if (circle != nullptr && box != nullptr)
+	{
+		////Test for collisions
+		//Use clamping trick (A = clamp(C, min, max)
+		glm::vec2 clampedDistance = glm::clamp(circle->position(), box->min(), box->max());
+		glm::vec2 V = clampedDistance - circle->position();
+		float result = glm::dot(V, V);
+		
+		//If there is any intersecion it means the objects have collided
+		if (result <= (circle->radius() * circle->radius()))
+		{
+			//Objects have collided
+			circle->ResolveCollision(box);
+			return true;
+		}
+	}
 	return false;
 }
 
@@ -205,7 +243,8 @@ bool PhysicsScene::Box2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 
 bool PhysicsScene::Box2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 {
-	return false;
+	//Re-route
+	return Circle2Box(obj2, obj1);
 }
 
 bool PhysicsScene::Box2Box(PhysicsObject * obj1, PhysicsObject * obj2)
@@ -218,14 +257,13 @@ bool PhysicsScene::Box2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 	if (box1 != nullptr && box2 != nullptr)
 	{
 		//Find any overlap (collision)
-		float xOverlap = pkr::min(box1->getMax().x, box2->getMax().x) - pkr::max(box1->getMin().x, box2->getMin().x);
-		float yOverlap = pkr::min(box1->getMax().y, box2->getMax().y) - pkr::max(box1->getMin().y, box2->getMin().y);
+		float xOverlap = pkr::min(box1->max().x, box2->max().x) - pkr::max(box1->min().x, box2->min().x);
+		float yOverlap = pkr::min(box1->max().y, box2->max().y) - pkr::max(box1->min().y, box2->min().y);
 
 		//If there is over lap then there is collision
 		if (xOverlap > 0 && yOverlap > 0)
 		{
 			////Boxes (AABB's) have collided! 
-		
 			//Move out of each other's boundary 
 			//TODO Not as straightforward as I initially thought
 			//box1->displace(glm::vec2(-xOverlap, -yOverlap));

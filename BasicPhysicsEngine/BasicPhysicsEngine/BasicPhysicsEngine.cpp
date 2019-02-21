@@ -8,6 +8,7 @@
 
 //std
 #include <iostream>
+#include <time.h>
 
 //gl
 #include <glm/ext.hpp>
@@ -34,6 +35,9 @@ void BasicPhysicsEngine::shutdown() {
 
 bool BasicPhysicsEngine::startup() 
 {
+	//Randomize
+	srand(unsigned int(time(0)));
+
 	//Increase 2D line count to maximize the number of objects we can draw
 	aie::Gizmos::create(255U, 255U, 65535U, 65535U);
 	
@@ -199,7 +203,8 @@ void BasicPhysicsEngine::BilliardBallSimulation()
 
 void BasicPhysicsEngine::AABBTest()
 {
-	m_physicsScene->setGravity(pkr::zero2);
+	//m_physicsScene->setGravity(pkr::zero2);
+	m_physicsScene->setGravity(vec2(0, -98.1));
 
 	int cushionSize = 25;
 	//Cushions to stop the balls
@@ -207,39 +212,41 @@ void BasicPhysicsEngine::AABBTest()
 	Plane *bottomCushion = new Plane(vec2(0.0f, 1.0f), (float)cushionSize);
 	Plane *leftCushion = new Plane(vec2(1.0f, 0.0f), (float)cushionSize);
 	Plane *rightCushion = new Plane(vec2(-1.0f, 0.0f), (float)-500 + cushionSize);
+	//Plane *angledCushion = new Plane(vec2(1.f, 2.f), 50.f);
 	m_physicsScene->AddActor(topCushion);
 	m_physicsScene->AddActor(bottomCushion);
 	m_physicsScene->AddActor(leftCushion);
 	m_physicsScene->AddActor(rightCushion);
+	//m_physicsScene->AddActor(angledCushion);
 
 	//Circles and AABBs
-	float speed = 50.f;
+	float initialForce = 0.f;
 	float mass = 10.f;
 
-	int numberOfCircles = 10;
+	int numberOfCircles = 17;
 	int maxRadius = 10;
 
-	int numberOfBoxes = 10;
+	int numberOfBoxes = 17;
 	int maxWidth = 20;
 	int maxHeight = 20;
 
 	for (int i = 0; i < numberOfCircles; ++i)
 	{
 		m_physicsScene->AddActor(new Circle(
-			vec2(pkr::random(100, 400), pkr::random(100, 300)),
-			vec2(pkr::random(-speed, speed), pkr::random(-speed, speed)),
+			vec2(50 + 25 * i, 100),
+			vec2(pkr::random(-initialForce, initialForce), pkr::random(-initialForce, initialForce)),
 			mass,
-			pkr::random(0, maxRadius),
+			pkr::random(5, maxRadius),
 			pkr::colour::nice_random()));
 	}
 	for (int i = 0; i < numberOfBoxes; ++i)
 	{
 		m_physicsScene->AddActor(new Box(
-			vec2(pkr::random(100, 400), pkr::random(100, 300)),
-			vec2(pkr::random(-speed, speed), pkr::random(-speed, speed)),
+			vec2(50 + 25 * i, 200),
+			vec2(pkr::random(-initialForce, initialForce), pkr::random(-initialForce, initialForce)),
 			mass,
-			pkr::random(5, maxWidth),
-			pkr::random(5, maxHeight),
+			pkr::random(10, maxWidth),
+			pkr::random(10, maxHeight),
 			pkr::colour::nice_random()));
 	}
 }

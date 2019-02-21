@@ -80,7 +80,7 @@ void RigidBody::ApplyForceToActor(RigidBody * actor2, glm::vec2 newForce)
 
 void RigidBody::ResolveCollision(RigidBody * other)
 {
-	glm::vec2 normal = glm::normalize(other->getPosition() - m_position);
+	glm::vec2 normal = glm::normalize(other->position() - m_position);
 	glm::vec2 relVelocity = other->getVelocity() - m_velocity;
 
 	//TODO Need to make a physics material class/struct?

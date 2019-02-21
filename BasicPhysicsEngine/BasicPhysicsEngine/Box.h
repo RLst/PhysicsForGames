@@ -1,8 +1,12 @@
 #pragma once
 #include "RigidBody.h"
-#include <glm/ext.hpp>
 
+#include <glm/ext.hpp>
 #include "GameDefines.h"
+#include <vector>
+
+
+class vector;
 
 class Box : public RigidBody
 {
@@ -19,8 +23,9 @@ public:
 	//void		FixedUpdate(glm::vec2 gravity, float timeStep) override {}
 	//void		Debug() override {}
 
-	glm::vec2	getMin() const;
-	glm::vec2	getMax() const;
-	glm::vec4	getColour() const { return m_colour; }
+	glm::vec2	min() const { return m_position - m_extents; }	//Returns the min absolute point
+	glm::vec2	max() const { return m_position + m_extents; }	//Returns the max absolute point
+	glm::vec4	colour() const { return m_colour; }		//Returns the colour
+	std::vector<glm::vec2> vertices() const;	//Returns an array of all vertices starting from min
 };
 
