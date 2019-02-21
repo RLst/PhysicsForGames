@@ -82,13 +82,13 @@ void PhysicsScene::UpdateGizmos()
 
 void PhysicsScene::DebugScene()
 {
-	int count = 0;
-	for (auto actor : m_actors)
-	{
-		std::cout << count << " : ";
-		actor->Debug();
-		++count;
-	}
+	//int count = 0;
+	//for (auto actor : m_actors)
+	//{
+	//	std::cout << count << " : ";
+	//	actor->Debug();
+	//	++count;
+	//}
 }
 
 //Setup the collision function array
@@ -134,8 +134,8 @@ bool PhysicsScene::Plane2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 	//If we are successful then test for collision
 	if (circle != nullptr && plane != nullptr)
 	{
-		glm::vec2 collisionNormal = plane->GetNormal();
-		float circleToPlaneDistance = glm::dot(circle->position(), collisionNormal) - plane->GetDistance();
+		glm::vec2 collisionNormal = plane->normal();
+		float circleToPlaneDistance = glm::dot(circle->position(), collisionNormal) - plane->distance();
 
 		float intersection = circle->radius() - circleToPlaneDistance;
 		//If there is any intersecion it means the objects have collided
@@ -143,7 +143,7 @@ bool PhysicsScene::Plane2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 		{
 			//Move circle out from the edge to prevent sticking
 			//(The edge is static so it is easier to move object out)
-			circle->displace(plane->GetNormal() * intersection);
+			circle->displace(plane->normal() * intersection);
 
 			//Objects have collided
 			plane->ResolveCollision(circle);
@@ -155,6 +155,26 @@ bool PhysicsScene::Plane2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 
 bool PhysicsScene::Plane2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 {
+	//Try casting
+	Plane *plane = (Plane*)obj1;
+	Box *box = (Box*)obj2;
+
+	//If successful then test for collisions
+	if (plane != nullptr && box != nullptr)
+	{
+		//Brute force; Go through all vertices
+		for (auto vertex : box->vertices())
+		{
+			auto intersection = plane->distanceTo(vertex);
+			if (intersection > 0)
+			{
+				std::cout << "Intersection: " << intersection << std::endl;
+				//Collision detected!
+				//plane->ResolveCollision(box);
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
@@ -238,7 +258,8 @@ bool PhysicsScene::Circle2SAT(PhysicsObject *, PhysicsObject *)
 
 bool PhysicsScene::Box2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 {
-	return false;
+	//Re-route
+	return Plane2Box(obj2, obj1);
 }
 
 bool PhysicsScene::Box2Circle(PhysicsObject * obj1, PhysicsObject * obj2)

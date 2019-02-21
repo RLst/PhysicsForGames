@@ -203,8 +203,8 @@ void BasicPhysicsEngine::BilliardBallSimulation()
 
 void BasicPhysicsEngine::AABBTest()
 {
-	//m_physicsScene->setGravity(pkr::zero2);
-	m_physicsScene->setGravity(vec2(0, -98.1));
+	m_physicsScene->setGravity(pkr::zero2);
+	//m_physicsScene->setGravity(vec2(0, -98.1));
 
 	int cushionSize = 25;
 	//Cushions to stop the balls
@@ -213,20 +213,20 @@ void BasicPhysicsEngine::AABBTest()
 	Plane *leftCushion = new Plane(vec2(1.0f, 0.0f), (float)cushionSize);
 	Plane *rightCushion = new Plane(vec2(-1.0f, 0.0f), (float)-500 + cushionSize);
 	//Plane *angledCushion = new Plane(vec2(1.f, 2.f), 50.f);
-	m_physicsScene->AddActor(topCushion);
 	m_physicsScene->AddActor(bottomCushion);
-	m_physicsScene->AddActor(leftCushion);
-	m_physicsScene->AddActor(rightCushion);
+	//m_physicsScene->AddActor(topCushion);
+	//m_physicsScene->AddActor(leftCushion);
+	//m_physicsScene->AddActor(rightCushion);
 	//m_physicsScene->AddActor(angledCushion);
 
 	//Circles and AABBs
-	float initialForce = 0.f;
+	float initialForce = 100.f;
 	float mass = 10.f;
 
-	int numberOfCircles = 17;
+	int numberOfCircles = 1;
 	int maxRadius = 10;
 
-	int numberOfBoxes = 17;
+	int numberOfBoxes = 1;
 	int maxWidth = 20;
 	int maxHeight = 20;
 

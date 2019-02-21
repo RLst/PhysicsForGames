@@ -47,15 +47,15 @@ public:
 	void		displace(const glm::vec2 displacement);	//To prevent sticking etc
 
 	//Other / Tests
-	void		setVelocity(const glm::vec2 vel) { m_velocity = vel; }
+	//void		setVelocity(const glm::vec2 vel) { m_velocity = vel; }
 
 	//Properties
-	float		getMass() const { return m_mass; }
+	float		mass() const { return m_mass; }
 	void		reduceMass(const float reduction) { m_mass -= reduction; }	//Used for rocket sim; unrealistic
 	glm::vec2	position() const { return m_position; }
-	float		getRotation() const { return m_rotation; }
-	glm::vec2	getVelocity() const { return m_velocity; }
-	float		getAngVelocity() const { return m_angularVelocity; }
+	float		rotation() const { return m_rotation; }
+	glm::vec2	velocity() const { return m_velocity; }
+	float		angVel() const { return m_angularVelocity; }
 
 	float		getLinearDrag() const { return m_linearDrag; }
 	void		setLinearDrag(const float lDrag) { m_linearDrag = std::clamp(lDrag, 0.0f, 1.0f); }

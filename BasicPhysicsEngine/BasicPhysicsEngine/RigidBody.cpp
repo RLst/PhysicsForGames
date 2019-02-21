@@ -47,18 +47,18 @@ void RigidBody::FixedUpdate(glm::vec2 gravity, float timeStep)
 		m_angularVelocity = 0;
 	}
 
-	//Debug();
+	Debug();
 }
 
 void RigidBody::Debug()
 {
 #ifdef _DEBUG
 	//system("cls");
-	std::cout << "ObjID: " << m_shapeID << std::endl;
-	std::cout << "mass: " << m_mass << std::endl;
-	std::cout << "x: " << m_position.x << ", y: " << m_position.y << std::endl;
-	std::cout << "vx: " << m_velocity.x << ", vy: " << m_velocity.y << std::endl;
-	std::cout << "ang: " << m_rotation << std::endl;
+	//std::cout << "ObjID: " << m_shapeID << std::endl;
+	//std::cout << "mass: " << m_mass << std::endl;
+	//std::cout << "x: " << m_position.x << ", y: " << m_position.y << std::endl;
+	//std::cout << "vx: " << m_velocity.x << ", vy: " << m_velocity.y << std::endl;
+	//std::cout << "ang: " << m_rotation << std::endl;
 #endif
 }
 
@@ -81,13 +81,13 @@ void RigidBody::ApplyForceToActor(RigidBody * actor2, glm::vec2 newForce)
 void RigidBody::ResolveCollision(RigidBody * other)
 {
 	glm::vec2 normal = glm::normalize(other->position() - m_position);
-	glm::vec2 relVelocity = other->getVelocity() - m_velocity;
+	glm::vec2 relVelocity = other->velocity() - m_velocity;
 
 	//TODO Need to make a physics material class/struct?
 	float elasticity = (m_elasticity + other->getElasticity()) / 2.0f;
 	
 	//Super formula (impulse magnitude)
-	float j = glm::dot(-(1 + elasticity) * (relVelocity), normal) / glm::dot(normal, normal * ((1 / m_mass) + (1 / other->getMass())));
+	float j = glm::dot(-(1 + elasticity) * (relVelocity), normal) / glm::dot(normal, normal * ((1 / m_mass) + (1 / other->mass())));
 
 	glm::vec2 force = normal * j;
 
