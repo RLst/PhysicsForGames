@@ -163,9 +163,11 @@ bool PhysicsScene::Plane2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 	if (plane != nullptr && box != nullptr)
 	{
 		//Brute force; Go through all vertices
-		for (auto vertex : box->vertices())
+		for (int i = 0; i < box->vertices().size(); ++i)
+		//for (auto vertex : box->vertices())
 		{
-			auto intersection = plane->distanceTo(vertex);
+			auto intersection = plane->distanceTo(box->vertices()[i]);
+			//auto intersection = plane->distanceTo(vertex);
 			if (intersection > 0)
 			{
 				std::cout << "Intersection: " << intersection << std::endl;
