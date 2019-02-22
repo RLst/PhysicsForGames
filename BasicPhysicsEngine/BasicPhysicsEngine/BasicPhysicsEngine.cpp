@@ -260,13 +260,13 @@ void BasicPhysicsEngine::AABBTest()
 	} density; //g/cm3
 
 	//Circles
-	int numberOfCircles = 17;
+	int numberOfCircles = 15;
 	int minRadius = 2;
 	int maxRadius = 15;
-	float circleDensity = density.air;
+	float circleDensity = density.hydrogen;
 
 	//AABB
-	int numberOfBoxes = 17;
+	int numberOfBoxes = 15;
 	int minSize = 5;
 	int maxSize = 25;
 	float boxDensity = density.osmium;

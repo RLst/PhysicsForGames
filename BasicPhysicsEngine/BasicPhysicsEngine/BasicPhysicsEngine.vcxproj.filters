@@ -36,9 +36,6 @@
     <ClCompile Include="BasicPhysicsEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicsMaterial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SAT.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

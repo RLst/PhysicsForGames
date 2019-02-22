@@ -5,6 +5,11 @@
 #include "GameDefines.h"
 #include <vector>
 
+typedef glm::vec2 point;
+typedef glm::vec2 surface;
+typedef glm::vec2 normal;
+typedef glm::vec2 projection;
+
 class SAT : public RigidBody
 {
 protected:
@@ -14,7 +19,10 @@ public:
 	SAT();
 	~SAT();
 
-	std::vector<glm::vec2>		getNormals() const;
+	glm::vec2					project(glm::vec2 axis) const;
+
+	std::vector<glm::vec2>		edges() const;		//Return list of all edges
+	std::vector<glm::vec2>		normals() const;	//Return list of all surface normals
 
 };
 

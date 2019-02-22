@@ -3,7 +3,7 @@
 #include "RigidBody.h"
 
 Plane::Plane() :
-	PhysicsObject(ShapeType::PLANE),
+	PhysicsObject(eShapeType::PLANE),
 	m_distanceToOrigin(0),
 	m_normal(glm::vec2(0, 1)),	//Ground zero facing up
 	m_elasticity(0.9f)
@@ -11,7 +11,7 @@ Plane::Plane() :
 }
 
 Plane::Plane(float x, float y, float distance, float elasticity /*= 0.9f*/) :
-	PhysicsObject(ShapeType::PLANE),
+	PhysicsObject(eShapeType::PLANE),
 	m_distanceToOrigin(distance),
 	m_elasticity(elasticity)
 {
@@ -19,7 +19,7 @@ Plane::Plane(float x, float y, float distance, float elasticity /*= 0.9f*/) :
 }
 
 Plane::Plane(const glm::vec2 normal, float distance, float elasticity /*= 0.9f*/) :
-	PhysicsObject(ShapeType::PLANE),
+	PhysicsObject(eShapeType::PLANE),
 	m_distanceToOrigin(distance),
 	m_elasticity(elasticity)
 {
@@ -27,7 +27,7 @@ Plane::Plane(const glm::vec2 normal, float distance, float elasticity /*= 0.9f*/
 }
 
 Plane::Plane(const glm::vec2 point1, const glm::vec2 point2, ePerpDirection pdir /*= LEFT*/, float elasticity /*= 0.9f*/) :
-	PhysicsObject(ShapeType::PLANE),
+	PhysicsObject(eShapeType::PLANE),
 	m_elasticity(elasticity)
 {
 	//Calculate normalised vector from point1 to point2
@@ -82,6 +82,7 @@ void Plane::ResolveCollision(RigidBody * other)
 
 float Plane::distanceTo(const glm::vec2 & point) const
 {
+	//Super fast (no sqrt)
 	return (glm::dot(point, m_normal) - m_distanceToOrigin);
 }
 

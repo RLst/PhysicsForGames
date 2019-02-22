@@ -9,11 +9,13 @@
 #include "Plane.h"
 #include "Circle.h"
 #include "AABB.h"
+#include "SAT.h"
+#include "GameDefines.h"
 
 #include <vector>
 
-typedef std::vector<glm::vec2> Vertices2;
-typedef glm::vec2 Vertex2;
+//typedef std::vector<glm::vec2> Vertices2;
+//typedef glm::vec2 Vertex2;
 
 PhysicsScene::PhysicsScene(float timeStep, glm::vec2 gravity, bool collisionEnabled) :
 	m_timeStep(timeStep),
@@ -109,11 +111,11 @@ void PhysicsScene::CheckForCollisions()
 		{
 			PhysicsObject* object1 = m_actors[outer];
 			PhysicsObject* object2 = m_actors[inner];
-			int shapeID1 = object1->GetShapeID();
-			int shapeID2 = object2->GetShapeID();
+			int shapeID1 = (int)object1->GetShapeID();
+			int shapeID2 = (int)object2->GetShapeID();
 
 			//Using function pointers
-			int functionIDX = (shapeID1 * SHAPE_COUNT) + shapeID2;	//Auto select the correct function
+			int functionIDX = (shapeID1 * (int)eShapeType::SHAPE_COUNT) + shapeID2;	//Auto select the correct function
 			fn fpCollision = collisionFunctionArray[functionIDX];
 			if (fpCollision != nullptr)
 			{
@@ -200,18 +202,6 @@ bool PhysicsScene::Circle2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 	//If we are successful then test for collision
 	if (circle1 != nullptr && circle2 != nullptr)
 	{
-		////Get distance between 2 circles 
-		////UNOPTIMISED!!!
-		//float distance = glm::distance(circle1->position(), circle2->position());
-		//
-		////If distance is less than the combined radius of both spheres,
-		//if (distance < circle1->radius() + circle2->radius())
-		//{
-		//	//Resolve collision
-		//	circle1->ResolveCollision(circle2);
-		//	return true;
-		//}
-
 		//OPTIMISED!!!
 		float dx = circle2->position().x - circle1->position().x;
 		float dy = circle2->position().y - circle1->position().y;
@@ -301,27 +291,66 @@ bool PhysicsScene::AABB2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 	return false;
 }
 
-bool PhysicsScene::AABB2SAT(PhysicsObject *, PhysicsObject *)
+bool PhysicsScene::AABB2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	return false;
 }
 
-bool PhysicsScene::SAT2Plane(PhysicsObject *, PhysicsObject *)
+bool PhysicsScene::SAT2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	return false;
 }
 
-bool PhysicsScene::SAT2Circle(PhysicsObject *, PhysicsObject *)
+bool PhysicsScene::SAT2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	return false;
 }
 
-bool PhysicsScene::SAT2AABB(PhysicsObject *, PhysicsObject *)
+bool PhysicsScene::SAT2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	return false;
 }
 
-bool PhysicsScene::SAT2SAT(PhysicsObject *, PhysicsObject *)
+bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 {
-	return false;
+	//Try casting first
+	//[NOTE: Had to make eShapeTypes a enum class otherwise it conflicts SAT declarations
+	SAT* sat1 = (SAT*)obj1;
+	SAT *sat2 = (SAT*)obj2;
+
+	//If cast successful...
+	if (sat1 != nullptr && sat2 != nullptr)
+	{
+		//1. Get list of surface normals ie. possible axes of seperations
+		Axes axes1 = sat1->normals();
+		Axes axes2 = sat2->normals();
+		//axes.push_back(sat2->normals());
+
+		//2. Project EACH shape's hull onto EACH axis
+		for (auto axis : axes1)
+		{
+			projection projection1 = sat1->project(axis);
+			projection projection2 = sat2->project(axis);
+			
+			//3. Determine if there's any overlap
+			//If there's a negative overlap then there's definitely NO COLLISION
+			if (pkr::overlap(projection1, projection2) < 0)
+				return false;
+		}
+		for (auto axis : axes2)
+		{
+			projection projection1 = sat1->project(axis);
+			projection projection2 = sat2->project(axis);
+
+			//3. Determine if there's any overlap
+			//If there's a negative overlap then there's definitely NO COLLISION
+			if (pkr::overlap(projection1, projection2) < 0)
+				return false;
+		}
+		//All axis overlap so there is COLLISION!
+		
+		//Find the minimum translation vector so that we can resolve the collision
+		sat1->ResolveCollision(sat2);
+	}
+	return true;
 }

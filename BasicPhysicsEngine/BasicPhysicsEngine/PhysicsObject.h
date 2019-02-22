@@ -2,7 +2,7 @@
 
 #include <glm/ext.hpp>
 
-enum ShapeType
+enum class eShapeType
 {
 	PLANE = 0,
 	CIRCLE,
@@ -14,8 +14,8 @@ enum ShapeType
 class PhysicsObject
 {
 protected:
-	ShapeType m_shapeID;
-	PhysicsObject(ShapeType shapeID) : m_shapeID(shapeID) {}
+	eShapeType m_shapeID;
+	PhysicsObject(eShapeType shapeID) : m_shapeID(shapeID) {}
 public:
 	virtual ~PhysicsObject() noexcept;	//Ran into an error
 
@@ -24,6 +24,6 @@ public:
 	virtual void	MakeGizmo() = 0;
 	virtual void	ResetPosition() {};
 
-	ShapeType		GetShapeID() { return m_shapeID; }
+	eShapeType		GetShapeID() { return m_shapeID; }
 };
 

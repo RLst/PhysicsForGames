@@ -3,7 +3,7 @@
 #include <Gizmos.h>
 
 AABB::AABB(glm::vec2 position, glm::vec2 velocity, float mass, float width, float height, glm::vec4 colour) :
-	RigidBody(ShapeType::BOX, position, velocity, 0, mass),
+	RigidBody(eShapeType::BOX, position, velocity, 0, mass),
 	m_colour(colour)
 {
 	m_extents = vec2(width / 2.f, height / 2.f);

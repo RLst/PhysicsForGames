@@ -25,12 +25,26 @@ protected:
 	//Restitution
 	float		m_elasticity;
 
+	/*//Unity inspired properties
+	BodyType: ie. Dynamic, Static, Kinetic
+	Material: PhysicsMaterial
+	Simulated?
+	Mass V
+	LinearDrag V
+	AngularDrag
+	GravityScale > gravityMultiplier
+	Collision Detection: Discrete, continuous
+	Sleeping mode: Never sleep, start awake, start alseep
+	Interpolation: None, Interpolate, Exterpolate
+	Constraints: position x, y, rotation z
+	*/
+
 public:
-	RigidBody(ShapeType shapeID,
+	RigidBody(eShapeType shapeID,
 		glm::vec2 position, glm::vec2 velocity,
 		float rotation, float mass,
-		float linearDrag = 0.15f, float angDrag = 0.15f,	//Default drags
-		float elasticity = 1.0f,
+		float linearDrag = 0.05f, float angDrag = 0.15f,	//Default drags
+		float elasticity = 1.f,
 		float minLinearThreshold = 0.1f, float minAngularThreshold = 0.01f);
 	virtual ~RigidBody();
 
@@ -41,7 +55,7 @@ public:
 	void		ApplyForceToActor(RigidBody* actor2, glm::vec2 force);
 
 	//virtual bool	CheckCollision(PhysicsObject* other) = 0;	//TODO Is this even required???
-	void			ResolveCollision(RigidBody* other);
+	void		ResolveCollision(RigidBody* other);
 
 	//Internal use
 	void		displace(const glm::vec2 displacement);	//To prevent sticking etc

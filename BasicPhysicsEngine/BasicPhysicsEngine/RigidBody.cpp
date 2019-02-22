@@ -7,7 +7,7 @@ void RigidBody::displace(const glm::vec2 displacement)
 	m_position += displacement;
 }
 
-RigidBody::RigidBody(ShapeType shapeID,
+RigidBody::RigidBody(eShapeType shapeID,
 	glm::vec2 position, glm::vec2 velocity, 
 	float rotation, float mass, 
 	float linearDrag, float angularDrag,

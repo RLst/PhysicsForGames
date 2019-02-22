@@ -4,7 +4,9 @@
 
 class PhysicsObject;
 
-typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
+typedef bool(*fn)(PhysicsObject*, PhysicsObject*);	//TODO How does this work?
+typedef std::vector<glm::vec2> Axes;
+typedef glm::vec2 projection;
 
 class PhysicsScene
 {
