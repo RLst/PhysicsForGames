@@ -17,7 +17,7 @@
 #include "PhysicsScene.h"
 #include "Circle.h"
 #include "Plane.h"
-#include "Box.h"
+#include "AABB.h"
 
 
 BasicPhysicsEngine::BasicPhysicsEngine() {
@@ -265,13 +265,13 @@ void BasicPhysicsEngine::AABBTest()
 	int maxRadius = 15;
 	float circleDensity = density.air;
 
-	//Boxes
+	//AABB
 	int numberOfBoxes = 17;
 	int minSize = 5;
 	int maxSize = 25;
 	float boxDensity = density.osmium;
 
-	//Create circles and boxes
+	//Create objects
 	for (int i = 0; i < numberOfCircles; ++i)
 	{
 		float radius = pkr::random(minRadius, maxRadius);
@@ -290,7 +290,7 @@ void BasicPhysicsEngine::AABBTest()
 		float height = pkr::random(minSize, maxSize);
 		float mass = calcMass(width, height, boxDensity);
 
-		m_physicsScene->AddActor(new Box(
+		m_physicsScene->AddActor(new AABB(
 			vec2(50 + 25 * i, 200),
 			vec2(pkr::random(-initialForce, initialForce), pkr::random(-initialForce, initialForce)),
 			mass,
@@ -300,12 +300,12 @@ void BasicPhysicsEngine::AABBTest()
 	}
 }
 
-float BasicPhysicsEngine::calcMass(float circleRadius, float density)
+float BasicPhysicsEngine::calcMass(float radius, float density)
 {
-	return PI * circleRadius * circleRadius * density / 1000.f;
+	return PI * radius * radius * density / 1000.f;
 }
 
-float BasicPhysicsEngine::calcMass(float boxWidth, float boxHeight, float density)
+float BasicPhysicsEngine::calcMass(float width, float height, float density)
 {
-	return boxWidth * boxHeight * density / 1000.f;
+	return width * height * density / 1000.f;
 }

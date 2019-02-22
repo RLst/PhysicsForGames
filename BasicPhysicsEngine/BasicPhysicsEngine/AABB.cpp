@@ -1,29 +1,29 @@
-#include "Box.h"
+#include "AABB.h"
 
 #include <Gizmos.h>
 
-Box::Box(glm::vec2 position, glm::vec2 velocity, float mass, float width, float height, glm::vec4 colour) :
+AABB::AABB(glm::vec2 position, glm::vec2 velocity, float mass, float width, float height, glm::vec4 colour) :
 	RigidBody(ShapeType::BOX, position, velocity, 0, mass),
 	m_colour(colour)
 {
 	m_extents = vec2(width / 2.f, height / 2.f);
 }
 
-Box::~Box()
+AABB::~AABB()
 {
 }
 
-void Box::MakeGizmo()
+void AABB::MakeGizmo()
 {
 	aie::Gizmos::add2DAABBFilled(m_position, m_extents, m_colour);	//TODO &extents == m_max???
 }
 
-//bool Box::CheckCollision(PhysicsObject * other)
+//bool AABB::CheckCollision(PhysicsObject * other)
 //{
 //	return false;
 //}
 
-std::vector<glm::vec2> Box::vertices() const
+std::vector<glm::vec2> AABB::vertices() const
 {
 	std::vector<glm::vec2> corners(4);
 	corners[0] = min();

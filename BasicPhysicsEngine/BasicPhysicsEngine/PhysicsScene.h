@@ -33,22 +33,22 @@ public:
 	void		CheckForCollisions();
 	static bool	Plane2Plane(PhysicsObject*, PhysicsObject*) { return false;	} //DO NOT REMOVE! Place holder
 	static bool Plane2Circle(PhysicsObject*, PhysicsObject*);
-	static bool Plane2Box(PhysicsObject*, PhysicsObject*);
+	static bool Plane2AABB(PhysicsObject*, PhysicsObject*);
 	static bool Plane2SAT(PhysicsObject*, PhysicsObject*);
 
 	static bool Circle2Plane(PhysicsObject*, PhysicsObject*);
 	static bool Circle2Circle(PhysicsObject*, PhysicsObject*);
-	static bool Circle2Box(PhysicsObject*, PhysicsObject*);
+	static bool Circle2AABB(PhysicsObject*, PhysicsObject*);
 	static bool Circle2SAT(PhysicsObject*, PhysicsObject*);
 
-	static bool Box2Plane(PhysicsObject*, PhysicsObject*);
-	static bool Box2Circle(PhysicsObject*, PhysicsObject*);
-	static bool Box2Box(PhysicsObject*, PhysicsObject*);
-	static bool Box2SAT(PhysicsObject*, PhysicsObject*);
+	static bool AABB2Plane(PhysicsObject*, PhysicsObject*);
+	static bool AABB2Circle(PhysicsObject*, PhysicsObject*);
+	static bool AABB2AABB(PhysicsObject*, PhysicsObject*);
+	static bool AABB2SAT(PhysicsObject*, PhysicsObject*);
 
 	static bool SAT2Plane(PhysicsObject*, PhysicsObject*);
 	static bool SAT2Circle(PhysicsObject*, PhysicsObject*);
-	static bool SAT2BOX(PhysicsObject*, PhysicsObject*);
+	static bool SAT2AABB(PhysicsObject*, PhysicsObject*);
 	static bool SAT2SAT(PhysicsObject*, PhysicsObject*);
 	///////////////////////
 

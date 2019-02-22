@@ -27,8 +27,8 @@ public:
 	void SetupContinuousDemo(glm::vec2 startPos, float inclination, float speed, float gravity);
 
 	//Utilities
-	float calcMass(float circleRadius, float density);
-	float calcMass(float boxWidth, float boxHeight, float density);
+	float calcMass(float radius, float density);					//Calc mass for circles
+	float calcMass(float width, float height, float density);		//Calc mass for AABBs
 
 	//Tests
 	void Circle2CircleTest();

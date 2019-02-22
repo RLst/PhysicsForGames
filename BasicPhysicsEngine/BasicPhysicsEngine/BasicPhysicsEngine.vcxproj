@@ -164,7 +164,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Box.cpp" />
+    <ClCompile Include="AABB.cpp" />
     <ClCompile Include="Circle.cpp" />
     <ClCompile Include="BasicPhysicsEngine.cpp" />
     <ClCompile Include="main.cpp" />
@@ -176,7 +176,7 @@
     <ClCompile Include="SAT.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Box.h" />
+    <ClInclude Include="AABB.h" />
     <ClInclude Include="Circle.h" />
     <ClInclude Include="GameDefines.h" />
     <ClInclude Include="BasicPhysicsEngine.h" />

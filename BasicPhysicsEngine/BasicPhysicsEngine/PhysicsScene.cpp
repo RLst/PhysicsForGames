@@ -8,7 +8,7 @@
 
 #include "Plane.h"
 #include "Circle.h"
-#include "Box.h"
+#include "AABB.h"
 
 #include <vector>
 
@@ -94,10 +94,10 @@ void PhysicsScene::DebugScene()
 //Setup the collision function array
 static fn collisionFunctionArray[] =
 {
-	PhysicsScene::Plane2Plane,	PhysicsScene::Plane2Circle,		PhysicsScene::Plane2Box,	PhysicsScene::Plane2SAT,
-	PhysicsScene::Circle2Plane, PhysicsScene::Circle2Circle,	PhysicsScene::Circle2Box,	PhysicsScene::Circle2SAT,
-	PhysicsScene::Box2Plane,	PhysicsScene::Box2Circle,		PhysicsScene::Box2Box,		PhysicsScene::Box2SAT,
-	PhysicsScene::SAT2Plane,	PhysicsScene::SAT2Circle,		PhysicsScene::SAT2BOX,		PhysicsScene::SAT2SAT,
+	PhysicsScene::Plane2Plane,	PhysicsScene::Plane2Circle,		PhysicsScene::Plane2AABB,	PhysicsScene::Plane2SAT,
+	PhysicsScene::Circle2Plane, PhysicsScene::Circle2Circle,	PhysicsScene::Circle2AABB,	PhysicsScene::Circle2SAT,
+	PhysicsScene::AABB2Plane,	PhysicsScene::AABB2Circle,		PhysicsScene::AABB2AABB,		PhysicsScene::AABB2SAT,
+	PhysicsScene::SAT2Plane,	PhysicsScene::SAT2Circle,		PhysicsScene::SAT2AABB,		PhysicsScene::SAT2SAT,
 };
 
 void PhysicsScene::CheckForCollisions()
@@ -139,7 +139,7 @@ bool PhysicsScene::Plane2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 		//If there is any intersecion it means the objects have collided
 		if (intersection > 0.0f)
 		{
-			//Move circle out from the edge to prevent sticking
+			//Move circle out from the surface to prevent sticking
 			//(The plane is static so it is easier to move object out)
 			circle->displace(plane->normal() * intersection);
 
@@ -151,28 +151,28 @@ bool PhysicsScene::Plane2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 	return false;
 }
 
-bool PhysicsScene::Plane2Box(PhysicsObject * obj1, PhysicsObject * obj2)
+bool PhysicsScene::Plane2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	//Try casting
 	Plane *plane = (Plane*)obj1;
-	Box *box = (Box*)obj2;
+	AABB *aabb = (AABB*)obj2;
 
 	//If successful then test for collisions
-	if (plane != nullptr && box != nullptr)
+	if (plane != nullptr && aabb != nullptr)
 	{
 		//Brute force; Go through all vertices
-		for (auto vertex : box->vertices())
+		for (auto vertex : aabb->vertices())
 		{
 			//Does it makes more sense if an intersection occurs, that the number is positive?
 			float intersection = -plane->distanceTo(vertex);
 
 			if (intersection > 0.0f)
 			{
-				//Move box out from the edge to prevent sticking
-				box->displace(plane->normal() * intersection);
+				//Move aabb out from the surface to prevent sticking
+				aabb->displace(plane->normal() * intersection);
 
 				//Collision detected!
-				plane->ResolveCollision(box);
+				plane->ResolveCollision(aabb);
 				return true;
 			}
 		}
@@ -227,18 +227,18 @@ bool PhysicsScene::Circle2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 	return false;
 }
 
-bool PhysicsScene::Circle2Box(PhysicsObject * obj1, PhysicsObject * obj2)
+bool PhysicsScene::Circle2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	//Try to cast objects to their types
 	Circle* circle = (Circle*)obj1;
-	Box *box = (Box*)obj2;
+	AABB *aabb = (AABB*)obj2;
 
 	//If casts were successful...
-	if (circle != nullptr && box != nullptr)
+	if (circle != nullptr && aabb != nullptr)
 	{
 		////Test for collisions
 		//Use clamping trick (A = clamp(C, min, max)
-		glm::vec2 clampedDistance = glm::clamp(circle->position(), box->min(), box->max());
+		glm::vec2 clampedDistance = glm::clamp(circle->position(), aabb->min(), aabb->max());
 		glm::vec2 V = clampedDistance - circle->position();
 		float result = glm::dot(V, V);
 		
@@ -246,7 +246,7 @@ bool PhysicsScene::Circle2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 		if (result <= (circle->radius() * circle->radius()))
 		{
 			//Objects have collided
-			circle->ResolveCollision(box);
+			circle->ResolveCollision(aabb);
 			return true;
 		}
 	}
@@ -258,42 +258,42 @@ bool PhysicsScene::Circle2SAT(PhysicsObject *, PhysicsObject *)
 	return false;
 }
 
-bool PhysicsScene::Box2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
+bool PhysicsScene::AABB2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	//Re-route
-	return Plane2Box(obj2, obj1);
+	return Plane2AABB(obj2, obj1);
 }
 
-bool PhysicsScene::Box2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
+bool PhysicsScene::AABB2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	//Re-route
-	return Circle2Box(obj2, obj1);
+	return Circle2AABB(obj2, obj1);
 }
 
-bool PhysicsScene::Box2Box(PhysicsObject * obj1, PhysicsObject * obj2)
+bool PhysicsScene::AABB2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 {
-	//Try to cast object to box and box
-	Box *box1 = (Box*)(obj1);
-	Box *box2 = (Box*)(obj2);
+	//Try casts
+	AABB *aabb1 = (AABB*)(obj1);
+	AABB *aabb2 = (AABB*)(obj2);
 
 	//If cast successful..
-	if (box1 != nullptr && box2 != nullptr)
+	if (aabb1 != nullptr && aabb2 != nullptr)
 	{
 		//Find any overlap (collision)
-		float xOverlap = pkr::min(box1->max().x, box2->max().x) - pkr::max(box1->min().x, box2->min().x);
-		float yOverlap = pkr::min(box1->max().y, box2->max().y) - pkr::max(box1->min().y, box2->min().y);
+		float xOverlap = pkr::min(aabb1->max().x, aabb2->max().x) - pkr::max(aabb1->min().x, aabb2->min().x);
+		float yOverlap = pkr::min(aabb1->max().y, aabb2->max().y) - pkr::max(aabb1->min().y, aabb2->min().y);
 
 		//If there is over lap then there is collision
 		if (xOverlap > 0 && yOverlap > 0)
 		{
-			////Boxes (AABB's) have collided! 
+			////AABBs have collided! 
 			//Move out of each other's boundary 
 			//TODO Not as straightforward as I initially thought
-			//box1->displace(glm::vec2(-xOverlap, -yOverlap) / 2.0f);
-			//box2->displace(glm::vec2(xOverlap, yOverlap) / 2.0f);
+			//aabb1->displace(glm::vec2(-xOverlap, -yOverlap) / 2.0f);
+			//aabb2->displace(glm::vec2(xOverlap, yOverlap) / 2.0f);
 			
 			//Resolve collision
-			box1->ResolveCollision(box2);
+			aabb1->ResolveCollision(aabb2);
 
 			return true;
 		}
@@ -301,7 +301,7 @@ bool PhysicsScene::Box2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 	return false;
 }
 
-bool PhysicsScene::Box2SAT(PhysicsObject *, PhysicsObject *)
+bool PhysicsScene::AABB2SAT(PhysicsObject *, PhysicsObject *)
 {
 	return false;
 }
@@ -316,7 +316,7 @@ bool PhysicsScene::SAT2Circle(PhysicsObject *, PhysicsObject *)
 	return false;
 }
 
-bool PhysicsScene::SAT2BOX(PhysicsObject *, PhysicsObject *)
+bool PhysicsScene::SAT2AABB(PhysicsObject *, PhysicsObject *)
 {
 	return false;
 }
