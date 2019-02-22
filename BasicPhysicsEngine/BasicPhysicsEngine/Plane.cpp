@@ -45,7 +45,7 @@ Plane::Plane(const glm::vec2 point1, const glm::vec2 point2, ePerpDirection pdir
 	}
 
 	//Calculate distance
-	m_distanceToOrigin = -glm::dot(v, m_normal);
+	m_distanceToOrigin = glm::dot(point1, m_normal);
 }
 
 Plane::~Plane()

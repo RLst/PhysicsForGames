@@ -222,7 +222,7 @@ void BasicPhysicsEngine::AABBTest()
 	m_physicsScene->AddActor(leftAngledCushion);
 	Plane *rightAngledCushion = new Plane(-1.5f, 2, -200);
 	m_physicsScene->AddActor(rightAngledCushion);
-	Plane *topLeftAngledCushion = new Plane(vec2(0, 50), vec2(100, 200), RIGHT);
+	Plane *topLeftAngledCushion = new Plane(vec2(0, 150), vec2(50, 175), RIGHT);
 	m_physicsScene->AddActor(topLeftAngledCushion);
 
 	float initialForce = 10.f;
