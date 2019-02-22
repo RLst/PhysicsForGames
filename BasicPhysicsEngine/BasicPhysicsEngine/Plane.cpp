@@ -10,35 +10,42 @@ Plane::Plane() :
 {
 }
 
-Plane::Plane(float x, float y, float distance, float elasticity) :
+Plane::Plane(float x, float y, float distance, float elasticity /*= 0.9f*/) :
 	PhysicsObject(ShapeType::PLANE),
-	m_normal(x, y),
 	m_distanceToOrigin(distance),
 	m_elasticity(elasticity)
 {
+	m_normal = glm::normalize(glm::vec2(x, y));
 }
 
-Plane::Plane(const glm::vec2 normal, float distance, float elasticity) :
+Plane::Plane(const glm::vec2 normal, float distance, float elasticity /*= 0.9f*/) :
 	PhysicsObject(ShapeType::PLANE),
-	m_normal(normal),
 	m_distanceToOrigin(distance),
 	m_elasticity(elasticity)
 {
+	m_normal = glm::normalize(normal);
 }
 
-Plane::Plane(const glm::vec2 point1, const glm::vec2 point2, float elasticity) :
-	PhysicsObject(ShapeType::PLANE)
+Plane::Plane(const glm::vec2 point1, const glm::vec2 point2, ePerpDirection pdir /*= LEFT*/, float elasticity /*= 0.9f*/) :
+	PhysicsObject(ShapeType::PLANE),
+	m_elasticity(elasticity)
 {
-	//Calculate normalised vector from point0 to point1
+	//Calculate normalised vector from point1 to point2
 	auto v = point2 - point1;
 	v = glm::normalize(v);
 
-	//Set normal perpendicular to the vector
-	m_normal.x = -v.x;
-	m_normal.y = v.x;
+	//Set normal perpendicular to the vector (Left)
+	if (pdir == LEFT) {
+		m_normal.x = -v.y;
+		m_normal.y = v.x;
+	}
+	else {
+		m_normal.x = v.y;
+		m_normal.y = -v.x;
+	}
 
 	//Calculate distance
-	m_distanceToOrigin = glm::dot(point1, m_normal);
+	m_distanceToOrigin = -glm::dot(v, m_normal);
 }
 
 Plane::~Plane()
@@ -62,18 +69,20 @@ void Plane::ResolveCollision(RigidBody * other)
 	//glm::vec2 normal = glm::normalize(other->position() - m_position);
 	glm::vec2 relVelocity = other->velocity();
 
-	//Super formula (impulse magnitude)
+	//Average the elasticities
 	float elasticity = (m_elasticity + other->getElasticity()) / 2.0f;
+
+	//Super formula (impulse magnitude)
 	float j = glm::dot(-(1 + elasticity) * (relVelocity), m_normal) / (1 / other->mass());
 
+	//Force to apply (impulsed aimed at the normal)
 	glm::vec2 force = m_normal * j;
-
 	other->ApplyForce(force);
 }
 
 float Plane::distanceTo(const glm::vec2 & point) const
 {
-	return (glm::dot(point, m_normal) + m_distanceToOrigin);
+	return (glm::dot(point, m_normal) - m_distanceToOrigin);
 }
 
 glm::vec2 Plane::closestPoint(const glm::vec2 & point) const

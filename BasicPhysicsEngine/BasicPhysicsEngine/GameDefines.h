@@ -12,9 +12,9 @@ using glm::vec4;
 
 //Typedefs
 typedef glm::vec4 col;
-typedef glm::vec2 axis2;		//???
-typedef glm::vec2 projection2;	//???
-typedef glm::vec2 point2;
+//typedef glm::vec2 axis2;		//???
+//typedef glm::vec2 projection2;	//???
+//typedef glm::vec2 point2;
 
 namespace pkr
 {

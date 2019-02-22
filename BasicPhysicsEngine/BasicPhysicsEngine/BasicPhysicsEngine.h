@@ -26,6 +26,10 @@ public:
 	//Tutorials
 	void SetupContinuousDemo(glm::vec2 startPos, float inclination, float speed, float gravity);
 
+	//Utilities
+	float calcMass(float circleRadius, float density);
+	float calcMass(float boxWidth, float boxHeight, float density);
+
 	//Tests
 	void Circle2CircleTest();
 	void Circle2PlaneTest();

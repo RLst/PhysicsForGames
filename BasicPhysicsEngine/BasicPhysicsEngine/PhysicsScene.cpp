@@ -134,15 +134,13 @@ bool PhysicsScene::Plane2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 	//If we are successful then test for collision
 	if (circle != nullptr && plane != nullptr)
 	{
-		glm::vec2 collisionNormal = plane->normal();
-		float circleToPlaneDistance = glm::dot(circle->position(), collisionNormal) - plane->distance();
+		float intersection = circle->radius() - plane->distanceTo(circle->position());
 
-		float intersection = circle->radius() - circleToPlaneDistance;
 		//If there is any intersecion it means the objects have collided
 		if (intersection > 0.0f)
 		{
 			//Move circle out from the edge to prevent sticking
-			//(The edge is static so it is easier to move object out)
+			//(The plane is static so it is easier to move object out)
 			circle->displace(plane->normal() * intersection);
 
 			//Objects have collided
@@ -163,16 +161,18 @@ bool PhysicsScene::Plane2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 	if (plane != nullptr && box != nullptr)
 	{
 		//Brute force; Go through all vertices
-		for (int i = 0; i < box->vertices().size(); ++i)
-		//for (auto vertex : box->vertices())
+		for (auto vertex : box->vertices())
 		{
-			auto intersection = plane->distanceTo(box->vertices()[i]);
-			//auto intersection = plane->distanceTo(vertex);
-			if (intersection > 0)
+			//Does it makes more sense if an intersection occurs, that the number is positive?
+			float intersection = -plane->distanceTo(vertex);
+
+			if (intersection > 0.0f)
 			{
-				std::cout << "Intersection: " << intersection << std::endl;
+				//Move box out from the edge to prevent sticking
+				box->displace(plane->normal() * intersection);
+
 				//Collision detected!
-				//plane->ResolveCollision(box);
+				plane->ResolveCollision(box);
 				return true;
 			}
 		}
@@ -289,7 +289,8 @@ bool PhysicsScene::Box2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 			////Boxes (AABB's) have collided! 
 			//Move out of each other's boundary 
 			//TODO Not as straightforward as I initially thought
-			//box1->displace(glm::vec2(-xOverlap, -yOverlap));
+			//box1->displace(glm::vec2(-xOverlap, -yOverlap) / 2.0f);
+			//box2->displace(glm::vec2(xOverlap, yOverlap) / 2.0f);
 			
 			//Resolve collision
 			box1->ResolveCollision(box2);

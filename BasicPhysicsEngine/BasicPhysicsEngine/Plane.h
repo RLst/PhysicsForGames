@@ -10,6 +10,12 @@ enum ePlaneResult : int {
 	INTERSECTS = 0
 };
 
+enum ePerpDirection
+{
+	LEFT,
+	RIGHT 
+};
+
 class RigidBody;
 
 class Plane : public PhysicsObject
@@ -24,7 +30,7 @@ public:
 	Plane();	//Default at ground zero facing up
 	Plane(float x, float y, float distance, float elasticity = 0.9f);
 	Plane(const glm::vec2 normal, float distance, float elasticity = 0.9f);
-	Plane(const glm::vec2 point1, const glm::vec2 point2, float elasticity = 0.9f);
+	Plane(const glm::vec2 point1, const glm::vec2 point2, ePerpDirection pdir = LEFT, float elasticity = 0.9f);
 	~Plane();
 
 	void		FixedUpdate(glm::vec2 gravity, float timeStep) override {};

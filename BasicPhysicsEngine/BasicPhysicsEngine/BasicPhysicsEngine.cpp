@@ -204,51 +204,108 @@ void BasicPhysicsEngine::BilliardBallSimulation()
 void BasicPhysicsEngine::AABBTest()
 {
 	//m_physicsScene->setGravity(pkr::zero2);
-	m_physicsScene->setGravity(vec2(0, -10.f));
+	m_physicsScene->setGravity(vec2(0, -98.1f));
 
 	int cushionSize = 25;
 	//Cushions to stop the balls
-	Plane *topCushion = new Plane(vec2(0.0f, -1.0f), (float)-285 + cushionSize);
-	Plane *bottomCushion = new Plane(vec2(0.0f, 1.0f), (float)cushionSize + 50);
-	Plane *leftCushion = new Plane(vec2(1.0f, 0.0f), (float)cushionSize);
-	Plane *rightCushion = new Plane(vec2(-1.0f, 0.0f), (float)-500 + cushionSize);
-	//Plane *angledCushion = new Plane(vec2(1.f, 2.f), 50.f);
+	//Plane *bottomCushion = new Plane();
+	Plane *bottomCushion = new Plane(vec2(0.0f, 1.0f), (float)cushionSize);
 	m_physicsScene->AddActor(bottomCushion);
-	//m_physicsScene->AddActor(topCushion);
-	//m_physicsScene->AddActor(leftCushion);
-	//m_physicsScene->AddActor(rightCushion);
-	//m_physicsScene->AddActor(angledCushion);
+	Plane *topCushion = new Plane(vec2(0.0f, -1.0f), (float)-285 + cushionSize);
+	m_physicsScene->AddActor(topCushion);
+	Plane *leftCushion = new Plane(vec2(1.0f, 0.0f), (float)cushionSize);
+	m_physicsScene->AddActor(leftCushion);
+	Plane *rightCushion = new Plane(vec2(-1.0f, 0.0f), (float)-500 + cushionSize);
+	m_physicsScene->AddActor(rightCushion);
+	//Plane *leftAngledCushion = new Plane(vec2(0, 100), vec2(200, 0));
+	Plane *leftAngledCushion = new Plane(vec2(1.5f, 2.0f), 100.f);
+	m_physicsScene->AddActor(leftAngledCushion);
+	Plane *rightAngledCushion = new Plane(-1.5f, 2, -200);
+	m_physicsScene->AddActor(rightAngledCushion);
+	Plane *topLeftAngledCushion = new Plane(vec2(0, 50), vec2(100, 200), RIGHT);
+	m_physicsScene->AddActor(topLeftAngledCushion);
 
-	//Circles and AABBs
-	float initialForce = 0.f;
-	float mass = 10.f;
+	float initialForce = 10.f;
+
+	struct {
+		float hydrogen = 0.0898f;
+		float helium = 0.179f;
+		float aerographite = 0.2;
+		float air = 1.2f;
+		float tungsten_hexaflouride = 12.4f;
+		float styrofoam = 75;
+		float cork = 240;
+		float pine = 373;
+		float lithium = 535;
+		float wood = 700;
+		float ice = 916.7f;
+		float water = 1000;
+		float salt_water = 1030;
+		float plastics = 1175;
+		float magnesium = 1740;
+		float concrete = 2400;
+		float diamond = 3500;
+		float vanadium = 6100;
+		float brass = 8600;
+		float copper = 8940;
+		float silver = 10500;
+		float lead = 11340;
+		float rhodium = 12410;
+		float mercury = 13546;
+		float tungsten = 19300;
+		float gold = 19320;
+		float platinum = 21450;
+		float iridium = 22420;
+		float osmium = 22570;
+	} density; //g/cm3
 
 	//Circles
-	int numberOfCircles = 0;
-	int maxRadius = 10;
+	int numberOfCircles = 17;
+	int minRadius = 2;
+	int maxRadius = 15;
+	float circleDensity = density.air;
 
 	//Boxes
-	int numberOfBoxes = 1;
-	int maxWidth = 20;
-	int maxHeight = 20;
+	int numberOfBoxes = 17;
+	int minSize = 5;
+	int maxSize = 25;
+	float boxDensity = density.osmium;
 
+	//Create circles and boxes
 	for (int i = 0; i < numberOfCircles; ++i)
 	{
+		float radius = pkr::random(minRadius, maxRadius);
+		float mass = calcMass(radius, circleDensity);
+
 		m_physicsScene->AddActor(new Circle(
 			vec2(50 + 25 * i, 100),
 			vec2(pkr::random(-initialForce, initialForce), pkr::random(-initialForce, initialForce)),
 			mass,
-			pkr::random(5, maxRadius),
+			radius,
 			pkr::colour::nice_random()));
 	}
 	for (int i = 0; i < numberOfBoxes; ++i)
 	{
+		float width = pkr::random(minSize, maxSize);
+		float height = pkr::random(minSize, maxSize);
+		float mass = calcMass(width, height, boxDensity);
+
 		m_physicsScene->AddActor(new Box(
 			vec2(50 + 25 * i, 200),
 			vec2(pkr::random(-initialForce, initialForce), pkr::random(-initialForce, initialForce)),
 			mass,
-			pkr::random(10, maxWidth),
-			pkr::random(10, maxHeight),
+			width,
+			height,
 			pkr::colour::nice_random()));
 	}
+}
+
+float BasicPhysicsEngine::calcMass(float circleRadius, float density)
+{
+	return PI * circleRadius * circleRadius * density / 1000.f;
+}
+
+float BasicPhysicsEngine::calcMass(float boxWidth, float boxHeight, float density)
+{
+	return boxWidth * boxHeight * density / 1000.f;
 }
