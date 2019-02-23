@@ -9,9 +9,10 @@
 //std
 #include <iostream>
 
-//gl
+//glm
 #include <glm/ext.hpp>
 
+//local
 #include "GameDefines.h"
 #include "PhysicsScene.h"
 #include "Circle.h"
@@ -52,9 +53,7 @@ bool BasicPhysicsEngine::startup()
 	m_physicsScene = new PhysicsScene();
 	m_physicsScene->setTimeStep(fixedTimeStep);
 
-	//Circle2CircleTest();
-	//Circle2PlaneTest();
-	//BilliardBallSimulation();
+	//Initiate the demo
 	Demo(m_gravity);
 
 	return true;
@@ -96,11 +95,21 @@ void BasicPhysicsEngine::draw() {
 	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
 	
 	char fps[10];
-	sprintf_s(fps, 10, "%i", getFPS());
+	sprintf_s(fps, 10, "%i", (float)getFPS());
 	m_2dRenderer->drawText(m_font, fps, 0, getWindowHeight()-22);
 
 	// done drawing sprites
 	m_2dRenderer->end();
+}
+
+float BasicPhysicsEngine::calcMass(float radius, float density)
+{
+	return PI * radius * radius * density / 1000.f;
+}
+
+float BasicPhysicsEngine::calcMass(float width, float height, float density)
+{
+	return width * height * density / 1000.f;
 }
 
 void BasicPhysicsEngine::SetupContinuousDemo(glm::vec2 startPos, float inclination, float speed, float gravity)
@@ -191,14 +200,14 @@ void BasicPhysicsEngine::Demo(float gravity)
 	float initialForce = 100.f;
 
 	//Circles
-	int circleCount = 1;
+	int circleCount = 2;
 	float minRadius = 7.5f;
 	float maxRadius = 7.5f;
 	float circleDensity = density.helium;
 
 	//Other
-	int AABBCount = 1;
-	int SATCount = 1;
+	int AABBCount = 2;
+	int SATCount = 2;
 	float minSize = 15.f;
 	float maxSize = 15.f;
 	float aabbDensity = density.air;
@@ -238,14 +247,4 @@ void BasicPhysicsEngine::Demo(float gravity)
 
 		m_physicsScene->AddActor(new SAT());
 	}
-}
-
-float BasicPhysicsEngine::calcMass(float radius, float density)
-{
-	return PI * radius * radius * density / 1000.f;
-}
-
-float BasicPhysicsEngine::calcMass(float width, float height, float density)
-{
-	return width * height * density / 1000.f;
 }

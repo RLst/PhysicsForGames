@@ -4,9 +4,10 @@
 
 class PhysicsObject;
 
-typedef bool(*fn)(PhysicsObject*, PhysicsObject*);	//TODO How does this work?
-typedef std::vector<glm::vec2> Axes;
-typedef glm::vec2 projection;
+//Clean minimal code
+using glm::vec2;
+typedef std::vector<glm::vec2> listvec2;
+typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 class PhysicsScene
 {
@@ -14,14 +15,14 @@ private:
 	bool m_isCollisionEnabled;
 
 protected:
-	glm::vec2 m_gravity;
+	vec2 m_gravity;
 	float m_timeStep;
 	std::vector<PhysicsObject*> m_actors;
 	
 public:
 	PhysicsScene(
 		float timeStep = 0.02f,					//60 fps
-		glm::vec2 gravity = glm::vec2(0, 0),	//Gravity
+		vec2 gravity = vec2(0, 0),	//Gravity
 		bool collisionEnabled = true);			//Collision enabled by default	
 	~PhysicsScene();
 
@@ -54,8 +55,8 @@ public:
 	static bool SAT2SAT(PhysicsObject*, PhysicsObject*);
 	///////////////////////
 
-	void		setGravity(const glm::vec2 gravity) { m_gravity = gravity; }
-	glm::vec2	getGravity() const { return m_gravity; }
+	void		setGravity(const vec2 gravity) { m_gravity = gravity; }
+	vec2		getGravity() const { return m_gravity; }
 
 	void		setTimeStep(const float timeStep) { m_timeStep = timeStep; }
 	float		getTimeStep() const { return m_timeStep; }

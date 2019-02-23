@@ -14,10 +14,7 @@
 
 #include <vector>
 
-//typedef std::vector<glm::vec2> Vertices2;
-//typedef glm::vec2 Vertex2;
-
-PhysicsScene::PhysicsScene(float timeStep, glm::vec2 gravity, bool collisionEnabled) :
+PhysicsScene::PhysicsScene(float timeStep, vec2 gravity, bool collisionEnabled) :
 	m_timeStep(timeStep),
 	m_gravity(gravity),
 	m_isCollisionEnabled(collisionEnabled)
@@ -94,7 +91,7 @@ void PhysicsScene::DebugScene()
 }
 
 //Setup the collision function array
-static fn collisionFunctionArray[] =
+static fn collisionFuncArray[] =
 {
 	PhysicsScene::Plane2Plane,	PhysicsScene::Plane2Circle,		PhysicsScene::Plane2AABB,	PhysicsScene::Plane2SAT,
 	PhysicsScene::Circle2Plane, PhysicsScene::Circle2Circle,	PhysicsScene::Circle2AABB,	PhysicsScene::Circle2SAT,
@@ -116,7 +113,7 @@ void PhysicsScene::CheckForCollisions()
 
 			//Using function pointers
 			int functionIDX = (shapeID1 * (int)eShapeType::SHAPE_COUNT) + shapeID2;	//Auto select the correct function
-			fn fpCollision = collisionFunctionArray[functionIDX];
+			fn fpCollision = collisionFuncArray[functionIDX];
 			if (fpCollision != nullptr)
 			{
 				//did a collision occur
@@ -228,8 +225,8 @@ bool PhysicsScene::Circle2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 	{
 		////Test for collisions
 		//Use clamping trick (A = clamp(C, min, max)
-		glm::vec2 clampedDistance = glm::clamp(circle->position(), aabb->min(), aabb->max());
-		glm::vec2 V = clampedDistance - circle->position();
+		vec2 clampedDistance = glm::clamp(circle->position(), aabb->min(), aabb->max());
+		vec2 V = clampedDistance - circle->position();
 		float result = glm::dot(V, V);
 		
 		//If there is any intersecion it means the objects have collided
@@ -279,8 +276,8 @@ bool PhysicsScene::AABB2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 			////AABBs have collided! 
 			//Move out of each other's boundary 
 			//TODO Not as straightforward as I initially thought
-			//aabb1->displace(glm::vec2(-xOverlap, -yOverlap) / 2.0f);
-			//aabb2->displace(glm::vec2(xOverlap, yOverlap) / 2.0f);
+			//aabb1->displace(vec2(-xOverlap, -yOverlap) / 2.0f);
+			//aabb2->displace(vec2(xOverlap, yOverlap) / 2.0f);
 			
 			//Resolve collision
 			aabb1->ResolveCollision(aabb2);
@@ -314,23 +311,22 @@ bool PhysicsScene::SAT2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	//Try casting first
-	//[NOTE: Had to make eShapeTypes a enum class otherwise it conflicts SAT declarations
+	//[NOTE: Had to make eShapeTypes a enum class otherwise it conflicts with SAT class
 	SAT* sat1 = (SAT*)obj1;
 	SAT *sat2 = (SAT*)obj2;
 
 	//If cast successful...
 	if (sat1 != nullptr && sat2 != nullptr)
 	{
-		//1. Get list of surface normals ie. possible axes of seperations
-		Axes axes1 = sat1->normals();
-		Axes axes2 = sat2->normals();
-		//axes.push_back(sat2->normals());
+		//1. Get list of surface normals ie. possible axes of separations
+		listvec2 axes1 = sat1->getSurfaceNormals();
+		listvec2 axes2 = sat2->getSurfaceNormals();
 
 		//2. Project EACH shape's hull onto EACH axis
 		for (auto axis : axes1)
 		{
-			projection projection1 = sat1->project(axis);
-			projection projection2 = sat2->project(axis);
+			vec2 projection1 = sat1->getProjection(axis);
+			vec2 projection2 = sat2->getProjection(axis);
 			
 			//3. Determine if there's any overlap
 			//If there's a negative overlap then there's definitely NO COLLISION
@@ -339,8 +335,8 @@ bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 		}
 		for (auto axis : axes2)
 		{
-			projection projection1 = sat1->project(axis);
-			projection projection2 = sat2->project(axis);
+			vec2 projection1 = sat1->getProjection(axis);
+			vec2 projection2 = sat2->getProjection(axis);
 
 			//3. Determine if there's any overlap
 			//If there's a negative overlap then there's definitely NO COLLISION

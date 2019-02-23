@@ -1,20 +1,23 @@
 #pragma once
 #include "RigidBody.h"
+#include <glm/ext.hpp>
+
+using glm::vec2;
+using glm::vec4;
 
 class Circle : public RigidBody
 {
 protected:
 	float		m_radius;
-	glm::vec4	m_colour;
+	vec4		m_colour;
 
 public:
-	Circle(glm::vec2 position, glm::vec2 velocity, float mass, float radius, glm::vec4 colour);
+	Circle(vec2 position, vec2 velocity, float mass, float radius, vec4 colour);
 	~Circle();
 
 	void		DrawGizmo() override;
-	//bool		CheckCollision(PhysicsObject* other) override { return false; };
 
 	float		radius() const { return m_radius; }
-	glm::vec4	colour() const { return m_colour; }
+	vec4		colour() const { return m_colour; }
 };
 

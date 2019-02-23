@@ -11,6 +11,8 @@ class PhysicsScene;
 class Circle;
 class Plane;
 
+using glm::vec2;
+
 class BasicPhysicsEngine : public aie::Application {
 public:
 
@@ -24,7 +26,7 @@ public:
 	void draw() override;
 
 	//Tutorials
-	void SetupContinuousDemo(glm::vec2 startPos, float inclination, float speed, float gravity);
+	void SetupContinuousDemo(vec2 startPos, float inclination, float speed, float gravity);
 
 	//Utilities
 	float calcMass(float radius, float density);					//Calc mass for circles

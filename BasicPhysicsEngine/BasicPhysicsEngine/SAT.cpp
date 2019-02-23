@@ -3,11 +3,19 @@
 #include <Gizmos.h>
 
 SAT::SAT() :	//Test
-	RigidBody(eShapeType::SAT, vec2(150, 125), pkr::Random::range_v2(-10.f, 10.f), 0, 10)
+	RigidBody(eShapeType::SAT, vec2(250, 125), vec2(0,0), 0, 10)
 {
-	m_vertices.push_back(glm::vec2(0, 0));
-	m_vertices.push_back(glm::vec2(8, 16));
-	m_vertices.push_back(glm::vec2(16, 0));
+	m_vextents.push_back(vec2(-9, 0));
+	m_vextents.push_back(vec2(0, 16));
+	m_vextents.push_back(vec2(9, 0));
+}
+
+SAT::SAT(vec2 position, vec2 velocity, float mass, vec4 colour, listvec2 & vextents) :
+	RigidBody(eShapeType::SAT, position, velocity, 0, mass),
+	m_colour(colour)
+{
+	//Set vertices
+	m_vextents = vextents;
 }
 
 SAT::~SAT()
@@ -17,25 +25,66 @@ SAT::~SAT()
 void SAT::DrawGizmo()
 {
 	////TEST!!!
-	//glm::vec4 colour = pkr::colour::random();
 	aie::Gizmos::add2DCircle(m_position, 2.f, 15, m_colour);		//Draw the main (rb) position
-	for (int i = 0; i < m_vertices.size(); ++i)
+	for (int i = 0; i < m_vextents.size(); ++i)
 	{
-		auto vertHead = m_vertices[i];
-		auto vertEnd = m_vertices[i + 1 == m_vertices.size() ? 0 : i + 1];	//Loop around
+		auto vertHead = m_vextents[i];
+		auto vertEnd = m_vextents[i + 1 == m_vextents.size() ? 0 : i + 1];	//Loop around
 		aie::Gizmos::add2DLine(vertHead + m_position, vertEnd + m_position, m_colour);
 	}
-	//aie::Gizmos::add2DTri(m_vertices[0] + m_position, m_vertices[1] + m_position, m_vertices[2] + m_position, colour);
 }
 
-glm::vec2 SAT::project(glm::vec2 axis) const
+void SAT::AddVextent(const vec2 newVextent)
 {
-	double min = glm::dot(axis, m_vertices[0]);
+	//Local coords
+	m_vextents.push_back(newVextent);
+}
+
+void SAT::AddVertex(const vec2 newVertex)
+{
+	//World coords
+	m_vextents.push_back(newVertex - m_position);
+}
+
+void SAT::CentralisePosition()
+{
+	vec2 center;
+	for (auto v : m_vextents)
+	{
+		//Get sum of all vertices
+		center += v;
+	}
+	//Calculate average
+	center /= (float)(m_vextents.size() + 1);
+	m_position = center;	//Set as new rb.position
+}
+
+vec2 SAT::getVertex(int index) const
+{
+	//Returns a vertex in WORLD coordinates
+	assert(index >= 0 && index < m_vextents.size());	//Index out of bounds
+	return m_vextents[index] + m_position;
+}
+
+listvec2 SAT::getVertices() const
+{
+	//Return all vertices in WORLD coordinates
+	listvec2 result;
+	for (auto v : m_vextents)
+	{
+		result.push_back(v + m_position);
+	}
+	return result;
+}
+
+vec2 SAT::getProjection(vec2 axis) const
+{
+	double min = glm::dot(axis, getVertex(0));
 	double max = min;
-	for (int i = 1; i < m_vertices.size(); ++i)
+	for (int i = 1; i < getVertices().size(); ++i)
 	{
 		//Note: the axis must be normalized to get accurate results
-		double point = glm::dot(axis, m_vertices[1]);
+		double point = glm::dot(axis, getVertex(1));
 
 		//Work out the mins and max
 		if (point < min)
@@ -43,32 +92,33 @@ glm::vec2 SAT::project(glm::vec2 axis) const
 		else if (point > max)
 			max = point;
 	}
-	return glm::vec2(min, max);
+	return vec2((float)min, (float)max);
 }
 
-std::vector<glm::vec2> SAT::edges() const
+listvec2 SAT::getEdges() const
 {
-	std::vector<glm::vec2> result;
-	//Loop through all vertices, get edges, normalis, return
-	for (int i = 0; m_vertices.size(); ++i)
+	std::vector<vec2> result;
+	//Loop through all vertices, get edges, return
+	for (int i = 0; i < getVertices().size(); ++i)
 	{
-		point p1 = m_vertices[i];
-		point p2 = m_vertices[i + 1 == m_vertices.size() ? 0 : i + 1];
-		//surface normalisedEdge = glm::normalize(p2 - p1);
-		result.push_back(p2-p1 /*+ m_position*/);	//test
+		vec2 start = getVertex(i);
+		vec2 end = getVertex(i + 1 == m_vextents.size() ? 0 : i + 1);
+		result.push_back(end-start);
 	}
 	return result;
 }
 
-std::vector<glm::vec2> SAT::normals() const
+listvec2 SAT::getSurfaceNormals() const
 {
-	std::vector<glm::vec2> result;
+	listvec2 result;
 	//Get edges, normalise, perpendiculate
-	std::vector<surface> cachedSurfaces = edges();
-	for (auto e : cachedSurfaces)
+	listvec2 edgesCached = getEdges();
+	for (auto e : edgesCached)
 	{
-		glm::vec2 normalised = glm::normalize(e);
-		glm::vec2 normal = vec2(-normalised.y, normalised.x);	//Left
+		result.push_back(glm::normalize(vec2(-e.y, e.x)));	//normalise + perpend
 	}
 	return result;
 }
+
+
+

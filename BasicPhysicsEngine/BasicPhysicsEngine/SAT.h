@@ -5,30 +5,33 @@
 #include "GameDefines.h"
 #include <vector>
 
-typedef glm::vec2 point;
-typedef glm::vec2 surface;
-typedef glm::vec2 normal;
-typedef glm::vec2 projection;
-typedef std::vector<glm::vec2> Vertices;
+//Clean and minimal code
+using glm::vec2;
+using glm::vec4;
+typedef std::vector<glm::vec2> listvec2;
 
 class SAT : public RigidBody
 {
 protected:
-	std::vector<glm::vec2>		m_vertices;		//List of vertices of SAT object; 
-		//Should these be the extents (ie. relative to this objects main position?)
-	glm::vec4					m_colour = pkr::colour::random();
+	listvec2		m_vextents;		//List of "Vertex EXTENTS" ie. vertices in LOCAL coordinates relative to rb.position
+	vec4			m_colour = pkr::colour::random();
 
 public:
 	SAT();
-	SAT(glm::vec2 position, glm::vec2 velocity, float mass, Vertices &vertices, glm::vec4 colour);
+	SAT(vec2 position, vec2 velocity, float mass, vec4 colour, listvec2 &vextents = listvec2());	//Defaults to an empty list of vertices
 	~SAT();
 
-	void						DrawGizmo() override;
+	void			DrawGizmo() override;
+	void			AddVextent(const vec2 newVextent);	//Appends a new vertex (extent; local coords)
+	void			AddVertex(const vec2 newVertex);	//Appends a new vertex (world coords)
+	void			CentralisePosition();				//Calculates the mean center of all vertices and sets rb.position to this
 
-	glm::vec2					project(glm::vec2 axis) const;
-
-	std::vector<glm::vec2>		edges() const;		//Return list of all edges
-	std::vector<glm::vec2>		normals() const;	//Return list of all surface normals
-	std::vector<glm::vec2>		vertices() const;	//Return list of vertices relative to the world?
+	vec2			getVertex(int index) const;			//Returns a vertex in WORLD coordinates
+	listvec2		getVertices() const;				//Return list of vertices in WORLD coordinates
+	
+	vec2			getProjection(vec2 axis) const;			//Returns projection in WORLD coordinates
+	listvec2		getEdges() const;						//Returns all edges in WORLD coordinates
+	listvec2		getSurfaceNormals() const;					//Returns all surface normals in WORLD coordinates
+	
 };
 
