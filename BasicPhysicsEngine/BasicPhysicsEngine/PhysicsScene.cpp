@@ -179,8 +179,25 @@ bool PhysicsScene::Plane2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 	return false;
 }
 
-bool PhysicsScene::Plane2SAT(PhysicsObject *, PhysicsObject *)
+bool PhysicsScene::Plane2SAT(PhysicsObject *obj1, PhysicsObject *obj2)
 {
+	Plane *plane = (Plane*)obj1;
+	SAT *sat = (SAT*)obj2;
+
+	if (plane != nullptr && sat != nullptr)
+	{
+		for (auto vertex : sat->vertices())
+		{
+			float intersection = -plane->distanceTo(vertex);
+			if (intersection > 0)
+			{
+				//There is collision!
+				sat->displace(plane->normal() * intersection);
+				plane->ResolveCollision(sat);
+				return true;
+			}
+		}
+	}
 	return false;
 }
 
@@ -295,7 +312,8 @@ bool PhysicsScene::AABB2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 
 bool PhysicsScene::SAT2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 {
-	return false;
+	//Re-route
+	return Plane2SAT(obj2, obj1);
 }
 
 bool PhysicsScene::SAT2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
@@ -319,14 +337,14 @@ bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 	if (sat1 != nullptr && sat2 != nullptr)
 	{
 		//1. Get list of surface normals ie. possible axes of separations
-		listvec2 axes1 = sat1->getSurfaceNormals();
-		listvec2 axes2 = sat2->getSurfaceNormals();
+		listvec2 axes1 = sat1->surfaceNormals();
+		listvec2 axes2 = sat2->surfaceNormals();
 
 		//2. Project EACH shape's hull onto EACH axis
 		for (auto axis : axes1)
 		{
-			vec2 projection1 = sat1->getProjection(axis);
-			vec2 projection2 = sat2->getProjection(axis);
+			vec2 projection1 = sat1->projection(axis);
+			vec2 projection2 = sat2->projection(axis);
 			
 			//3. Determine if there's any overlap
 			//If there's a negative overlap then there's definitely NO COLLISION
@@ -335,8 +353,8 @@ bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 		}
 		for (auto axis : axes2)
 		{
-			vec2 projection1 = sat1->getProjection(axis);
-			vec2 projection2 = sat2->getProjection(axis);
+			vec2 projection1 = sat1->projection(axis);
+			vec2 projection2 = sat2->projection(axis);
 
 			//3. Determine if there's any overlap
 			//If there's a negative overlap then there's definitely NO COLLISION

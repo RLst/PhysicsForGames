@@ -180,7 +180,7 @@ void BasicPhysicsEngine::Demo(float gravity)
 	} density; //g/cm3
 
 	//Cushions to stop the balls
-	int cushionSize = 10;
+	int cushionSize = 15;
 	Plane *bottomCushion = new Plane(vec2(0.0f, 1.0f), (float)cushionSize);
 	m_physicsScene->AddActor(bottomCushion);
 	Plane *topCushion = new Plane(vec2(0.0f, -1.0f), (float)-285 + cushionSize);
@@ -197,21 +197,30 @@ void BasicPhysicsEngine::Demo(float gravity)
 	m_physicsScene->AddActor(topLeftAngledCushion);
 
 	////Objects
-	float initialForce = 100.f;
+	float initialForce = 500.0f;
 
 	//Circles
-	int circleCount = 2;
+	int circleCount = 7;
 	float minRadius = 7.5f;
 	float maxRadius = 7.5f;
 	float circleDensity = density.helium;
 
-	//Other
-	int AABBCount = 2;
-	int SATCount = 2;
+	//AABBs
+	int AABBCount = 7;
+	float aabbDensity = density.air;
+
 	float minSize = 15.f;
 	float maxSize = 15.f;
-	float aabbDensity = density.air;
+
+	//SATs
+	int SATCount = 7;
 	float satDensity = density.brass;
+	float satSpeed = 55.0f;
+	listvec2 isoTriangle = { vec2(-12, 0), vec2(0, 22), vec2(12, 0) };
+	SAT *sat1 = new SAT(vec2(200, 140), vec2(satSpeed, 0), 10, pkr::colour::random(), isoTriangle);
+	SAT *sat2 = new SAT(vec2(300, 150), vec2(-satSpeed, 0), 20, pkr::colour::random(), isoTriangle);
+	m_physicsScene->AddActor(sat1);
+	m_physicsScene->AddActor(sat2);
 
 	//Create objects
 	for (int i = 0; i < circleCount; ++i)	//Circles
@@ -240,11 +249,17 @@ void BasicPhysicsEngine::Demo(float gravity)
 			height,
 			pkr::colour::nice_random()));
 	}
-	for (int i = 0; i < SATCount; ++i)
+	for (int i = 0; i < SATCount; ++i)		//SATs
 	{
 		float size = pkr::Random::range(minSize, maxSize);
 		float mass = calcMass(size, size, satDensity);
 
-		m_physicsScene->AddActor(new SAT());
+		m_physicsScene->AddActor(new SAT(
+			vec2(50 + 25 * i, 150),
+			pkr::Random::range_v2(-initialForce, initialForce),
+			mass,
+			pkr::colour::nice_random(),
+			isoTriangle));
 	}
+	
 }

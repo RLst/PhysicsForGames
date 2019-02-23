@@ -26,12 +26,12 @@ public:
 	void			AddVertex(const vec2 newVertex);	//Appends a new vertex (world coords)
 	void			CentralisePosition();				//Calculates the mean center of all vertices and sets rb.position to this
 
-	vec2			getVertex(int index) const;			//Returns a vertex in WORLD coordinates
-	listvec2		getVertices() const;				//Return list of vertices in WORLD coordinates
+	vec2			vertex(int index) const;			//Returns a vertex in WORLD coordinates
+	listvec2		vertices() const;				//Return list of vertices in WORLD coordinates
 	
-	vec2			getProjection(vec2 axis) const;			//Returns projection in WORLD coordinates
+	vec2			projection(vec2 axis) const;			//Returns projection in WORLD coordinates
 	listvec2		getEdges() const;						//Returns all edges in WORLD coordinates
-	listvec2		getSurfaceNormals() const;					//Returns all surface normals in WORLD coordinates
+	listvec2		surfaceNormals() const;					//Returns all surface normals in WORLD coordinates
 	
 };
 

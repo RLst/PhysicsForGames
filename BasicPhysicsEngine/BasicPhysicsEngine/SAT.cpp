@@ -3,7 +3,7 @@
 #include <Gizmos.h>
 
 SAT::SAT() :	//Test
-	RigidBody(eShapeType::SAT, vec2(250, 125), vec2(0,0), 0, 10)
+	RigidBody(eShapeType::SAT, vec2(0,0), vec2(20, 20), 0, 10)
 {
 	m_vextents.push_back(vec2(-9, 0));
 	m_vextents.push_back(vec2(0, 16));
@@ -24,8 +24,7 @@ SAT::~SAT()
 
 void SAT::DrawGizmo()
 {
-	////TEST!!!
-	aie::Gizmos::add2DCircle(m_position, 2.f, 15, m_colour);		//Draw the main (rb) position
+	aie::Gizmos::add2DCircle(m_position, 0.5f, 15, m_colour);		//Draw the main (rb) position
 	for (int i = 0; i < m_vextents.size(); ++i)
 	{
 		auto vertHead = m_vextents[i];
@@ -59,14 +58,14 @@ void SAT::CentralisePosition()
 	m_position = center;	//Set as new rb.position
 }
 
-vec2 SAT::getVertex(int index) const
+vec2 SAT::vertex(int index) const
 {
 	//Returns a vertex in WORLD coordinates
 	assert(index >= 0 && index < m_vextents.size());	//Index out of bounds
 	return m_vextents[index] + m_position;
 }
 
-listvec2 SAT::getVertices() const
+listvec2 SAT::vertices() const
 {
 	//Return all vertices in WORLD coordinates
 	listvec2 result;
@@ -77,14 +76,14 @@ listvec2 SAT::getVertices() const
 	return result;
 }
 
-vec2 SAT::getProjection(vec2 axis) const
+vec2 SAT::projection(vec2 axis) const
 {
-	double min = glm::dot(axis, getVertex(0));
-	double max = min;
-	for (int i = 1; i < getVertices().size(); ++i)
+	float min = glm::dot(axis, this->vertex(0));
+	float max = min;
+	for (int i = 0; i < m_vextents.size(); ++i)		//faster than getVertices().size()
 	{
 		//Note: the axis must be normalized to get accurate results
-		double point = glm::dot(axis, getVertex(1));
+		float point = glm::dot(axis, vertex(i));
 
 		//Work out the mins and max
 		if (point < min)
@@ -92,23 +91,23 @@ vec2 SAT::getProjection(vec2 axis) const
 		else if (point > max)
 			max = point;
 	}
-	return vec2((float)min, (float)max);
+	return vec2(min, max);
 }
 
 listvec2 SAT::getEdges() const
 {
 	std::vector<vec2> result;
 	//Loop through all vertices, get edges, return
-	for (int i = 0; i < getVertices().size(); ++i)
+	for (int i = 0; i < vertices().size(); ++i)
 	{
-		vec2 start = getVertex(i);
-		vec2 end = getVertex(i + 1 == m_vextents.size() ? 0 : i + 1);
+		vec2 start = vertex(i);
+		vec2 end = vertex(i + 1 == m_vextents.size() ? 0 : i + 1);
 		result.push_back(end-start);
 	}
 	return result;
 }
 
-listvec2 SAT::getSurfaceNormals() const
+listvec2 SAT::surfaceNormals() const
 {
 	listvec2 result;
 	//Get edges, normalise, perpendiculate

@@ -44,5 +44,5 @@ protected:
 
 	//The smaller the time step, the more accurate the numerical integration solution will be
 	float fixedTimeStep = 0.02f;		//Physics engine time step		
-	float m_gravity = -0.1f;
+	float m_gravity = -0.0f;
 };
