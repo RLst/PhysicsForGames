@@ -8,7 +8,6 @@
 
 //std
 #include <iostream>
-#include <time.h>
 
 //gl
 #include <glm/ext.hpp>
@@ -18,6 +17,7 @@
 #include "Circle.h"
 #include "Plane.h"
 #include "AABB.h"
+#include "SAT.h"
 
 
 BasicPhysicsEngine::BasicPhysicsEngine() {
@@ -55,7 +55,7 @@ bool BasicPhysicsEngine::startup()
 	//Circle2CircleTest();
 	//Circle2PlaneTest();
 	//BilliardBallSimulation();
-	AABBTest();
+	Demo(m_gravity);
 
 	return true;
 }
@@ -94,6 +94,10 @@ void BasicPhysicsEngine::draw() {
 	
 	// output some text, uses the last used colour
 	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
+	
+	char fps[10];
+	sprintf_s(fps, 10, "%i", getFPS());
+	m_2dRenderer->drawText(m_font, fps, 0, getWindowHeight()-22);
 
 	// done drawing sprites
 	m_2dRenderer->end();
@@ -129,103 +133,11 @@ void BasicPhysicsEngine::SetupContinuousDemo(glm::vec2 startPos, float inclinati
 	}
 }
 
-void BasicPhysicsEngine::Circle2CircleTest()
+void BasicPhysicsEngine::Demo(float gravity)
 {
-	float collideSpeed = 100;
-	float distanceApart = 100;
-	float mass = 10;
-	float radius = 10;
+	m_physicsScene->setGravity(vec2(0, gravity));
 
-	//spawn in two circles and make them collide
-	m_physicsScene->setGravity(pkr::zero2);
-	m_physicsScene->AddActor(new Circle(vec2(250 - distanceApart, 150), vec2(collideSpeed, 0), mass, radius, pkr::colour::get(pkr::COLOUR_PURPLE)));
-	m_physicsScene->AddActor(new Circle(vec2(250 + distanceApart, 150), vec2(-collideSpeed, 0), mass, radius, pkr::colour::get(pkr::COLOUR_ORANGE)));
-}
-
-void BasicPhysicsEngine::Circle2PlaneTest()
-{
-	int numberOfCircles = 10;
-	float mass = 10;
-	float radius = 10;
-	
-	glm::ivec2 spawnRangeX(10, 490);
-	glm::ivec2 spawnRangeY(0, 250);
-
-	m_physicsScene->setGravity(vec2(0, -9.81f));
-
-	//Make the plane
-	m_physicsScene->AddActor(new Plane(vec2(0,1), 50));
-	
-	//Spawn in a bunch of circles in random places and let them drop on the plane
-	std::vector<Circle*> circles;
-	for (int i = 0; i < numberOfCircles; ++i)
-	{
-		circles.push_back(new Circle(
-			vec2(pkr::Random::range(spawnRangeX.x, spawnRangeX.y), pkr::Random::range(spawnRangeY.x, spawnRangeY.y)),
-			pkr::zero2,
-			mass,
-			radius,
-			pkr::colour::colour::random()));
-		m_physicsScene->AddActor(circles.back());
-	}
-}
-
-void BasicPhysicsEngine::BilliardBallSimulation()
-{
-	m_physicsScene->setGravity(pkr::zero2);		//Balls sitting on a table, no gravity
-
-	int cushionSize = 25;
-	//Cushions to stop the balls
-	Plane *topCushion = new Plane(vec2(0.0f, -1.0f), (float)-285 + cushionSize);
-	Plane *bottomCushion = new Plane(vec2(0.0f, 1.0f), (float)cushionSize);
-	Plane *leftCushion = new Plane(vec2(1.0f, 0.0f), (float)cushionSize);
-	Plane *rightCushion = new Plane(vec2(-1.0f, 0.0f), (float)-500 + cushionSize);
-	m_physicsScene->AddActor(topCushion);
-	m_physicsScene->AddActor(bottomCushion);
-	m_physicsScene->AddActor(leftCushion);
-	m_physicsScene->AddActor(rightCushion);
-
-	//Cue balls
-	float radius = 7.5f;
-	int numberOfBalls = 20;
-
-	Circle *cueBall = new Circle(glm::vec2(100, 150), vec2(2000.f, 500.0f), 0.170f, radius, pkr::colour::shade(0));
-	m_physicsScene->AddActor(cueBall);
-
-	for (int i = 0; i < numberOfBalls; ++i)
-	{
-		m_physicsScene->AddActor(new Circle(
-			pkr::Random::range_v2(cushionSize + radius, 500 - cushionSize - radius),
-			vec2(0, 0), 0.160f, radius, pkr::colour::random()));
-	}
-}
-
-void BasicPhysicsEngine::AABBTest()
-{
-	//m_physicsScene->setGravity(pkr::zero2);
-	m_physicsScene->setGravity(vec2(0, -98.1f));
-
-	int cushionSize = 25;
-	//Cushions to stop the balls
-	//Plane *bottomCushion = new Plane();
-	Plane *bottomCushion = new Plane(vec2(0.0f, 1.0f), (float)cushionSize);
-	m_physicsScene->AddActor(bottomCushion);
-	Plane *topCushion = new Plane(vec2(0.0f, -1.0f), (float)-285 + cushionSize);
-	m_physicsScene->AddActor(topCushion);
-	Plane *leftCushion = new Plane(vec2(1.0f, 0.0f), (float)cushionSize);
-	m_physicsScene->AddActor(leftCushion);
-	Plane *rightCushion = new Plane(vec2(-1.0f, 0.0f), (float)-500 + cushionSize);
-	m_physicsScene->AddActor(rightCushion);
-	//Plane *leftAngledCushion = new Plane(vec2(0, 100), vec2(200, 0));
-	Plane *leftAngledCushion = new Plane(vec2(1.5f, 2.0f), 100.f);
-	m_physicsScene->AddActor(leftAngledCushion);
-	Plane *rightAngledCushion = new Plane(-1.5f, 2, -200);
-	m_physicsScene->AddActor(rightAngledCushion);
-	Plane *topLeftAngledCushion = new Plane(vec2(0, 150), vec2(50, 175), RIGHT);
-	m_physicsScene->AddActor(topLeftAngledCushion);
-
-	float initialForce = 10.f;
-
+	//Material densities
 	struct {
 		float hydrogen = 0.0898f;
 		float helium = 0.179f;
@@ -258,20 +170,42 @@ void BasicPhysicsEngine::AABBTest()
 		float osmium = 22570;
 	} density; //g/cm3
 
-	//Circles
-	int numberOfCircles = 15;
-	float minRadius = 2.f;
-	float maxRadius = 15.f;
-	float circleDensity = density.wood;
+	//Cushions to stop the balls
+	int cushionSize = 10;
+	Plane *bottomCushion = new Plane(vec2(0.0f, 1.0f), (float)cushionSize);
+	m_physicsScene->AddActor(bottomCushion);
+	Plane *topCushion = new Plane(vec2(0.0f, -1.0f), (float)-285 + cushionSize);
+	m_physicsScene->AddActor(topCushion);
+	Plane *leftCushion = new Plane(vec2(1.0f, 0.0f), (float)cushionSize);
+	m_physicsScene->AddActor(leftCushion);
+	Plane *rightCushion = new Plane(vec2(-1.0f, 0.0f), (float)-500 + cushionSize);
+	m_physicsScene->AddActor(rightCushion);
+	Plane *leftAngledCushion = new Plane(vec2(1.5f, 2.0f), 100.f);
+	m_physicsScene->AddActor(leftAngledCushion);
+	Plane *rightAngledCushion = new Plane(-1.5f, 2, -200);
+	m_physicsScene->AddActor(rightAngledCushion);
+	Plane *topLeftAngledCushion = new Plane(vec2(0, 150), vec2(50, 175), RIGHT);
+	m_physicsScene->AddActor(topLeftAngledCushion);
 
-	//AABB
-	int numberOfBoxes = 15;
-	float minSize = 5.f;
-	float maxSize = 25.f;
-	float boxDensity = density.osmium;
+	////Objects
+	float initialForce = 100.f;
+
+	//Circles
+	int circleCount = 1;
+	float minRadius = 7.5f;
+	float maxRadius = 7.5f;
+	float circleDensity = density.helium;
+
+	//Other
+	int AABBCount = 1;
+	int SATCount = 1;
+	float minSize = 15.f;
+	float maxSize = 15.f;
+	float aabbDensity = density.air;
+	float satDensity = density.brass;
 
 	//Create objects
-	for (int i = 0; i < numberOfCircles; ++i)
+	for (int i = 0; i < circleCount; ++i)	//Circles
 	{
 		float radius = pkr::Random::range(minRadius, maxRadius);
 		float mass = calcMass(radius, circleDensity);
@@ -279,25 +213,30 @@ void BasicPhysicsEngine::AABBTest()
 		m_physicsScene->AddActor(new Circle(
 			vec2(50 + 25 * i, 100),
 			pkr::Random::range_v2(-initialForce, initialForce),
-			//vec2(pkr::random(-initialForce, initialForce), pkr::random(-initialForce, initialForce)),
 			mass,
 			radius,
 			pkr::colour::nice_random()));
 	}
-	for (int i = 0; i < numberOfBoxes; ++i)
+	for (int i = 0; i < AABBCount; ++i)		//AABBs
 	{
 		float width = pkr::Random::range(minSize, maxSize);
 		float height = pkr::Random::range(minSize, maxSize);
-		float mass = calcMass(width, height, boxDensity);
+		float mass = calcMass(width, height, aabbDensity);
 
 		m_physicsScene->AddActor(new AABB(
 			vec2(50 + 25 * i, 200),
 			pkr::Random::range_v2(-initialForce, initialForce),
-			//vec2(pkr::random(-initialForce, initialForce), pkr::random(-initialForce, initialForce)),
 			mass,
 			width,
 			height,
 			pkr::colour::nice_random()));
+	}
+	for (int i = 0; i < SATCount; ++i)
+	{
+		float size = pkr::Random::range(minSize, maxSize);
+		float mass = calcMass(size, size, satDensity);
+
+		m_physicsScene->AddActor(new SAT());
 	}
 }
 

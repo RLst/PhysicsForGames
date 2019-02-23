@@ -13,7 +13,7 @@ AABB::~AABB()
 {
 }
 
-void AABB::MakeGizmo()
+void AABB::DrawGizmo()
 {
 	aie::Gizmos::add2DAABBFilled(m_position, m_extents, m_colour);	//TODO &extents == m_max???
 }

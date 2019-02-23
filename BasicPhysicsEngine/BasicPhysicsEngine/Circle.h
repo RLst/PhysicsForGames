@@ -11,7 +11,7 @@ public:
 	Circle(glm::vec2 position, glm::vec2 velocity, float mass, float radius, glm::vec4 colour);
 	~Circle();
 
-	void		MakeGizmo() override;
+	void		DrawGizmo() override;
 	//bool		CheckCollision(PhysicsObject* other) override { return false; };
 
 	float		radius() const { return m_radius; }

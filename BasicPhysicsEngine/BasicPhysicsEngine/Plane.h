@@ -35,7 +35,7 @@ public:
 
 	void		FixedUpdate(glm::vec2 gravity, float timeStep) override {};
 	void		Debug() override {}
-	void		MakeGizmo() override;
+	void		DrawGizmo() override;
 	void		ResolveCollision(RigidBody* other);
 
 	vec2		normal() { return m_normal; }

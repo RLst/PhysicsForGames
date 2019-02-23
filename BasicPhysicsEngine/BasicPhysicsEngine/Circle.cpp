@@ -13,7 +13,7 @@ Circle::~Circle()
 {
 }
 
-void Circle::MakeGizmo()
+void Circle::DrawGizmo()
 {
 	aie::Gizmos::add2DCircle(m_position, m_radius, 22, m_colour);
 }

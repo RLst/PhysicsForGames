@@ -31,10 +31,7 @@ public:
 	float calcMass(float width, float height, float density);		//Calc mass for AABBs
 
 	//Tests
-	void Circle2CircleTest();
-	void Circle2PlaneTest();
-	void BilliardBallSimulation();
-	void AABBTest();
+	void Demo(float gravity);
 
 protected:
 
@@ -45,4 +42,5 @@ protected:
 
 	//The smaller the time step, the more accurate the numerical integration solution will be
 	float fixedTimeStep = 0.02f;		//Physics engine time step		
+	float m_gravity = -0.1f;
 };

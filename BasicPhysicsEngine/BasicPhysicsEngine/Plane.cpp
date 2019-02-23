@@ -52,7 +52,7 @@ Plane::~Plane()
 {
 }
 
-void Plane::MakeGizmo()
+void Plane::DrawGizmo()
 {
 	float lineSegmentLength = 1500;
 	vec2 centerPoint = m_normal * m_distanceToOrigin;

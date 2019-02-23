@@ -1,7 +1,31 @@
 #include "SAT.h"
 
+#include <Gizmos.h>
+
+SAT::SAT() :	//Test
+	RigidBody(eShapeType::SAT, vec2(150, 125), pkr::Random::range_v2(-10.f, 10.f), 0, 10)
+{
+	m_vertices.push_back(glm::vec2(0, 0));
+	m_vertices.push_back(glm::vec2(8, 16));
+	m_vertices.push_back(glm::vec2(16, 0));
+}
+
 SAT::~SAT()
 {
+}
+
+void SAT::DrawGizmo()
+{
+	////TEST!!!
+	//glm::vec4 colour = pkr::colour::random();
+	aie::Gizmos::add2DCircle(m_position, 2.f, 15, m_colour);		//Draw the main (rb) position
+	for (int i = 0; i < m_vertices.size(); ++i)
+	{
+		auto vertHead = m_vertices[i];
+		auto vertEnd = m_vertices[i + 1 == m_vertices.size() ? 0 : i + 1];	//Loop around
+		aie::Gizmos::add2DLine(vertHead + m_position, vertEnd + m_position, m_colour);
+	}
+	//aie::Gizmos::add2DTri(m_vertices[0] + m_position, m_vertices[1] + m_position, m_vertices[2] + m_position, colour);
 }
 
 glm::vec2 SAT::project(glm::vec2 axis) const
@@ -31,7 +55,7 @@ std::vector<glm::vec2> SAT::edges() const
 		point p1 = m_vertices[i];
 		point p2 = m_vertices[i + 1 == m_vertices.size() ? 0 : i + 1];
 		//surface normalisedEdge = glm::normalize(p2 - p1);
-		result.push_back(p2-p1);
+		result.push_back(p2-p1 /*+ m_position*/);	//test
 	}
 	return result;
 }

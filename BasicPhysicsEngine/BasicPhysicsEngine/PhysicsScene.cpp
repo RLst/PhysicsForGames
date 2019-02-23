@@ -78,7 +78,7 @@ void PhysicsScene::UpdateGizmos()
 {
 	for (auto actor : m_actors)
 	{
-		actor->MakeGizmo();
+		actor->DrawGizmo();
 	}
 }
 

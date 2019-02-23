@@ -46,12 +46,12 @@ namespace pkr
 			switch (colour)
 			{
 			case COLOUR_RED: return col(1, 0, 0, 1); break;
-			case COLOUR_GREEN: return col(0, 1, 0, 1); break;
+			case COLOUR_GREEN: return col(0.1f, 0.9f, 0, 1); break;
 			case COLOUR_BLUE: return col(0, 0, 1, 1); break;
 			case COLOUR_CYAN: return col(0, 1, 1, 1); break;
 			case COLOUR_MAGENTA: return col(1, 0, 1, 1); break;
-			case COLOUR_YELLOW: return col(1, 0.75f, 0, 1); break;
-			case COLOUR_ORANGE: return col(1, 0.4f, 0, 1); break;
+			case COLOUR_YELLOW: return col(1, 0.85f, 0, 1); break;
+			case COLOUR_ORANGE: return col(1, 0.5f, 0, 1); break;
 			case COLOUR_LIMEGREEN: return col(0.75f, 1, 0, 1); break;
 			case COLOUR_MINT: return col(0, 1, 0.5f, 1); break;
 			case COLOUR_DODGERBLUE: return col(0, 0.5f, 1, 1); break;
@@ -70,18 +70,17 @@ namespace pkr
 
 		static col nice_random()
 		{
-			int rnd = pkr::Random::range(0, 8);
+			int rnd = pkr::Random::range(0, 6);
 			switch (rnd)
 			{
 			case 0: return get(COLOUR_GREEN); break;
 			case 1: return get(COLOUR_RED); break;
 			case 2: return get(COLOUR_YELLOW); break;
 			case 3: return get(COLOUR_ORANGE); break;
-			case 4: return get(COLOUR_LIMEGREEN); break;
-			case 5: return get(COLOUR_DODGERBLUE); break;
-			case 6: return get(COLOUR_PURPLE); break;
-			case 7: return get(COLOUR_FUSCHIA); break;
-			case 8: return get(COLOUR_MINT); break;
+			case 4: return get(COLOUR_DODGERBLUE); break;
+			case 5: return get(COLOUR_PURPLE); break;
+			case 6: return get(COLOUR_FUSCHIA); break;
+			//case 4: return get(COLOUR_LIMEGREEN); break;
 			default: return shade(1);	//default to white
 			}
 		}
@@ -94,8 +93,6 @@ namespace pkr
 	};
 
 	//Utilities
-
-
 	static float min(float a, float b) { return a < b ? a : b; }
 	static float max(float a, float b) { return a > b ? a : b; }
 	static float clamp(float val, float minVal, float maxVal) { return max(minVal, min(maxVal, val)); }
