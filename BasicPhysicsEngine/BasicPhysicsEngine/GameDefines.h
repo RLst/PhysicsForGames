@@ -1,7 +1,7 @@
 #pragma once
 #include <glm/ext.hpp>
 #include <algorithm>
-
+#include "Random.h"
 //Constants
 const float PI = 3.14159f;
 
@@ -12,16 +12,14 @@ using glm::vec4;
 
 //Typedefs
 typedef glm::vec4 col;
-//typedef glm::vec2 axis2;		//???
-//typedef glm::vec2 projection2;	//???
-//typedef glm::vec2 point2;
 
 namespace pkr
 {
-	int random(int min, int max);
+	class Random;
+	//int random(int min, int max);
 
 	//Colour stuff
-	enum Colours {
+	enum eColours {
 		COLOUR_RED = 0,
 		COLOUR_GREEN,
 		COLOUR_BLUE,
@@ -43,7 +41,7 @@ namespace pkr
 	private:
 		colour() = default;
 	public:
-		static col get(Colours colour)
+		static col get(eColours colour)
 		{
 			switch (colour)
 			{
@@ -66,13 +64,13 @@ namespace pkr
 
 		static col random()
 		{
-			int rnd = pkr::random(0, Colours::COLOUR_COUNT - 1);
-			return get((Colours)rnd);
+			int rnd = pkr::Random::range(0, eColours::COLOUR_COUNT - 1);
+			return get((eColours)rnd);
 		}
 
 		static col nice_random()
 		{
-			int rnd = pkr::random(0, 8);
+			int rnd = pkr::Random::range(0, 8);
 			switch (rnd)
 			{
 			case 0: return get(COLOUR_GREEN); break;
@@ -96,10 +94,7 @@ namespace pkr
 	};
 
 	//Utilities
-	static int random(int min, int max)
-	{
-		return rand() % (max - min + 1) + min;
-	}
+
 
 	static float min(float a, float b) { return a < b ? a : b; }
 	static float max(float a, float b) { return a > b ? a : b; }

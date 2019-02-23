@@ -171,6 +171,7 @@
     <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="PhysicsScene.cpp" />
     <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="Random.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="SAT.cpp" />
   </ItemGroup>
@@ -183,6 +184,7 @@
     <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="PhysicsScene.h" />
     <ClInclude Include="Plane.h" />
+    <ClInclude Include="Random.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="SAT.h" />
   </ItemGroup>

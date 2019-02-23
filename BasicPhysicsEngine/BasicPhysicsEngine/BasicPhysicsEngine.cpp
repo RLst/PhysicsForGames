@@ -35,9 +35,6 @@ void BasicPhysicsEngine::shutdown() {
 
 bool BasicPhysicsEngine::startup() 
 {
-	//Randomize
-	srand(unsigned int(time(0)));
-
 	//Increase 2D line count to maximize the number of objects we can draw
 	aie::Gizmos::create(255U, 255U, 65535U, 65535U);
 	
@@ -164,7 +161,7 @@ void BasicPhysicsEngine::Circle2PlaneTest()
 	for (int i = 0; i < numberOfCircles; ++i)
 	{
 		circles.push_back(new Circle(
-			vec2(pkr::random(spawnRangeX.x, spawnRangeX.y), pkr::random(spawnRangeY.x, spawnRangeY.y)),
+			vec2(pkr::Random::range(spawnRangeX.x, spawnRangeX.y), pkr::Random::range(spawnRangeY.x, spawnRangeY.y)),
 			pkr::zero2,
 			mass,
 			radius,
@@ -197,7 +194,9 @@ void BasicPhysicsEngine::BilliardBallSimulation()
 
 	for (int i = 0; i < numberOfBalls; ++i)
 	{
-		m_physicsScene->AddActor(new Circle(vec2(pkr::random(cushionSize+radius, 500-cushionSize-radius), pkr::random(cushionSize+radius, 285-cushionSize-radius)), vec2(0, 0), 0.160f, radius, pkr::colour::random()));
+		m_physicsScene->AddActor(new Circle(
+			pkr::Random::range_v2(cushionSize + radius, 500 - cushionSize - radius),
+			vec2(0, 0), 0.160f, radius, pkr::colour::random()));
 	}
 }
 
@@ -230,7 +229,7 @@ void BasicPhysicsEngine::AABBTest()
 	struct {
 		float hydrogen = 0.0898f;
 		float helium = 0.179f;
-		float aerographite = 0.2;
+		float aerographite = 0.2f;
 		float air = 1.2f;
 		float tungsten_hexaflouride = 12.4f;
 		float styrofoam = 75;
@@ -261,38 +260,40 @@ void BasicPhysicsEngine::AABBTest()
 
 	//Circles
 	int numberOfCircles = 15;
-	int minRadius = 2;
-	int maxRadius = 15;
-	float circleDensity = density.hydrogen;
+	float minRadius = 2.f;
+	float maxRadius = 15.f;
+	float circleDensity = density.wood;
 
 	//AABB
 	int numberOfBoxes = 15;
-	int minSize = 5;
-	int maxSize = 25;
+	float minSize = 5.f;
+	float maxSize = 25.f;
 	float boxDensity = density.osmium;
 
 	//Create objects
 	for (int i = 0; i < numberOfCircles; ++i)
 	{
-		float radius = pkr::random(minRadius, maxRadius);
+		float radius = pkr::Random::range(minRadius, maxRadius);
 		float mass = calcMass(radius, circleDensity);
 
 		m_physicsScene->AddActor(new Circle(
 			vec2(50 + 25 * i, 100),
-			vec2(pkr::random(-initialForce, initialForce), pkr::random(-initialForce, initialForce)),
+			pkr::Random::range_v2(-initialForce, initialForce),
+			//vec2(pkr::random(-initialForce, initialForce), pkr::random(-initialForce, initialForce)),
 			mass,
 			radius,
 			pkr::colour::nice_random()));
 	}
 	for (int i = 0; i < numberOfBoxes; ++i)
 	{
-		float width = pkr::random(minSize, maxSize);
-		float height = pkr::random(minSize, maxSize);
+		float width = pkr::Random::range(minSize, maxSize);
+		float height = pkr::Random::range(minSize, maxSize);
 		float mass = calcMass(width, height, boxDensity);
 
 		m_physicsScene->AddActor(new AABB(
 			vec2(50 + 25 * i, 200),
-			vec2(pkr::random(-initialForce, initialForce), pkr::random(-initialForce, initialForce)),
+			pkr::Random::range_v2(-initialForce, initialForce),
+			//vec2(pkr::random(-initialForce, initialForce), pkr::random(-initialForce, initialForce)),
 			mass,
 			width,
 			height,
