@@ -24,7 +24,7 @@ SAT::~SAT()
 
 void SAT::DrawGizmo()
 {
-	aie::Gizmos::add2DCircle(m_position, 0.5f, 15, m_colour);		//Draw the main (rb) position
+	aie::Gizmos::add2DCircle(m_position, 0.5f, 8, m_colour);		//Draw the main (rb) position
 	for (int i = 0; i < m_vextents.size(); ++i)
 	{
 		auto vertHead = m_vextents[i];
@@ -47,14 +47,15 @@ void SAT::AddVertex(const vec2 newVertex)
 
 void SAT::CentralisePosition()
 {
-	vec2 center;
-	for (auto v : m_vextents)
+	vec2 center = vec2(0, 0);
+	listvec2 cacheVertices = vertices();
+	for (auto v : cacheVertices)
 	{
 		//Get sum of all vertices
 		center += v;
 	}
 	//Calculate average
-	center /= (float)(m_vextents.size() + 1);
+	center /= (float)(m_vextents.size());
 	m_position = center;	//Set as new rb.position
 }
 

@@ -40,7 +40,7 @@ protected:
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Font*			m_font;
 
-	PhysicsScene* m_physicsScene;
+	PhysicsScene*		m_physicsScene;
 
 	//The smaller the time step, the more accurate the numerical integration solution will be
 	float fixedTimeStep = 0.02f;		//Physics engine time step		

@@ -102,10 +102,13 @@ static fn collisionFuncArray[] =
 void PhysicsScene::CheckForCollisions()
 {
 	//Need to check for collisions against all objects except this one
-	for (int outer = 0; outer < m_actors.size()-1; ++outer)
+	for (int outer = 0; outer < m_actors.size() - 1; ++outer)
 	{
 		for (int inner = outer + 1; inner < m_actors.size(); ++inner)
 		{
+
+			//QUAD TREE OPTIMISAITONS HERE?
+
 			PhysicsObject* object1 = m_actors[outer];
 			PhysicsObject* object2 = m_actors[inner];
 			int shapeID1 = (int)object1->GetShapeID();
@@ -127,8 +130,8 @@ void PhysicsScene::CheckForCollisions()
 
 bool PhysicsScene::Plane2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 {
-	Plane *plane = (Plane*)obj1;
-	Circle *circle = (Circle*)obj2;
+	Plane* plane = (Plane*)obj1;
+	Circle* circle = (Circle*)obj2;
 
 	//If we are successful then test for collision
 	if (circle != nullptr && plane != nullptr)
@@ -153,8 +156,8 @@ bool PhysicsScene::Plane2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 bool PhysicsScene::Plane2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 {
 	//Try casting
-	Plane *plane = (Plane*)obj1;
-	AABB *aabb = (AABB*)obj2;
+	Plane* plane = (Plane*)obj1;
+	AABB* aabb = (AABB*)obj2;
 
 	//If successful then test for collisions
 	if (plane != nullptr && aabb != nullptr)
@@ -221,7 +224,6 @@ bool PhysicsScene::Circle2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 		float dy = circle2->position().y - circle1->position().y;
 		float radii = circle1->radius() + circle2->radius();
 		if (glm::dot(vec2(dx, dy), vec2(dx, dy)) < radii * radii)
-		//if ((dx * dx) + (dy * dy) < radii * radii)
 		{
 			//Resolve collision
 			circle1->ResolveCollision(circle2);
@@ -245,7 +247,7 @@ bool PhysicsScene::Circle2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 		vec2 clampedDistance = glm::clamp(circle->position(), aabb->min(), aabb->max());
 		vec2 V = clampedDistance - circle->position();
 		float result = glm::dot(V, V);
-		
+
 		//If there is any intersecion it means the objects have collided
 		if (result <= (circle->radius() * circle->radius()))
 		{
@@ -257,9 +259,10 @@ bool PhysicsScene::Circle2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 	return false;
 }
 
-bool PhysicsScene::Circle2SAT(PhysicsObject *, PhysicsObject *)
+bool PhysicsScene::Circle2SAT(PhysicsObject* obj1, PhysicsObject* obj2)
 {
-	return false;
+	//Re-route
+	return SAT2Circle(obj2, obj1);
 }
 
 bool PhysicsScene::AABB2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
@@ -295,7 +298,7 @@ bool PhysicsScene::AABB2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 			//TODO Not as straightforward as I initially thought
 			//aabb1->displace(vec2(-xOverlap, -yOverlap) / 2.0f);
 			//aabb2->displace(vec2(xOverlap, yOverlap) / 2.0f);
-			
+
 			//Resolve collision
 			aabb1->ResolveCollision(aabb2);
 
@@ -318,7 +321,53 @@ bool PhysicsScene::SAT2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 
 bool PhysicsScene::SAT2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 {
-	return false;
+	SAT* sat = (SAT*)obj1;
+	Circle* circle = (Circle*)obj2;
+
+	//If successful then test for collision
+	if (sat != nullptr && circle != nullptr)
+	{
+		//MTV
+		float smallestOverlap = INFINITY;
+		vec2 smallestAxis;
+
+		//Check collision between all sat's surface normals
+		for (auto axis : sat->surfaceNormals())
+		//for (int i = 0; i < sat->vertices().size(); ++i)
+		{
+			//Get sat's projection for this axis
+			vec2 satProject = sat->projection(axis);
+			
+			//Get circle's projection for this axis
+			//[NOTE: Get projection at circle's center FIRST then +/- radius
+			float circleMinProject = glm::dot(axis, circle->position()) - circle->radius();
+			float circleMaxProject = glm::dot(axis, circle->position()) + circle->radius();
+			vec2 circleProject = vec2(circleMinProject, circleMaxProject);
+
+			float o = pkr::overlap(satProject, circleProject);
+			if (o < 0) {
+				//No collision, exit
+				return false;
+			}
+			else if (o < smallestOverlap) {
+				smallestOverlap = o;
+				smallestAxis = axis;
+			}
+		}
+		//Collision detected!
+
+		//Use MTV to push out of collision interference
+		vec2 mtv = glm::normalize(smallestAxis) * smallestOverlap;
+		float totalMass = sat->mass() + circle->mass();
+		sat->ApplyForceToActor(circle, mtv * sat->mass() / totalMass);
+
+		//sat->displace(-mtv * sat->mass() / totalMass);
+		//circle->displace(mtv * circle->mass() / totalMass);		//This is still hacky and doesn't look right
+		
+		//Resolve
+		sat->ResolveCollision(circle);
+		return true;
+	}
 }
 
 bool PhysicsScene::SAT2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
@@ -331,11 +380,15 @@ bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 	//Try casting first
 	//[NOTE: Had to make eShapeTypes a enum class otherwise it conflicts with SAT class
 	SAT* sat1 = (SAT*)obj1;
-	SAT *sat2 = (SAT*)obj2;
+	SAT* sat2 = (SAT*)obj2;
 
 	//If cast successful...
 	if (sat1 != nullptr && sat2 != nullptr)
 	{
+		//Minimum Translation Vector
+		float smallestOverlap = INFINITY;
+		vec2 smallestAxis;
+
 		//1. Get list of surface normals ie. possible axes of separations
 		listvec2 axes1 = sat1->surfaceNormals();
 		listvec2 axes2 = sat2->surfaceNormals();
@@ -345,11 +398,18 @@ bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 		{
 			vec2 projection1 = sat1->projection(axis);
 			vec2 projection2 = sat2->projection(axis);
-			
+
 			//3. Determine if there's any overlap
 			//If there's a negative overlap then there's definitely NO COLLISION
-			if (pkr::overlap(projection1, projection2) < 0)
+			float o = pkr::overlap(projection1, projection2);
+			if (o < 0) {
+				//No collision, get out
 				return false;
+			}
+			else if (o < smallestOverlap) {	//Grav the MTV too
+				smallestOverlap = o;
+				smallestAxis = axis;
+			}
 		}
 		for (auto axis : axes2)
 		{
@@ -358,13 +418,27 @@ bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 
 			//3. Determine if there's any overlap
 			//If there's a negative overlap then there's definitely NO COLLISION
-			if (pkr::overlap(projection1, projection2) < 0)
+			float o = pkr::overlap(projection1, projection2);
+			if (o < 0) {
+				//No collision, get out
 				return false;
+			}
+			else if (o < smallestOverlap) {	//Grab the MTV too
+				smallestOverlap = o;
+				smallestAxis = axis;
+			}
 		}
 		//All axis overlap so there is COLLISION!
-		
+
 		//Find the minimum translation vector so that we can resolve the collision
+		vec2 mtv = glm::normalize(smallestAxis) * smallestOverlap;
+
+		//Use MTV to move out of collision interference into collision clearance or transition
+		float totalMass = sat1->mass() + sat2->mass();
+		sat1->displace(-mtv * sat1->mass() / totalMass);
+		sat2->displace(mtv * sat2->mass() / totalMass);		//This is still hacky and doesn't look right
+
 		sat1->ResolveCollision(sat2);
+		return true;
 	}
-	return true;
 }

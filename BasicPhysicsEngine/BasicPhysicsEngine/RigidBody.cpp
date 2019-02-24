@@ -84,10 +84,10 @@ void RigidBody::ResolveCollision(RigidBody * other)
 	glm::vec2 relVelocity = other->velocity() - m_velocity;
 
 	//TODO Need to make a physics material class/struct?
-	float elasticity = (m_elasticity + other->getElasticity()) / 2.0f;
+	float resultantElasticity = (m_elasticity + other->getElasticity()) / 2.0f;
 	
 	//Super formula (impulse magnitude)
-	float j = glm::dot(-(1 + elasticity) * (relVelocity), normal) / glm::dot(normal, normal * ((1 / m_mass) + (1 / other->mass())));
+	float j = glm::dot(-(1 + resultantElasticity) * (relVelocity), normal) / glm::dot(normal, normal * ((1 / m_mass) + (1 / other->mass())));
 
 	glm::vec2 force = normal * j;
 

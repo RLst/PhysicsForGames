@@ -197,17 +197,17 @@ void BasicPhysicsEngine::Demo(float gravity)
 	m_physicsScene->AddActor(topLeftAngledCushion);
 
 	////Objects
-	float initialForce = 500.0f;
+	float initialForce = 250.0f;
 
 	//Circles
 	int circleCount = 7;
 	float minRadius = 7.5f;
 	float maxRadius = 7.5f;
-	float circleDensity = density.helium;
+	float circleDensity = density.gold;
 
 	//AABBs
-	int AABBCount = 7;
-	float aabbDensity = density.air;
+	int AABBCount = 1;
+	float aabbDensity = density.gold;
 
 	float minSize = 15.f;
 	float maxSize = 15.f;
@@ -215,10 +215,12 @@ void BasicPhysicsEngine::Demo(float gravity)
 	//SATs
 	int SATCount = 7;
 	float satDensity = density.brass;
-	float satSpeed = 55.0f;
-	listvec2 isoTriangle = { vec2(-12, 0), vec2(0, 22), vec2(12, 0) };
-	SAT *sat1 = new SAT(vec2(200, 140), vec2(satSpeed, 0), 10, pkr::colour::random(), isoTriangle);
-	SAT *sat2 = new SAT(vec2(300, 150), vec2(-satSpeed, 0), 20, pkr::colour::random(), isoTriangle);
+	float satForce = 100.0f;
+	listvec2 isoTriangle = { vec2(-7.5f, 0), vec2(0, 13), vec2(7.5f, 0) };
+	SAT *sat1 = new SAT(vec2(200, 140), vec2(satForce, 0), 10, pkr::colour::random(), isoTriangle);
+	SAT *sat2 = new SAT(vec2(300, 150), vec2(-satForce, 0), 20, pkr::colour::random(), isoTriangle);
+	sat1->CentralisePosition();
+	sat2->CentralisePosition();
 	m_physicsScene->AddActor(sat1);
 	m_physicsScene->AddActor(sat2);
 
