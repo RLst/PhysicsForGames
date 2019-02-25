@@ -95,7 +95,7 @@ void BasicPhysicsEngine::draw() {
 	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
 	
 	char fps[10];
-	sprintf_s(fps, 10, "%i", (float)getFPS());
+	sprintf_s(fps, 10, "%i", getFPS());
 	m_2dRenderer->drawText(m_font, fps, 0, getWindowHeight()-22);
 
 	// done drawing sprites
@@ -200,29 +200,23 @@ void BasicPhysicsEngine::Demo(float gravity)
 	float initialForce = 250.0f;
 
 	//Circles
-	int circleCount = 7;
+	int circleCount = 5;
 	float minRadius = 7.5f;
 	float maxRadius = 7.5f;
 	float circleDensity = density.gold;
 
 	//AABBs
-	int AABBCount = 1;
+	int AABBCount = 5;
 	float aabbDensity = density.gold;
 
 	float minSize = 15.f;
 	float maxSize = 15.f;
 
 	//SATs
-	int SATCount = 7;
+	int SATCount = 5;
 	float satDensity = density.brass;
 	float satForce = 100.0f;
-	listvec2 isoTriangle = { vec2(-7.5f, 0), vec2(0, 13), vec2(7.5f, 0) };
-	SAT *sat1 = new SAT(vec2(200, 140), vec2(satForce, 0), 10, pkr::colour::random(), isoTriangle);
-	SAT *sat2 = new SAT(vec2(300, 150), vec2(-satForce, 0), 20, pkr::colour::random(), isoTriangle);
-	sat1->CentralisePosition();
-	sat2->CentralisePosition();
-	m_physicsScene->AddActor(sat1);
-	m_physicsScene->AddActor(sat2);
+	listvec2 satVextents = { vec2(0, 0), vec2(-5, 7.5f), vec2(0, 15), vec2(8, 15), vec2(13, 7.5f), vec2(8, 0)};
 
 	//Create objects
 	for (int i = 0; i < circleCount; ++i)	//Circles
@@ -261,7 +255,7 @@ void BasicPhysicsEngine::Demo(float gravity)
 			pkr::Random::range_v2(-initialForce, initialForce),
 			mass,
 			pkr::colour::nice_random(),
-			isoTriangle));
+			satVextents));
 	}
 	
 }

@@ -10,7 +10,7 @@ SAT::SAT() :	//Test
 	m_vextents.push_back(vec2(9, 0));
 }
 
-SAT::SAT(vec2 position, vec2 velocity, float mass, vec4 colour, listvec2 & vextents) :
+SAT::SAT(const vec2& position, const vec2& velocity, float mass, const vec4& colour, const listvec2& vextents = listvec2()) :
 	RigidBody(eShapeType::SAT, position, velocity, 0, mass),
 	m_colour(colour)
 {
@@ -33,13 +33,13 @@ void SAT::DrawGizmo()
 	}
 }
 
-void SAT::AddVextent(const vec2 newVextent)
+void SAT::AddVextent(const vec2& newVextent)
 {
 	//Local coords
 	m_vextents.push_back(newVextent);
 }
 
-void SAT::AddVertex(const vec2 newVertex)
+void SAT::AddVertex(const vec2& newVertex)
 {
 	//World coords
 	m_vextents.push_back(newVertex - m_position);
@@ -47,16 +47,23 @@ void SAT::AddVertex(const vec2 newVertex)
 
 void SAT::CentralisePosition()
 {
-	vec2 center = vec2(0, 0);
-	listvec2 cacheVertices = vertices();
-	for (auto v : cacheVertices)
+	/*
+	original offset = 100,100;
+
+	*/
+
+	auto originalOffset = m_position;
+	vec2 localCenter = vec2(0, 0);
+	//listvec2 cacheVertices = vertices();
+	//for (auto v : cacheVertices)
+	for (auto v : m_vextents)
 	{
-		//Get sum of all vertices
-		center += v;
+		//Get sum of all local vertex extents
+		localCenter += v;
 	}
 	//Calculate average
-	center /= (float)(m_vextents.size());
-	m_position = center;	//Set as new rb.position
+	localCenter /= (float)(m_vextents.size());
+	m_position -= localCenter;	//Set as new rb.position
 }
 
 vec2 SAT::vertex(int index) const
@@ -77,7 +84,7 @@ listvec2 SAT::vertices() const
 	return result;
 }
 
-vec2 SAT::projection(vec2 axis) const
+vec2 SAT::projection(const vec2& axis) const
 {
 	float min = glm::dot(axis, this->vertex(0));
 	float max = min;
@@ -95,7 +102,7 @@ vec2 SAT::projection(vec2 axis) const
 	return vec2(min, max);
 }
 
-listvec2 SAT::getEdges() const
+listvec2 SAT::edges() const
 {
 	std::vector<vec2> result;
 	//Loop through all vertices, get edges, return
@@ -112,7 +119,7 @@ listvec2 SAT::surfaceNormals() const
 {
 	listvec2 result;
 	//Get edges, normalise, perpendiculate
-	listvec2 edgesCached = getEdges();
+	listvec2 edgesCached = edges();
 	for (auto e : edgesCached)
 	{
 		result.push_back(glm::normalize(vec2(-e.y, e.x)));	//normalise + perpend

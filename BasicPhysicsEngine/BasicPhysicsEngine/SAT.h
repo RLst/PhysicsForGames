@@ -18,19 +18,19 @@ protected:
 
 public:
 	SAT();
-	SAT(vec2 position, vec2 velocity, float mass, vec4 colour, listvec2 &vextents = listvec2());	//Defaults to an empty list of vertices
+	SAT(const vec2& position, const vec2& velocity, float mass, const vec4& colour, const listvec2& vextents);	//Defaults to an empty list of vertices
 	~SAT();
 
 	void			DrawGizmo() override;
-	void			AddVextent(const vec2 newVextent);	//Appends a new vertex (extent; local coords)
-	void			AddVertex(const vec2 newVertex);	//Appends a new vertex (world coords)
+	void			AddVextent(const vec2& newVextent);	//Appends a new vertex (extent; local coords)
+	void			AddVertex(const vec2& newVertex);	//Appends a new vertex (world coords)
 	void			CentralisePosition();				//Calculates the mean center of all vertices and sets rb.position to this
 
 	vec2			vertex(int index) const;			//Returns a vertex in WORLD coordinates
 	listvec2		vertices() const;				//Return list of vertices in WORLD coordinates
 	
-	vec2			projection(vec2 axis) const;			//Returns projection in WORLD coordinates
-	listvec2		getEdges() const;						//Returns all edges in WORLD coordinates
+	vec2			projection(const vec2& axis) const;			//Returns projection in WORLD coordinates
+	listvec2		edges() const;						//Returns all edges in WORLD coordinates
 	listvec2		surfaceNormals() const;					//Returns all surface normals in WORLD coordinates
 	
 };

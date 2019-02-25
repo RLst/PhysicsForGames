@@ -298,6 +298,7 @@ bool PhysicsScene::AABB2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 			//TODO Not as straightforward as I initially thought
 			//aabb1->displace(vec2(-xOverlap, -yOverlap) / 2.0f);
 			//aabb2->displace(vec2(xOverlap, yOverlap) / 2.0f);
+			//aabb1->ApplyForceToActor(aabb2, vec2(xOverlap, yOverlap) * aabb1->mass());		//CRAP
 
 			//Resolve collision
 			aabb1->ResolveCollision(aabb2);
@@ -310,7 +311,8 @@ bool PhysicsScene::AABB2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 
 bool PhysicsScene::AABB2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 {
-	return false;
+	//Re-route
+	return SAT2AABB(obj2, obj1);
 }
 
 bool PhysicsScene::SAT2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
@@ -333,11 +335,11 @@ bool PhysicsScene::SAT2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 
 		//Check collision between all sat's surface normals
 		for (auto axis : sat->surfaceNormals())
-		//for (int i = 0; i < sat->vertices().size(); ++i)
+			//for (int i = 0; i < sat->vertices().size(); ++i)
 		{
 			//Get sat's projection for this axis
 			vec2 satProject = sat->projection(axis);
-			
+
 			//Get circle's projection for this axis
 			//[NOTE: Get projection at circle's center FIRST then +/- radius
 			float circleMinProject = glm::dot(axis, circle->position()) - circle->radius();
@@ -358,12 +360,13 @@ bool PhysicsScene::SAT2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 
 		//Use MTV to push out of collision interference
 		vec2 mtv = glm::normalize(smallestAxis) * smallestOverlap;
-		float totalMass = sat->mass() + circle->mass();
-		sat->ApplyForceToActor(circle, mtv * sat->mass() / totalMass);
+		//float totalMass = sat->mass() + circle->mass();
+		//sat->ApplyForceToActor(circle, mtv * sat->mass());
+		//sat->ApplyForceToActor(circle, mtv * sat->mass() / totalMass);
 
 		//sat->displace(-mtv * sat->mass() / totalMass);
 		//circle->displace(mtv * circle->mass() / totalMass);		//This is still hacky and doesn't look right
-		
+
 		//Resolve
 		sat->ResolveCollision(circle);
 		return true;
@@ -372,7 +375,70 @@ bool PhysicsScene::SAT2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 
 bool PhysicsScene::SAT2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 {
-	return false;
+	SAT* sat = (SAT*)obj1;
+	AABB* aabb = (AABB*)obj2;
+
+	if (sat != nullptr && aabb != nullptr)
+	{
+		//MTV
+		float smallestOverlap = INFINITY;
+		vec2 smallestAxis;
+
+		//Test SAT against AABB
+		for (int i = 0; i < aabb->vertices().size(); ++i)
+		{
+			//Only 2 axes to test
+			vec2 horizontalAxis = vec2(0, 1);
+			vec2 verticalAxis = vec2(1, 0);
+			
+			//Horizontal
+			auto aabbHProjection = vec2(aabb->min().y, aabb->max().y);
+			auto satHProjection = sat->projection(horizontalAxis);
+			auto o = pkr::overlap(satHProjection, aabbHProjection);
+			if (o < 0) {
+				return false;	//No collision
+			}
+			else if (o < smallestOverlap) {
+				smallestOverlap = o; smallestAxis = horizontalAxis;
+			}
+
+			//Vertical
+			auto aabbVProjection = vec2(aabb->min().x, aabb->max().x);
+			auto satVProjection = sat->projection(verticalAxis);
+			o = pkr::overlap(satVProjection, aabbVProjection);
+			if (o < 0) {
+				return false;	//No collision
+			}
+			else if (o < smallestOverlap) {
+				smallestOverlap = o; smallestAxis = verticalAxis;
+			}
+		}
+
+		//Test AABB against SAT
+		listvec2 satTestAxes = sat->surfaceNormals();
+		for (auto axis : satTestAxes)
+		{
+			vec2 projectionSat = sat->projection(axis);
+			vec2 projectionAABB = aabb->projection(axis);
+			float o = findOverlap(projectionSat, projectionAABB);
+			
+			if (o < 0) {
+				return false;
+			}
+			else if (o < smallestOverlap) {
+				smallestOverlap = o;
+				smallestAxis = axis;
+			}
+		}
+
+		//COLLISION DETECTED!
+		//Minimum Translation Vector
+		vec2 mtv = glm::normalize(smallestAxis) * smallestOverlap;
+
+		//Resolve
+		sat->ResolveCollision(aabb);
+	}
+	return true;
 }
 
 bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
@@ -393,7 +459,7 @@ bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 		listvec2 axes1 = sat1->surfaceNormals();
 		listvec2 axes2 = sat2->surfaceNormals();
 
-		//2. Project EACH shape's hull onto EACH axis
+		//Project each shape's hull onto each shape's axis and check for overlap
 		for (auto axis : axes1)
 		{
 			vec2 projection1 = sat1->projection(axis);
@@ -406,7 +472,7 @@ bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 				//No collision, get out
 				return false;
 			}
-			else if (o < smallestOverlap) {	//Grav the MTV too
+			else if (o < smallestOverlap) {	//Grab the MTV too
 				smallestOverlap = o;
 				smallestAxis = axis;
 			}
@@ -428,7 +494,7 @@ bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 				smallestAxis = axis;
 			}
 		}
-		//All axis overlap so there is COLLISION!
+		//All axes overlapped so there is COLLISION!
 
 		//Find the minimum translation vector so that we can resolve the collision
 		vec2 mtv = glm::normalize(smallestAxis) * smallestOverlap;
@@ -441,4 +507,12 @@ bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 		sat1->ResolveCollision(sat2);
 		return true;
 	}
+}
+
+float PhysicsScene::findOverlap(const vec2 & projection1, const vec2 & projection2)
+{
+	//Find mins
+	float a = projection1.y - projection2.x;
+	float b = projection2.y - projection1.x;
+	return a < b ? a : b;
 }

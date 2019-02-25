@@ -55,6 +55,8 @@ public:
 	static bool SAT2SAT(PhysicsObject*, PhysicsObject*);
 	///////////////////////
 
+	static float	findOverlap(const vec2 &projection1, const vec2 &projection2); 
+
 	void		setGravity(const vec2 gravity) { m_gravity = gravity; }
 	vec2		getGravity() const { return m_gravity; }
 
