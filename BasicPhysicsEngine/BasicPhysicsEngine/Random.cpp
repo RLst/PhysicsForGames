@@ -1,5 +1,4 @@
 #include "Random.h"
-//#include <random>
 
 namespace pkr {
 	std::random_device		Random::m_rd;

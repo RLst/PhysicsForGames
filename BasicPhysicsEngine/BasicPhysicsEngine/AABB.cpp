@@ -18,9 +18,9 @@ void AABB::DrawGizmo()
 	aie::Gizmos::add2DAABBFilled(m_position, m_extents, m_colour);
 }
 
-listvec2 AABB::vertices() const
+vec2array AABB::vertices() const
 {
-	listvec2 verts(4);
+	vec2array verts(4);
 	verts[0] = min();
 	verts[1] = { min().x, max().y };
 	verts[2] = max();
@@ -28,9 +28,9 @@ listvec2 AABB::vertices() const
 	return verts;
 }
 
-listvec2 AABB::vextents() const
+vec2array AABB::vextents() const
 {
-	listvec2 vextents(4);
+	vec2array vextents(4);
 	vextents[0] = -m_extents;
 	vextents[1] = { -m_extents.x, m_extents.y };
 	vextents[2] = m_extents;

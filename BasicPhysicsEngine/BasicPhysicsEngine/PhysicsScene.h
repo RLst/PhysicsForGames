@@ -6,7 +6,6 @@ class PhysicsObject;
 
 //Clean minimal code
 using glm::vec2;
-typedef std::vector<glm::vec2> listvec2;
 typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 class PhysicsScene

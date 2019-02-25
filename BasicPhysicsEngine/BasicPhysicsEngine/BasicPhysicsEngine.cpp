@@ -9,9 +9,6 @@
 //std
 #include <iostream>
 
-//glm
-#include <glm/ext.hpp>
-
 //local
 #include "GameDefines.h"
 #include "PhysicsScene.h"
@@ -19,7 +16,6 @@
 #include "Plane.h"
 #include "AABB.h"
 #include "SAT.h"
-
 
 BasicPhysicsEngine::BasicPhysicsEngine() {
 }
@@ -96,7 +92,7 @@ void BasicPhysicsEngine::draw() {
 	
 	char fps[10];
 	sprintf_s(fps, 10, "%i", getFPS());
-	m_2dRenderer->drawText(m_font, fps, 0, getWindowHeight()-22);
+	m_2dRenderer->drawText(m_font, fps, 0, (float)(getWindowHeight()-22));
 
 	// done drawing sprites
 	m_2dRenderer->end();
@@ -112,7 +108,7 @@ float BasicPhysicsEngine::calcMass(float width, float height, float density)
 	return width * height * density / 1000.f;
 }
 
-void BasicPhysicsEngine::SetupContinuousDemo(glm::vec2 startPos, float inclination, float speed, float gravity)
+void BasicPhysicsEngine::SetupContinuousDemo(vec2 startPos, float inclination, float speed, float gravity)
 {
 	//Analytical solution
 	///Circle properties
@@ -176,49 +172,38 @@ void BasicPhysicsEngine::Demo(float gravity)
 		float gold = 19320;
 		float platinum = 21450;
 		float iridium = 22420;
-		float osmium = 22570;
+		float osmium = 22570;	//Heaviest Metal: 14.3% denser than gold, 39.99% denser than mercury, around twice a dense as lead
 	} density; //g/cm3
 
-	//Cushions to stop the balls
+	//Straight cushions
 	int cushionSize = 15;
-	Plane *bottomCushion = new Plane(vec2(0.0f, 1.0f), (float)cushionSize);
+	Plane *bottomCushion = new Plane();
 	m_physicsScene->AddActor(bottomCushion);
 	Plane *topCushion = new Plane(vec2(0.0f, -1.0f), (float)-285 + cushionSize);
 	m_physicsScene->AddActor(topCushion);
-	Plane *leftCushion = new Plane(vec2(1.0f, 0.0f), (float)cushionSize);
-	m_physicsScene->AddActor(leftCushion);
+	//Plane *leftCushion = new Plane(vec2(1.0f, 0.0f), (float)cushionSize);
+	//m_physicsScene->AddActor(leftCushion);
 	Plane *rightCushion = new Plane(vec2(-1.0f, 0.0f), (float)-500 + cushionSize);
 	m_physicsScene->AddActor(rightCushion);
-	Plane *leftAngledCushion = new Plane(vec2(1.5f, 2.0f), 100.f);
-	m_physicsScene->AddActor(leftAngledCushion);
-	Plane *rightAngledCushion = new Plane(-1.5f, 2, -200);
-	m_physicsScene->AddActor(rightAngledCushion);
-	Plane *topLeftAngledCushion = new Plane(vec2(0, 150), vec2(50, 175), RIGHT);
-	m_physicsScene->AddActor(topLeftAngledCushion);
+	//Angled cushions
+	Plane *angCushionLeft = new Plane(vec2(3, 2.0f), 110.f);	//Normal override
+	m_physicsScene->AddActor(angCushionLeft);
+	Plane *angCushionRight = new Plane(-1, 4, -40);			//ax + by + d override
+	m_physicsScene->AddActor(angCushionRight);
+	Plane *angCushionTop = new Plane(vec2(0, 160), vec2(150, 230), RIGHT);	//2 points override
+	m_physicsScene->AddActor(angCushionTop);
 
-	////Objects
-	float initialForce = 250.0f;
+	//////////////////////////
+	//// OBJECT CREATION
+	////////////////////////
+	float initialForce = 300.0f;
 
 	//Circles
-	int circleCount = 5;
-	float minRadius = 7.5f;
-	float maxRadius = 7.5f;
-	float circleDensity = density.gold;
-
-	//AABBs
-	int AABBCount = 5;
-	float aabbDensity = density.gold;
-
-	float minSize = 15.f;
-	float maxSize = 15.f;
-
-	//SATs
-	int SATCount = 5;
-	float satDensity = density.brass;
-	float satForce = 100.0f;
-	listvec2 satVextents = { vec2(0, 0), vec2(-5, 7.5f), vec2(0, 15), vec2(8, 15), vec2(13, 7.5f), vec2(8, 0)};
-
-	//Create objects
+	int circleCount = 15;
+	float minRadius = 2.5f;
+	float maxRadius = 10.f;
+	float circleDensity = density.hydrogen;
+	
 	for (int i = 0; i < circleCount; ++i)	//Circles
 	{
 		float radius = pkr::Random::range(minRadius, maxRadius);
@@ -231,6 +216,13 @@ void BasicPhysicsEngine::Demo(float gravity)
 			radius,
 			pkr::colour::nice_random()));
 	}
+
+	//AABBs
+	int AABBCount = 5;
+	float aabbDensity = density.copper;
+	float minSize = 5.f;
+	float maxSize = 20.f;
+	
 	for (int i = 0; i < AABBCount; ++i)		//AABBs
 	{
 		float width = pkr::Random::range(minSize, maxSize);
@@ -245,17 +237,32 @@ void BasicPhysicsEngine::Demo(float gravity)
 			height,
 			pkr::colour::nice_random()));
 	}
+
+	//SATs
+	int SATCount = 5;
+	float satDensity = density.osmium;
+	float satForce = 100.0f;
+	vec2array satVextents = { vec2(0, 0), vec2(-5, 7.5f), vec2(0, 15), vec2(8, 15), vec2(13, 7.5f), vec2(8, 0)};
+	
 	for (int i = 0; i < SATCount; ++i)		//SATs
 	{
 		float size = pkr::Random::range(minSize, maxSize);
 		float mass = calcMass(size, size, satDensity);
-
-		m_physicsScene->AddActor(new SAT(
+		SAT* newSat = new SAT(
 			vec2(50 + 25 * i, 150),
 			pkr::Random::range_v2(-initialForce, initialForce),
 			mass,
 			pkr::colour::nice_random(),
-			satVextents));
+			satVextents);
+		newSat->CentralisePosition();
+
+		m_physicsScene->AddActor(newSat);
+
+		//m_physicsScene->AddActor(new SAT(
+		//	vec2(50 + 25 * i, 150),
+		//	pkr::Random::range_v2(-initialForce, initialForce),
+		//	mass,
+		//	pkr::colour::nice_random(),
+		//	satVextents));
 	}
-	
 }

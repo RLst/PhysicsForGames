@@ -2,17 +2,17 @@
 #include "PhysicsObject.h"
 #include "RigidBody.h"
 
-#include <algorithm>
-#include <list>
+//std
 #include <iostream>
+#include <vector>
+#include <list>
 
+//local
+#include "GameDefines.h"
 #include "Plane.h"
 #include "Circle.h"
 #include "AABB.h"
 #include "SAT.h"
-#include "GameDefines.h"
-
-#include <vector>
 
 PhysicsScene::PhysicsScene(float timeStep, vec2 gravity, bool collisionEnabled) :
 	m_timeStep(timeStep),
@@ -302,7 +302,6 @@ bool PhysicsScene::AABB2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 
 			//Resolve collision
 			aabb1->ResolveCollision(aabb2);
-
 			return true;
 		}
 	}
@@ -360,17 +359,17 @@ bool PhysicsScene::SAT2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 
 		//Use MTV to push out of collision interference
 		vec2 mtv = glm::normalize(smallestAxis) * smallestOverlap;
-		//float totalMass = sat->mass() + circle->mass();
-		//sat->ApplyForceToActor(circle, mtv * sat->mass());
+		float totalMass = sat->mass() + circle->mass();
 		//sat->ApplyForceToActor(circle, mtv * sat->mass() / totalMass);
 
-		//sat->displace(-mtv * sat->mass() / totalMass);
-		//circle->displace(mtv * circle->mass() / totalMass);		//This is still hacky and doesn't look right
+		sat->displace(-mtv * sat->mass() / totalMass);
+		circle->displace(mtv * circle->mass() / totalMass);		//This is still hacky and doesn't look right
 
 		//Resolve
 		sat->ResolveCollision(circle);
 		return true;
 	}
+	return false;
 }
 
 bool PhysicsScene::SAT2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
@@ -415,7 +414,7 @@ bool PhysicsScene::SAT2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 		}
 
 		//Test AABB against SAT
-		listvec2 satTestAxes = sat->surfaceNormals();
+		vec2array satTestAxes = sat->surfaceNormals();
 		for (auto axis : satTestAxes)
 		{
 			vec2 projectionSat = sat->projection(axis);
@@ -437,8 +436,9 @@ bool PhysicsScene::SAT2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 
 		//Resolve
 		sat->ResolveCollision(aabb);
+		return true;
 	}
-	return true;
+	return false;
 }
 
 bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
@@ -456,8 +456,8 @@ bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 		vec2 smallestAxis;
 
 		//1. Get list of surface normals ie. possible axes of separations
-		listvec2 axes1 = sat1->surfaceNormals();
-		listvec2 axes2 = sat2->surfaceNormals();
+		vec2array axes1 = sat1->surfaceNormals();
+		vec2array axes2 = sat2->surfaceNormals();
 
 		//Project each shape's hull onto each shape's axis and check for overlap
 		for (auto axis : axes1)
@@ -507,6 +507,7 @@ bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 		sat1->ResolveCollision(sat2);
 		return true;
 	}
+	return false;
 }
 
 float PhysicsScene::findOverlap(const vec2 & projection1, const vec2 & projection2)

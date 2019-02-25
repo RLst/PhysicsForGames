@@ -1,9 +1,5 @@
 #pragma once
 #include "RigidBody.h"
-#include <glm/ext.hpp>
-
-using glm::vec2;
-using glm::vec4;
 
 class Circle : public RigidBody
 {

@@ -18,7 +18,7 @@ Plane::Plane(float x, float y, float distance, float elasticity /*= 0.9f*/) :
 	m_normal = glm::normalize(glm::vec2(x, y));
 }
 
-Plane::Plane(const glm::vec2 normal, float distance, float elasticity /*= 0.9f*/) :
+Plane::Plane(const vec2& normal, float distance, float elasticity /*= 0.9f*/) :
 	PhysicsObject(eShapeType::PLANE),
 	m_distanceToOrigin(distance),
 	m_elasticity(elasticity)
@@ -26,7 +26,7 @@ Plane::Plane(const glm::vec2 normal, float distance, float elasticity /*= 0.9f*/
 	m_normal = glm::normalize(normal);
 }
 
-Plane::Plane(const glm::vec2 point1, const glm::vec2 point2, ePerpDirection pdir /*= LEFT*/, float elasticity /*= 0.9f*/) :
+Plane::Plane(const vec2& point1, const vec2& point2, ePerpDirection pdir /*= LEFT*/, float elasticity /*= 0.9f*/) :
 	PhysicsObject(eShapeType::PLANE),
 	m_elasticity(elasticity)
 {
@@ -80,23 +80,23 @@ void Plane::ResolveCollision(RigidBody * other)
 	other->ApplyForce(force);
 }
 
-float Plane::distanceTo(const glm::vec2 & point) const
+float Plane::distanceTo(const vec2& point) const
 {
 	//Super fast (no sqrt)
 	return (glm::dot(point, m_normal) - m_distanceToOrigin);
 }
 
-glm::vec2 Plane::closestPoint(const glm::vec2 & point) const
+glm::vec2 Plane::closestPoint(const vec2& point) const
 {
 	return point - m_normal * distanceTo(point);
 }
 
-ePlaneResult Plane::testSide(const glm::vec2 & point) const
-{
-	float t = glm::dot(point, m_normal) + m_distanceToOrigin;
-	if (t < 0)
-		return ePlaneResult::BACK;
-	else if (t > 0)
-		return ePlaneResult::FRONT;
-	return ePlaneResult::INTERSECTS;
-}
+//ePlaneResult Plane::testSide(const glm::vec2 & point) const
+//{
+//	float t = glm::dot(point, m_normal) + m_distanceToOrigin;
+//	if (t < 0)
+//		return ePlaneResult::BACK;
+//	else if (t > 0)
+//		return ePlaneResult::FRONT;
+//	return ePlaneResult::INTERSECTS;
+//}

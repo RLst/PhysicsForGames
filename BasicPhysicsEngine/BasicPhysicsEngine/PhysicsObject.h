@@ -1,6 +1,13 @@
 #pragma once
 
 #include <glm/ext.hpp>
+#include <vector>
+#include "GameDefines.h"
+
+//Core using and typedefs
+using glm::vec2;
+using glm::vec4;
+typedef std::vector<glm::vec2> vec2array;
 
 enum class eShapeType
 {
@@ -19,7 +26,7 @@ protected:
 public:
 	virtual ~PhysicsObject() noexcept;	//Ran into an error
 
-	virtual void	FixedUpdate(glm::vec2 gravity, float timeStep) = 0;
+	virtual void	FixedUpdate(const vec2& gravity, float timeStep) = 0;
 	virtual void	Debug() = 0;
 	virtual void	DrawGizmo() = 0;
 	virtual void	ResetPosition() {};

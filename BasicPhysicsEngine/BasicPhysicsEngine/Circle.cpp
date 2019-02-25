@@ -1,5 +1,5 @@
 #include "Circle.h"
-#include <glm/ext.hpp>
+
 #include <Gizmos.h>
 
 Circle::Circle(vec2 position, vec2 velocity, float mass, float radius, vec4 colour) :

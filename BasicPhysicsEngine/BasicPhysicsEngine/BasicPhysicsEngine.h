@@ -4,7 +4,6 @@
 #include "Renderer2D.h"
 
 #include <glm/ext.hpp>
-#include <vector>
 
 //Should forward declare pointers, not #include headers
 class PhysicsScene;
@@ -44,5 +43,5 @@ protected:
 
 	//The smaller the time step, the more accurate the numerical integration solution will be
 	float fixedTimeStep = 0.02f;		//Physics engine time step		
-	float m_gravity = -0.0f;
+	float m_gravity = -98.1f;
 };

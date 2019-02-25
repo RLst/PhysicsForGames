@@ -10,7 +10,7 @@ SAT::SAT() :	//Test
 	m_vextents.push_back(vec2(9, 0));
 }
 
-SAT::SAT(const vec2& position, const vec2& velocity, float mass, const vec4& colour, const listvec2& vextents = listvec2()) :
+SAT::SAT(const vec2& position, const vec2& velocity, float mass, const vec4& colour, const vec2array& vextents = vec2array()) :
 	RigidBody(eShapeType::SAT, position, velocity, 0, mass),
 	m_colour(colour)
 {
@@ -73,10 +73,10 @@ vec2 SAT::vertex(int index) const
 	return m_vextents[index] + m_position;
 }
 
-listvec2 SAT::vertices() const
+vec2array SAT::vertices() const
 {
 	//Return all vertices in WORLD coordinates
-	listvec2 result;
+	vec2array result;
 	for (auto v : m_vextents)
 	{
 		result.push_back(v + m_position);
@@ -102,7 +102,7 @@ vec2 SAT::projection(const vec2& axis) const
 	return vec2(min, max);
 }
 
-listvec2 SAT::edges() const
+vec2array SAT::edges() const
 {
 	std::vector<vec2> result;
 	//Loop through all vertices, get edges, return
@@ -115,11 +115,11 @@ listvec2 SAT::edges() const
 	return result;
 }
 
-listvec2 SAT::surfaceNormals() const
+vec2array SAT::surfaceNormals() const
 {
-	listvec2 result;
+	vec2array result;
 	//Get edges, normalise, perpendiculate
-	listvec2 edgesCached = edges();
+	vec2array edgesCached = edges();
 	for (auto e : edgesCached)
 	{
 		result.push_back(glm::normalize(vec2(-e.y, e.x)));	//normalise + perpend

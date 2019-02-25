@@ -1,15 +1,6 @@
 #pragma once
 #include "RigidBody.h"
 
-#include <glm/ext.hpp>
-#include "GameDefines.h"
-#include <vector>
-
-class vector;
-using glm::vec2;
-using glm::vec4;
-typedef std::vector<glm::vec2> listvec2;
-
 class AABB : public RigidBody
 {
 protected:
@@ -25,8 +16,8 @@ public:
 	vec2		max() const { return m_position + m_extents; }	//Returns the max extent WORLD positoin
 	
 	//Returns an array of all vertices (RELATIVE TO THE CENTER POSITION) starting from min
-	listvec2	vertices() const;
-	listvec2	vextents() const;
+	vec2array	vertices() const;
+	vec2array	vextents() const;
 
 	vec2		projection(const vec2 &axis) const;			//Returns projection (x.min, x.max) in WORLD coordinates
 };
