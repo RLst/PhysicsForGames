@@ -515,7 +515,7 @@ bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 		////Use MTV to move out of collision interference into collision clearance or transition
 		//MTV is the collision overlap!
 		//try it just on the first object
-		sat1->displace(-mtv);
+		sat1->displace(mtv);
 		
 		//float totalMass = sat1->mass() + sat2->mass();
 		//sat1->displace(-mtv * sat1->mass() / totalMass);

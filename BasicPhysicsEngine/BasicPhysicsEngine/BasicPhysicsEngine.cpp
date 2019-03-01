@@ -196,11 +196,11 @@ void BasicPhysicsEngine::Demo(float gravity)
 	//////////////////////////
 	//// OBJECT CREATION
 	////////////////////////
-	float initialForce = 500.0f;
+	float initialForce = 300.0f;
 	float elasticity = 0.99f;	//Anything less than 0.98 is boring
 
 	//Circles
-	int circleCount = 100;
+	int circleCount = 0;
 	float minRadius = 2.5f;
 	float maxRadius = 12.5f;
 	float circleDensity = density.gold;
@@ -241,11 +241,11 @@ void BasicPhysicsEngine::Demo(float gravity)
 	}
 
 	//SATs
-	int SATCount = 0;
+	int SATCount = 10;
 	float satDensity = density.osmium;
 	float satForce = 100.0f;
-	vec2array satVextents = { vec2(0, 0), vec2(-5, 7.5f), vec2(0, 15), vec2(8, 15), vec2(13, 7.5f), vec2(8, 0)};
-	
+	vec2array trapezoid = { vec2(0,0), vec2(6,12.5f), vec2(24, 12.5f), vec2(30,0) };
+
 	for (int i = 0; i < SATCount; ++i)		//SATs
 	{
 		float size = pkr::Random::range(minSize, maxSize);
@@ -255,16 +255,9 @@ void BasicPhysicsEngine::Demo(float gravity)
 			pkr::Random::range_v2(-initialForce, initialForce),
 			mass,
 			pkr::colour::nice_random(),
-			satVextents);
+			pkr::Random::range(3, 8), 10);
 		newSat->CentralisePosition();
 
 		m_physicsScene->AddActor(newSat);
-
-		//m_physicsScene->AddActor(new SAT(
-		//	vec2(50 + 25 * i, 150),
-		//	pkr::Random::range_v2(-initialForce, initialForce),
-		//	mass,
-		//	pkr::colour::nice_random(),
-		//	satVextents));
 	}
 }

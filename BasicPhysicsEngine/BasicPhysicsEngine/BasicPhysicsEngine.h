@@ -45,3 +45,10 @@ protected:
 	float fixedTimeStep = 0.02f;		//Physics engine time step		
 	float m_gravity = -98.1f;
 };
+
+/* References
+- https://gamedevelopment.tutsplus.com/tutorials/collision-detection-using-the-separating-axis-theorem--gamedev-169
+- http://www.dyn4j.org/2010/01/sat/
+
+
+*/

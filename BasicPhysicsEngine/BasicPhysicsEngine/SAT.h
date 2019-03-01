@@ -10,6 +10,7 @@ protected:
 public:
 	SAT();
 	SAT(const vec2& position, const vec2& velocity, float mass, const vec4& colour, const vec2array& vextents);	//Defaults to an empty list of vertices
+	SAT(const vec2& position, const vec2& velocity, float mass, const vec4& colour, int sides, float radius);	//Regular polygon constructor
 	~SAT();
 
 	void			DrawGizmo() override;
@@ -18,10 +19,10 @@ public:
 	void			CentralisePosition();				//Calculates the mean center of all vertices and sets rb.position to this
 
 	vec2			vertex(int index) const;			//Returns a vertex in WORLD coordinates
-	vec2array		vertices() const;				//Return list of vertices in WORLD coordinates
+	vec2array		vertices() const;					//Return list of vertices in WORLD coordinates
 	
-	vec2			projection(const vec2& axis) const;			//Returns projection in WORLD coordinates
-	vec2array		edges() const;						//Returns all edges in WORLD coordinates
+	vec2			projection(const vec2& axis) const;		//Returns projection in WORLD coordinates
+	vec2array		edges() const;							//Returns all edges in WORLD coordinates
 	vec2array		surfaceNormals() const;					//Returns all surface normals in WORLD coordinates
 	
 };

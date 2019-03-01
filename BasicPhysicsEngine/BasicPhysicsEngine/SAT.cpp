@@ -18,13 +18,26 @@ SAT::SAT(const vec2& position, const vec2& velocity, float mass, const vec4& col
 	m_vextents = vextents;
 }
 
+SAT::SAT(const vec2 & position, const vec2 & velocity, float mass, const vec4 & colour, int sides, float radius) :
+	RigidBody(eShapeType::SAT, position, velocity, 0, mass),
+	m_colour(colour)
+{
+	//Generate regular polygon
+	float angleRad;
+	for (int i = 0; i < sides; ++i)
+	{
+		angleRad = i * 2.0f * PI / (float)sides;
+		m_vextents.push_back(vec2(radius * sinf(angleRad), radius * cosf(angleRad)));
+	}
+}
+
 SAT::~SAT()
 {
 }
 
 void SAT::DrawGizmo()
 {
-	aie::Gizmos::add2DCircle(m_position, 0.5f, 8, m_colour);		//Draw the main (rb) position
+	//aie::Gizmos::add2DCircle(m_position, 0.5f, 8, m_colour);		//Draw the main (rb) position
 	for (int i = 0; i < m_vextents.size(); ++i)
 	{
 		auto vertHead = m_vextents[i];

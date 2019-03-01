@@ -31,7 +31,6 @@ public:
 	void		UpdateGizmos();		//Redraws gizmos
 	void		DebugScene();
 
-	// Collision detection //
 	void		CheckForCollisions();
 	static bool	Plane2Plane(PhysicsObject*, PhysicsObject*) { return false;	} //DO NOT REMOVE! Place holder
 	static bool Plane2Circle(PhysicsObject*, PhysicsObject*);
@@ -52,7 +51,6 @@ public:
 	static bool SAT2Circle(PhysicsObject*, PhysicsObject*);
 	static bool SAT2AABB(PhysicsObject*, PhysicsObject*);
 	static bool SAT2SAT(PhysicsObject*, PhysicsObject*);
-	///////////////////////
 
 	static float	findOverlap(const vec2 &projection1, const vec2 &projection2); 
 

@@ -6,15 +6,17 @@
 class RigidBody : public PhysicsObject
 {
 protected:
+	bool		m_isKinematic;
+
 	//Mass
 	float		m_mass;
 
 	//Displacement
-	vec2	m_position;
+	vec2		m_position;
 	float		m_rotation;		//2D so we only need a single float to represent our rotation
 	
 	//Velocity
-	vec2	m_velocity;
+	vec2		m_velocity;
 	float		m_angularVelocity;
 
 	//Drag
@@ -42,14 +44,12 @@ protected:
 
 public:
 	RigidBody(eShapeType shapeID,
-
 		const vec2& position,
- const vec2& velocity,
+		const vec2& velocity,
 		float rotation,
- float mass,
+		float mass,
 		float elasticity = 1.f,
- float linearDrag = 0.05f,
-
+		float linearDrag = 0.05f,
 		float angDrag = 0.15f,
 		float minLinearThreshold = 0.1f, float minAngularThreshold = 0.01f);
 	virtual ~RigidBody();
@@ -81,7 +81,7 @@ public:
 	float		getElasticity() const { return m_elasticity; }
 	void		setElasticity(const float elasiticity) { m_elasticity = elasiticity; }
 
-	//TEST
-	void		displace(const vec2& displacement);		//To prevent sticking etc.
+	//Restitution
+	void		displace(const vec2& displacement);
 };
 
