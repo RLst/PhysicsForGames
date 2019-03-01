@@ -223,8 +223,21 @@ bool PhysicsScene::Circle2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 		float dx = circle2->position().x - circle1->position().x;
 		float dy = circle2->position().y - circle1->position().y;
 		float radii = circle1->radius() + circle2->radius();
-		if (glm::dot(vec2(dx, dy), vec2(dx, dy)) < radii * radii)
+		
+		//DOT is basically a way to multipy vectors together ie. in this case squaring them
+		float sqrDist = glm::dot(vec2(dx, dy), vec2(dx, dy));
+
+		if (sqrDist < radii * radii)
 		{
+			//Restitution
+			float dist = sqrtf(sqrDist);
+			float overlap = dist - radii;
+			auto displaceVector = circle2->position() - circle1->position();
+			displaceVector = glm::normalize(displaceVector);
+			//Displace by half each
+			circle1->displace(displaceVector * overlap * 0.5f);
+			circle2->displace(-displaceVector * overlap * 0.5f);
+
 			//Resolve collision
 			circle1->ResolveCollision(circle2);
 			return true;
@@ -499,10 +512,14 @@ bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 		//Find the minimum translation vector so that we can resolve the collision
 		vec2 mtv = glm::normalize(smallestAxis) * smallestOverlap;
 
-		//Use MTV to move out of collision interference into collision clearance or transition
-		float totalMass = sat1->mass() + sat2->mass();
-		sat1->displace(-mtv * sat1->mass() / totalMass);
-		sat2->displace(mtv * sat2->mass() / totalMass);		//This is still hacky and doesn't look right
+		////Use MTV to move out of collision interference into collision clearance or transition
+		//MTV is the collision overlap!
+		//try it just on the first object
+		sat1->displace(-mtv);
+		
+		//float totalMass = sat1->mass() + sat2->mass();
+		//sat1->displace(-mtv * sat1->mass() / totalMass);
+		//sat2->displace(mtv * sat2->mass() / totalMass);		//This is still hacky and doesn't look right
 
 		sat1->ResolveCollision(sat2);
 		return true;

@@ -42,10 +42,15 @@ protected:
 
 public:
 	RigidBody(eShapeType shapeID,
-		const vec2& position, const vec2& velocity,
-		float rotation, float mass,
-		float linearDrag = 0.05f, float angDrag = 0.15f,
+
+		const vec2& position,
+ const vec2& velocity,
+		float rotation,
+ float mass,
 		float elasticity = 1.f,
+ float linearDrag = 0.05f,
+
+		float angDrag = 0.15f,
 		float minLinearThreshold = 0.1f, float minAngularThreshold = 0.01f);
 	virtual ~RigidBody();
 

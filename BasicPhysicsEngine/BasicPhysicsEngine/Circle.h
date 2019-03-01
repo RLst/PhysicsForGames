@@ -8,7 +8,7 @@ protected:
 	vec4		m_colour;
 
 public:
-	Circle(vec2 position, vec2 velocity, float mass, float radius, vec4 colour);
+	Circle(vec2 position, vec2 velocity, float mass, float radius, vec4 colour, float elasticity = 1.0f);
 	~Circle();
 
 	void		DrawGizmo() override;

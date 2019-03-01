@@ -2,8 +2,8 @@
 
 #include <Gizmos.h>
 
-Circle::Circle(vec2 position, vec2 velocity, float mass, float radius, vec4 colour) :
-	RigidBody(eShapeType::CIRCLE, position, velocity, 0, mass),
+Circle::Circle(vec2 position, vec2 velocity, float mass, float radius, vec4 colour, float elasticity) :
+	RigidBody(eShapeType::CIRCLE, position, velocity, 0, mass, elasticity),
 	m_radius(radius),
 	m_colour(colour)
 {

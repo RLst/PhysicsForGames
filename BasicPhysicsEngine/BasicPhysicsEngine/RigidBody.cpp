@@ -7,13 +7,19 @@ void RigidBody::displace(const vec2& displacement)
 	m_position += displacement;
 }
 
-RigidBody::RigidBody(eShapeType shapeID, const vec2& position, const vec2& velocity, 
+RigidBody::RigidBody(eShapeType shapeID, const vec2& position,
+ const vec2& velocity,
+ 
 	float rotation,
- float mass, 
-	float linearDrag,
- float angularDrag,
 
+ float mass,
+ 
 	float elasticity,
+
+ float linearDrag,
+
+
+	float angularDrag,
 	float minLinearThreshold, float minAngularThreshold) :
 	PhysicsObject(shapeID),	//Avoids PhysicsObject requiring a default ctr
 	m_position(position),

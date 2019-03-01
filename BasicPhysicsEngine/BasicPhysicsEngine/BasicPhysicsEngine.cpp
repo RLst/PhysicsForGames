@@ -196,13 +196,14 @@ void BasicPhysicsEngine::Demo(float gravity)
 	//////////////////////////
 	//// OBJECT CREATION
 	////////////////////////
-	float initialForce = 300.0f;
+	float initialForce = 500.0f;
+	float elasticity = 0.99f;	//Anything less than 0.98 is boring
 
 	//Circles
-	int circleCount = 15;
+	int circleCount = 100;
 	float minRadius = 2.5f;
-	float maxRadius = 10.f;
-	float circleDensity = density.hydrogen;
+	float maxRadius = 12.5f;
+	float circleDensity = density.gold;
 	
 	for (int i = 0; i < circleCount; ++i)	//Circles
 	{
@@ -214,11 +215,12 @@ void BasicPhysicsEngine::Demo(float gravity)
 			pkr::Random::range_v2(-initialForce, initialForce),
 			mass,
 			radius,
-			pkr::colour::nice_random()));
+			pkr::colour::nice_random(),
+			elasticity));
 	}
 
 	//AABBs
-	int AABBCount = 5;
+	int AABBCount = 0;
 	float aabbDensity = density.copper;
 	float minSize = 5.f;
 	float maxSize = 20.f;
@@ -239,7 +241,7 @@ void BasicPhysicsEngine::Demo(float gravity)
 	}
 
 	//SATs
-	int SATCount = 5;
+	int SATCount = 0;
 	float satDensity = density.osmium;
 	float satForce = 100.0f;
 	vec2array satVextents = { vec2(0, 0), vec2(-5, 7.5f), vec2(0, 15), vec2(8, 15), vec2(13, 7.5f), vec2(8, 0)};
