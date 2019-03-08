@@ -1,6 +1,6 @@
 #include "SAT.h"
-
 #include <Gizmos.h>
+#include "PhysicsMaterial.h"
 
 SAT::SAT() :	//Test
 	RigidBody(eShapeType::SAT, vec2(0,0), vec2(20, 20), 0, 10)
@@ -31,18 +31,43 @@ SAT::SAT(const vec2 & position, const vec2 & velocity, float mass, const vec4 & 
 	}
 }
 
+SAT::SAT(const vec2 & pos, const vec2 & vel, float rot, float size, int sides, vec4 colour, PhysicsMaterial* material, bool isKinematic) :
+	RigidBody(eShapeType::SAT, pos, vel, rot, isKinematic),
+	m_colour(colour)
+{
+	float radius = size * 0.5f;
+	//Mass
+	m_mass = PI * radius * radius * material->getDensity();
+
+	//MOI
+	m_moment = 0.5f * m_mass * radius * radius;		//Just use Circle formula
+
+	//Generate regular polygon
+	float angleRad;
+	for (int i = 0; i < sides; ++i)
+	{
+		angleRad = i * 2.0f * PI / (float)sides;
+		m_vextents.push_back(vec2(radius * sinf(angleRad), radius * cosf(angleRad)));
+	}
+}
+
 SAT::~SAT()
 {
 }
 
 void SAT::DrawGizmo()
 {
-	//aie::Gizmos::add2DCircle(m_position, 0.5f, 8, m_colour);		//Draw the main (rb) position
-	for (int i = 0; i < m_vextents.size(); ++i)
+	//Make sure that there are enough vertices
+	if (m_vextents.size() < 3) return;
+
+	//if so get the first vert
+	vec2 vert0 = m_vextents[0];
+
+	for (int i = 1; i < m_vextents.size() - 1; ++i)
 	{
-		auto vertHead = m_vextents[i];
-		auto vertEnd = m_vextents[i + 1 == m_vextents.size() ? 0 : i + 1];	//Loop around
-		aie::Gizmos::add2DLine(vertHead + m_position, vertEnd + m_position, m_colour);
+		auto vert1 = m_vextents[i];
+		auto vert2 = m_vextents[i + 1];
+		aie::Gizmos::add2DTri(vert1 + m_position, vert0 + m_position, vert2 + m_position, m_colour);
 	}
 }
 

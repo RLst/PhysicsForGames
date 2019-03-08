@@ -5,6 +5,7 @@
 #include "Font.h"
 #include "Input.h"
 #include <Gizmos.h>
+#include <imgui.h>
 
 //std
 #include <iostream>
@@ -16,6 +17,7 @@
 #include "Plane.h"
 #include "AABB.h"
 #include "SAT.h"
+#include "PhysicsMaterial.h"
 
 BasicPhysicsEngine::BasicPhysicsEngine() {
 }
@@ -30,11 +32,11 @@ void BasicPhysicsEngine::shutdown() {
 	delete m_physicsScene;
 }
 
-bool BasicPhysicsEngine::startup() 
+bool BasicPhysicsEngine::startup()
 {
 	//Increase 2D line count to maximize the number of objects we can draw
 	aie::Gizmos::create(255U, 255U, 65535U, 65535U);
-	
+
 	m_2dRenderer = new aie::Renderer2D();
 
 	// TODO: remember to change this when redistributing a build!
@@ -46,11 +48,11 @@ bool BasicPhysicsEngine::startup()
 #endif
 
 	//Initialize the physics scene
-	m_physicsScene = new PhysicsScene();
-	m_physicsScene->setTimeStep(fixedTimeStep);
+	m_physicsScene = new PhysicsScene(fixedTimeStep, m_gravity);
+	//Just create a ground plane so there's something for it to render and refresh
+	m_physicsScene->AddActor(new Plane());
 
-	//Initiate the demo
-	Demo(m_gravity);
+	createMaterials();
 
 	return true;
 }
@@ -62,13 +64,11 @@ void BasicPhysicsEngine::update(float deltaTime) {
 
 	aie::Gizmos::clear();
 
-	//Apply force towards the other actor
-	if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT))
-	{
-	}
-
 	m_physicsScene->Update(deltaTime);
 	m_physicsScene->UpdateGizmos();
+
+	//Run demo
+	demoloop();
 
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
@@ -85,14 +85,14 @@ void BasicPhysicsEngine::draw() {
 
 	// draw your stuff here!
 	static float aspectRatio = 16 / 9.0f;
-	aie::Gizmos::draw2D(glm::ortho<float>(0, 500, 0 / aspectRatio, 500 / aspectRatio, -1, 1));
-	
+	aie::Gizmos::draw2D(glm::ortho<float>(0, 1440, 0, 900, -1, 1));
+
 	// output some text, uses the last used colour
 	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
-	
+
 	char fps[10];
 	sprintf_s(fps, 10, "%i", getFPS());
-	m_2dRenderer->drawText(m_font, fps, 0, (float)(getWindowHeight()-22));
+	m_2dRenderer->drawText(m_font, fps, 0, (float)(getWindowHeight() - 22));
 
 	// done drawing sprites
 	m_2dRenderer->end();
@@ -107,40 +107,9 @@ float BasicPhysicsEngine::calcMass(float width, float height, float density)
 {
 	return width * height * density / 1000.f;
 }
-
-void BasicPhysicsEngine::SetupContinuousDemo(vec2 startPos, float inclination, float speed, float gravity)
+void BasicPhysicsEngine::tempStartup()
 {
-	//Analytical solution
-	///Circle properties
-	float radius = 3.0f;
-	int segments = 12;
-	col colour = pkr::colour::get(pkr::COLOUR_RED);
-
-	//Time and steps
-	float t = 0;
-	float tStep = fixedTimeStep;
-	int steps = 300;
-
-	vec2 vel0;
-	vel0.x = speed * cosf(pkr::DegsToRad(inclination));
-	vel0.y = speed * sinf(pkr::DegsToRad(inclination));
-
-	while (t <= steps * tStep)
-	{
-		//Calc the x,y position of the projectile at time t
-		vec2 pos;
-		pos.x = startPos.x + vel0.x * t;
-		pos.y = startPos.y + vel0.y * t + 0.5f * gravity * t * t;
-
-		aie::Gizmos::add2DCircle(pos, radius, segments, colour);
-
-		t += tStep;
-	}
-}
-
-void BasicPhysicsEngine::Demo(float gravity)
-{
-	m_physicsScene->setGravity(vec2(0, gravity));
+	//m_physicsScene->setGravity(m_gravity);
 
 	//Material densities
 	struct {
@@ -241,7 +210,7 @@ void BasicPhysicsEngine::Demo(float gravity)
 	}
 
 	//SATs
-	int SATCount = 10;
+	int SATCount = 1;
 	float satDensity = density.osmium;
 	float satForce = 100.0f;
 	vec2array trapezoid = { vec2(0,0), vec2(6,12.5f), vec2(24, 12.5f), vec2(30,0) };
@@ -260,4 +229,219 @@ void BasicPhysicsEngine::Demo(float gravity)
 
 		m_physicsScene->AddActor(newSat);
 	}
+}
+
+void BasicPhysicsEngine::createMaterials()
+{
+	mat_bouncy = new PhysicsMaterial(0.7f, 0.98f, eMaterial::CORK);
+	mat_metal = new PhysicsMaterial(0.2f, 0.3f, eMaterial::BRASS);
+	mat_slippery = new PhysicsMaterial(0.01f, 0.2f, eMaterial::PLASTICS);
+	mat_wooden = new PhysicsMaterial(0.5f, 0.2f, eMaterial::PINE);
+}
+
+void BasicPhysicsEngine::demoloop()
+{
+	aie::Input* input = aie::Input::getInstance();
+	static int editMode = 0;	//0 Select, 1 Create, 2 Remove
+	static int currentObjectType = 0; //0 Plane, 1 Circle, 2 AABB, 3 SAT
+	static vec2 initForce;
+	static bool isKinematic;
+	static float size1 = 1;
+	static float size2 = 1;
+
+	//Mouse stuff
+	/* Need: 
+	- start point
+	- end point
+	- drag vector */
+	static bool onMouseHold = input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT);
+	static bool mouseLHold = false;
+	static glm::ivec2 mouseStart(0, 0);
+	static glm::ivec2 mouseEnd(0, 0);
+	static glm::ivec2 mouseDrag(0, 0);
+
+	//MOUSE START AND END DRAGS
+	if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT) && mouseLHold == false)
+	{
+		if (!ImGui::IsMouseHoveringAnyWindow())
+		{
+			input->getMouseXY(&mouseStart.x, &mouseStart.y);
+			mouseLHold = true;
+		}
+	}
+	if (input->isMouseButtonUp(aie::INPUT_MOUSE_BUTTON_LEFT) && mouseLHold == true)
+	{
+		mouseLHold = false;
+	}
+	if (mouseLHold)
+	{
+		input->getMouseXY(&mouseEnd.x, &mouseEnd.y);
+	}
+	if (mouseStart != mouseEnd)
+	{
+		mouseDrag = mouseEnd - mouseStart;
+	}
+
+	ImGui::Begin("2D Physics Demo");
+	{
+		ImGui::BeginGroup();
+		{
+			ImGui::Text("Settings");
+			ImGui::SliderFloat2("Gravity", glm::value_ptr(m_gravity), -200, 200);
+			m_physicsScene->setGravity(m_gravity);
+		}
+		ImGui::EndGroup();
+		ImGui::Spacing();
+
+		ImGui::BeginGroup();
+		{
+			ImGui::Text("Create");
+
+			ImGui::RadioButton("Plane", &currentObjectType, 0); ImGui::SameLine();
+			ImGui::RadioButton("Circle", &currentObjectType, 1); ImGui::SameLine();
+			ImGui::RadioButton("AABB", &currentObjectType, 2); ImGui::SameLine();
+			ImGui::RadioButton("SAT", &currentObjectType, 3);
+
+			switch (currentObjectType)
+			{
+			case 0:	//Plane
+				ImGui::Text("To create a plane, click and drag to set the plane normal, release to create.");
+				break;
+			case 1:	//Circle
+				ImGui::TextWrapped("To create a circle, click to spawn a random circle at cursor. Click and drag to spawn with velocity. Check Kinematic to create a kinematic object.");
+				ImGui::SliderFloat2("Force", glm::value_ptr(initForce), -500, 500);
+				ImGui::Checkbox("Kinematic", &isKinematic);
+				break;
+			case 2:	//AABB
+				ImGui::TextWrapped("To create a AABB, click to spawn a random AABB at cursor. Click and drag to spawn with velocity. Check Kinematic to create a kinematic object.");
+				ImGui::SliderFloat2("Force", glm::value_ptr(initForce), -500, 500);
+				ImGui::Checkbox("Kinematic", &isKinematic);
+				break;
+			case 3:	//SAT
+				ImGui::TextWrapped("To create a SAT, click to spawn a random SAT at cursor. Click and drag to spawn with velocity. Check Kinematic to create a kinematic object.");
+				ImGui::SliderFloat2("Force", glm::value_ptr(initForce), -500, 500);
+				ImGui::Checkbox("Kinematic", &isKinematic);
+				break;
+			}
+		}
+		ImGui::EndGroup();
+	}
+	ImGui::End();
+
+
+	//Always in create mode for now
+	//If in create mode...
+	{
+		//Init working vars
+		static struct {
+			struct {
+				float length = 2000.0f;
+				vec2 normal;
+				vec2 surface;
+				vec2 start;
+				vec2 end;
+			} plane;
+
+			struct {
+			} dynamic;
+		} paint;
+
+		switch (currentObjectType)
+		{
+		case 0: //Plane
+			//Draw plane stuff
+
+			//If mouse is in drag mode then draw normal and plane to create
+			if (mouseLHold)	{
+				if (mouseStart != mouseEnd)	{
+					aie::Gizmos::add2DLine(mouseStart, mouseEnd, pkr::colour::get(pkr::eColours::COLOUR_RED));
+					paint.plane.normal = vec2(mouseEnd - mouseStart);
+					paint.plane.surface = vec2(paint.plane.normal.y, -paint.plane.normal.x);
+					paint.plane.start = static_cast<vec2>(mouseStart) + (paint.plane.surface * paint.plane.length);
+					paint.plane.end = static_cast<vec2>(mouseStart) - (paint.plane.surface * paint.plane.length);
+					aie::Gizmos::add2DLine(paint.plane.start, paint.plane.end, pkr::colour::get(pkr::eColours::COLOUR_ORANGE));
+				}
+			}
+
+			//If mouse has just gone out of drag then create 
+			if (input->wasMouseButtonReleased(0)) {
+				if (mouseStart != mouseEnd) {
+					//Make the plane
+					m_physicsScene->AddActor(new Plane(mouseStart, mouseEnd, mat_metal));
+				}
+			}
+
+			//If left mouse button has been released then create a plane based on the mouse drag
+			break;
+
+		case 1: //Circle
+			//Draw drag vector
+			if (mouseLHold) {
+				if (mouseStart != mouseEnd) {
+					aie::Gizmos::add2DLine(mouseStart, mouseEnd, pkr::colour::get(pkr::eColours::COLOUR_RED));
+				}
+			}
+			if (input->wasMouseButtonReleased(0))
+			{
+				if (!ImGui::IsMouseHoveringAnyWindow())
+				{
+					glm::ivec2 pos; input->getMouseXY(&pos.x, &pos.y);
+					auto vel = mouseDrag * 5;
+					float rot = 0;
+					float radius = pkr::Random::range(20.f, 40.f);
+					col colour = pkr::colour::nice_random();
+					m_physicsScene->AddActor(new Circle(pos, vel, rot, radius, colour, mat_bouncy, isKinematic));
+				}
+			}
+			break;
+
+		case 2: //AABB
+			//Draw drag vector
+			if (mouseLHold) {
+				if (mouseStart != mouseEnd) {
+					aie::Gizmos::add2DLine(mouseStart, mouseEnd, pkr::colour::get(pkr::eColours::COLOUR_RED));
+				}
+			}
+			//Draw shape
+			if (input->wasMouseButtonReleased(0))
+			{
+				if (!ImGui::IsMouseHoveringAnyWindow())
+				{
+					glm::ivec2 pos; input->getMouseXY(&pos.x, &pos.y);
+					auto vel = mouseDrag * 5;
+					float rot = 0;
+					float width = pkr::Random::range(40.f, 80.f);
+					float height = pkr::Random::range(40.f, 80.f);
+					col colour = pkr::colour::nice_random();
+					m_physicsScene->AddActor(new AABB(pos, vel, width, height, colour, mat_wooden, isKinematic));
+				}
+			}
+			break;
+
+		case 3: //SAT
+			//Draw drag vector
+			if (mouseLHold) {
+				if (mouseStart != mouseEnd) {
+					aie::Gizmos::add2DLine(mouseStart, mouseEnd, pkr::colour::get(pkr::eColours::COLOUR_RED));
+				}
+			}
+			if (input->wasMouseButtonReleased(0))
+			{
+				if (!ImGui::IsMouseHoveringAnyWindow())
+				{
+					glm::ivec2 pos;
+					input->getMouseXY(&pos.x, &pos.y);
+					auto vel = mouseDrag * 5;
+					float rot = 0;
+					float size = pkr::Random::range(40, 80);
+					int sides = pkr::Random::range(3, 8);
+					col colour = pkr::colour::nice_random();
+					m_physicsScene->AddActor(new SAT(pos, vel, rot, size, sides, colour, mat_metal, isKinematic));
+				}
+			}
+			break;
+		}
+	}
+
+
 }

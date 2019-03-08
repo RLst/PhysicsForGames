@@ -7,18 +7,16 @@ void RigidBody::displace(const vec2& displacement)
 	m_position += displacement;
 }
 
-RigidBody::RigidBody(eShapeType shapeID, const vec2& position,
- const vec2& velocity,
- 
+RigidBody::RigidBody(eShapeType shapeID, 
+	const vec2& position,
+	const vec2& velocity,
 	float rotation,
-
- float mass,
- 
+	bool isKinematic,
+	float mass,
+	float moment,
 	float elasticity,
-
- float linearDrag,
-
-
+	float friction,
+	float linearDrag,
 	float angularDrag,
 	float minLinearThreshold, float minAngularThreshold) :
 	PhysicsObject(shapeID),	//Avoids PhysicsObject requiring a default ctr
@@ -26,7 +24,10 @@ RigidBody::RigidBody(eShapeType shapeID, const vec2& position,
 	m_velocity(velocity),
 	m_rotation(rotation),
 	m_mass(mass),
+	m_moment(moment),
 	m_elasticity(elasticity),
+	m_friction(friction),
+	m_isKinematic(isKinematic),
 	MIN_LINEAR_THRESHOLD(minLinearThreshold),
 	MIN_ANGULAR_THRESHOLD(minAngularThreshold)
 {
@@ -40,6 +41,9 @@ RigidBody::~RigidBody()
 
 void RigidBody::FixedUpdate(const vec2& gravity, float timeStep)
 {
+	//Stop if kinematic
+	if (m_isKinematic) return;
+
 	ApplyForce(gravity * m_mass * timeStep);
 	m_position += m_velocity * timeStep;
 	m_velocity -= m_velocity * m_linearDrag * timeStep;

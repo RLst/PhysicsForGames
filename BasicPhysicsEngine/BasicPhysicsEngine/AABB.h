@@ -1,6 +1,8 @@
 #pragma once
 #include "RigidBody.h"
 
+class PhysicsMaterial;
+
 class AABB : public RigidBody
 {
 protected:
@@ -8,6 +10,8 @@ protected:
 	vec4		m_colour;
 public:
 	AABB(const vec2& position, const vec2& velocity, float mass, float width, float height, const vec4& colour);
+
+	AABB(const vec2& pos, const vec2& vel, float width, float height, vec4 colour, PhysicsMaterial* material, bool isKinematic = false);
 	~AABB();
 
 	void		DrawGizmo() override;

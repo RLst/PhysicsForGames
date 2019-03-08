@@ -1,11 +1,24 @@
 #include "AABB.h"
-
 #include <Gizmos.h>
+#include "PhysicsMaterial.h"
 
 AABB::AABB(const vec2& position, const vec2& velocity, float mass, float width, float height, const vec4& colour) :
-	RigidBody(eShapeType::BOX, position, velocity, 0, mass),
+	RigidBody(eShapeType::AABB, position, velocity, 0, mass),
 	m_colour(colour)
 {
+	m_extents = vec2(width * 0.5f, height * 0.5f);
+}
+
+AABB::AABB(const vec2 & pos, const vec2 & vel, float width, float height, vec4 colour, PhysicsMaterial* material, bool isKinematic) :
+	RigidBody(eShapeType::AABB, pos, vel, 0, isKinematic),
+	m_colour(colour)
+{
+	//Mass
+	m_mass = width * height * material->getDensity();
+
+	//MOI
+	m_moment = 1.f / 12.f * m_mass * width * height;
+
 	m_extents = vec2(width * 0.5f, height * 0.5f);
 }
 

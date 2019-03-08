@@ -13,7 +13,7 @@ enum class eShapeType
 {
 	PLANE = 0,
 	CIRCLE,
-	BOX,
+	AABB,
 	SAT,
 	SHAPE_COUNT
 };

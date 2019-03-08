@@ -8,24 +8,22 @@ class RigidBody : public PhysicsObject
 protected:
 	bool		m_isKinematic;
 
-	//Mass
+	//Linear
 	float		m_mass;
-
-	//Displacement
 	vec2		m_position;
-	float		m_rotation;		//2D so we only need a single float to represent our rotation
-	
-	//Velocity
 	vec2		m_velocity;
-	float		m_angularVelocity;
-
-	//Drag
 	float		m_linearDrag;
-	float		m_angularDrag;
 	const float MIN_LINEAR_THRESHOLD;		//Why can't this be static?
-	const float MIN_ANGULAR_THRESHOLD;
 
-	//Restitution
+	//Angular
+	float		m_moment;
+	float		m_rotation;		//2D so we only need a single float to represent our rotation
+	float		m_angularVelocity;
+	float		m_angularDrag;
+	const float MIN_ANGULAR_THRESHOLD;
+	
+	//Material
+	float		m_friction;
 	float		m_elasticity;
 
 	/*//Unity inspired properties
@@ -47,8 +45,11 @@ public:
 		const vec2& position,
 		const vec2& velocity,
 		float rotation,
-		float mass,
+		bool isKinematic = false,
+		float mass = 1.f,
+		float moment = 1.f,
 		float elasticity = 1.f,
+		float friction = 1.f,
 		float linearDrag = 0.05f,
 		float angDrag = 0.15f,
 		float minLinearThreshold = 0.1f, float minAngularThreshold = 0.01f);
@@ -70,6 +71,7 @@ public:
 	float		rotation() const { return m_rotation; }
 	vec2		velocity() const { return m_velocity; }
 	float		angVel() const { return m_angularVelocity; }
+	bool		isKinematic() const { return m_isKinematic; }
 
 	//Drag
 	float		getLinearDrag() const { return m_linearDrag; }

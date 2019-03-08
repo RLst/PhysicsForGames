@@ -47,13 +47,13 @@ PhysicsMaterial::PhysicsMaterial(float friction, float elasticity, float density
 PhysicsMaterial::PhysicsMaterial(float friction, float elasticity, eMaterial material) :
 	friction(friction), elasticity(elasticity), m_material(material)
 {
-	m_density = getDensityFromMaterial(material);
+	m_density = getDensityFromMaterial(material) * 0.0001f;		//Divide by 1000 to convert to kg/cm3 (msi units)
 }
 
 void PhysicsMaterial::setMaterial(const eMaterial material)
 {
 	m_material = material;
-	m_density = getDensityFromMaterial(material);
+	m_density = getDensityFromMaterial(material) * 0.0001f;		//Divide by 1000 to convert to kg/cm3 (msi units)
 }
 
 eMaterial PhysicsMaterial::getMaterial() const

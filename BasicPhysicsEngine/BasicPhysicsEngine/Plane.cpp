@@ -1,6 +1,7 @@
 #include "Plane.h"
 #include <Gizmos.h>
 #include "RigidBody.h"
+#include "PhysicsMaterial.h"
 
 Plane::Plane() :
 	PhysicsObject(eShapeType::PLANE),
@@ -48,13 +49,27 @@ Plane::Plane(const vec2& point1, const vec2& point2, ePerpDirection pdir /*= LEF
 	m_distanceToOrigin = glm::dot(point1, m_normal);
 }
 
+Plane::Plane(const vec2 & normalStart, const vec2 & normalEnd, PhysicsMaterial* material) :
+	PhysicsObject(eShapeType::PLANE)
+{
+	//Material
+	m_friction = material->friction;
+	m_elasticity = material->elasticity;
+
+	//Get normal vector
+	m_normal = glm::normalize(normalEnd - normalStart);
+
+	//Find distance to origin
+	m_distanceToOrigin = glm::dot(normalStart, m_normal);
+}
+
 Plane::~Plane()
 {
 }
 
 void Plane::DrawGizmo()
 {
-	float lineSegmentLength = 1500;
+	float lineSegmentLength = 1000000.f;
 	vec2 centerPoint = m_normal * m_distanceToOrigin;
 		//Easy to rotate normal through 90 degrees around z
 	vec2 parallel(m_normal.y, -m_normal.x);
