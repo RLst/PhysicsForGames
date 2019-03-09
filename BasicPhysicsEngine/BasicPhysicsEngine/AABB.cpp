@@ -2,15 +2,15 @@
 #include <Gizmos.h>
 #include "PhysicsMaterial.h"
 
-AABB::AABB(const vec2& position, const vec2& velocity, float mass, float width, float height, const vec4& colour) :
-	RigidBody(eShapeType::AABB, position, velocity, 0, mass),
-	m_colour(colour)
-{
-	m_extents = vec2(width * 0.5f, height * 0.5f);
-}
+//AABB::AABB(const vec2& position, const vec2& velocity, float mass, float width, float height, const vec4& colour) :
+//	RigidBody(eShapeType::AABB, position, velocity, 0, mass),
+//	m_colour(colour)
+//{
+//	m_extents = vec2(width * 0.5f, height * 0.5f);
+//}
 
 AABB::AABB(const vec2 & pos, const vec2 & vel, float width, float height, vec4 colour, PhysicsMaterial* material, bool isKinematic) :
-	RigidBody(eShapeType::AABB, pos, vel, 0, isKinematic),
+	RigidBody(eShapeType::AABB, pos, vel, 0, isKinematic, material),
 	m_colour(colour)
 {
 	//Mass

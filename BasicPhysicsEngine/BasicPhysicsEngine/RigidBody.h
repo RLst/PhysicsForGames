@@ -1,7 +1,7 @@
 #pragma once
 #include "PhysicsObject.h"
-
 #include <algorithm>
+#include "PhysicsMaterial.h"
 
 class RigidBody : public PhysicsObject
 {
@@ -23,8 +23,7 @@ protected:
 	const float MIN_ANGULAR_THRESHOLD;
 	
 	//Material
-	float		m_friction;
-	float		m_elasticity;
+	PhysicsMaterial*	m_material;
 
 	/*//Unity inspired properties
 	BodyType: ie. Dynamic, Static, Kinetic
@@ -44,15 +43,15 @@ public:
 	RigidBody(eShapeType shapeID,
 		const vec2& position,
 		const vec2& velocity,
-		float rotation,
+		float rotation, 
 		bool isKinematic = false,
+		PhysicsMaterial* material = new PhysicsMaterial(0.4f, 0.9f, 1000),
 		float mass = 1.f,
 		float moment = 1.f,
-		float elasticity = 1.f,
-		float friction = 1.f,
 		float linearDrag = 0.05f,
 		float angDrag = 0.15f,
-		float minLinearThreshold = 0.1f, float minAngularThreshold = 0.01f);
+		float minLinearThreshold = 0.1f,
+		float minAngularThreshold = 0.01f);
 	virtual ~RigidBody();
 
 	void		FixedUpdate(const vec2& gravity, float timeStep) override;
@@ -79,9 +78,9 @@ public:
 	float		getAngularDrag() const { return m_angularDrag; }
 	void		setAngularDrag(const float angDrag) { m_angularDrag = std::clamp(angDrag, 0.0f, 1.0f); }
 
-	//Elasticity
-	float		getElasticity() const { return m_elasticity; }
-	void		setElasticity(const float elasiticity) { m_elasticity = elasiticity; }
+	//Material
+	PhysicsMaterial*	getMaterial() const { return m_material; }
+	void				setMaterial(PhysicsMaterial* material) { m_material = material; }
 
 	//Restitution
 	void		displace(const vec2& displacement);

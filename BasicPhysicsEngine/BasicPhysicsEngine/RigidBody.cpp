@@ -7,26 +7,25 @@ void RigidBody::displace(const vec2& displacement)
 	m_position += displacement;
 }
 
-RigidBody::RigidBody(eShapeType shapeID, 
+RigidBody::RigidBody(eShapeType shapeID,
 	const vec2& position,
 	const vec2& velocity,
-	float rotation,
+	float rotation, 
 	bool isKinematic,
+	PhysicsMaterial* material,
 	float mass,
 	float moment,
-	float elasticity,
-	float friction,
 	float linearDrag,
 	float angularDrag,
-	float minLinearThreshold, float minAngularThreshold) :
+	float minLinearThreshold,
+	float minAngularThreshold) :
 	PhysicsObject(shapeID),	//Avoids PhysicsObject requiring a default ctr
 	m_position(position),
 	m_velocity(velocity),
 	m_rotation(rotation),
 	m_mass(mass),
 	m_moment(moment),
-	m_elasticity(elasticity),
-	m_friction(friction),
+	m_material(material),
 	m_isKinematic(isKinematic),
 	MIN_LINEAR_THRESHOLD(minLinearThreshold),
 	MIN_ANGULAR_THRESHOLD(minAngularThreshold)
@@ -96,7 +95,7 @@ void RigidBody::ResolveCollision(RigidBody * other)
 	vec2 relVelocity = other->velocity() - m_velocity;
 
 	//TODO Need to make a physics material class/struct?
-	float resultantElasticity = (m_elasticity + other->getElasticity()) / 2.0f;
+	float resultantElasticity = (m_material->elasticity + other->getMaterial()->elasticity) / 2.0f;
 	
 	//Super formula (impulse magnitude)
 	float j = glm::dot(-(1 + resultantElasticity) * (relVelocity), normal) / glm::dot(normal, normal * ((1 / m_mass) + (1 / other->mass())));

@@ -6,8 +6,8 @@ class PhysicsMaterial;
 class SAT : public RigidBody
 {
 protected:
-	vec2array		m_vextents;		//List of "Vertex EXTENTS" ie. vertices in LOCAL coordinates relative to rb.position
-	vec4			m_colour = pkr::colour::random();
+	vec2array			m_vextents;		//List of "Vertex EXTENTS" ie. vertices in LOCAL coordinates relative to rb.position
+	vec4				m_colour = pkr::colour::random();
 
 public:
 	SAT();

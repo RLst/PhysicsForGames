@@ -36,7 +36,7 @@ enum class eMaterial
 };
 
 class PhysicsMaterial
-{	//Super basic physics material class
+{
 private:
 	eMaterial	m_material;
 	float		m_density = 1000;
@@ -48,13 +48,21 @@ public:
 	float		friction = 0.4f;
 	float		elasticity = 0.9f;
 
-	PhysicsMaterial(float friction, float elasticity, float density = 1000);
+public:
+	//Construct with custom density
+	PhysicsMaterial(float friction, float elasticity, float density);
+	//Construct using material
 	PhysicsMaterial(float friction, float elasticity, eMaterial material);
 	~PhysicsMaterial() {}
 
-	void		setMaterial(const eMaterial material);
 	eMaterial	getMaterial() const;
+	void		setMaterial(const eMaterial material);
 
-	void		setDensity(const float density);
 	float		getDensity() const { return m_density; }
+	void		setDensity(const float density);
+
+	//float		getFriction() const;
+	//void		setFriction(const float friction);
+	//float		getElasticity() const;
+	//void		setElasticity(const float elasticity);
 };

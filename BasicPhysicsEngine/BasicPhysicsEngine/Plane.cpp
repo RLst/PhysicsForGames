@@ -6,30 +6,26 @@
 Plane::Plane() :
 	PhysicsObject(eShapeType::PLANE),
 	m_distanceToOrigin(0),
-	m_normal(glm::vec2(0, 1)),	//Ground zero facing up
-	m_elasticity(0.9f)
+	m_normal(glm::vec2(0, 1))	//Ground zero facing up
 {
 }
 
-Plane::Plane(float x, float y, float distance, float elasticity /*= 0.9f*/) :
+Plane::Plane(float x, float y, float distance) :
 	PhysicsObject(eShapeType::PLANE),
-	m_distanceToOrigin(distance),
-	m_elasticity(elasticity)
+	m_distanceToOrigin(distance)
 {
 	m_normal = glm::normalize(glm::vec2(x, y));
 }
 
-Plane::Plane(const vec2& normal, float distance, float elasticity /*= 0.9f*/) :
+Plane::Plane(const vec2& normal, float distance) :
 	PhysicsObject(eShapeType::PLANE),
-	m_distanceToOrigin(distance),
-	m_elasticity(elasticity)
+	m_distanceToOrigin(distance)
 {
 	m_normal = glm::normalize(normal);
 }
 
-Plane::Plane(const vec2& point1, const vec2& point2, ePerpDirection pdir /*= LEFT*/, float elasticity /*= 0.9f*/) :
-	PhysicsObject(eShapeType::PLANE),
-	m_elasticity(elasticity)
+Plane::Plane(const vec2& point1, const vec2& point2, ePerpDirection pdir) :
+	PhysicsObject(eShapeType::PLANE)
 {
 	//Calculate normalised vector from point1 to point2
 	auto v = point2 - point1;
@@ -50,12 +46,9 @@ Plane::Plane(const vec2& point1, const vec2& point2, ePerpDirection pdir /*= LEF
 }
 
 Plane::Plane(const vec2 & normalStart, const vec2 & normalEnd, PhysicsMaterial* material) :
-	PhysicsObject(eShapeType::PLANE)
+	PhysicsObject(eShapeType::PLANE),
+	m_material(material)
 {
-	//Material
-	m_friction = material->friction;
-	m_elasticity = material->elasticity;
-
 	//Get normal vector
 	m_normal = glm::normalize(normalEnd - normalStart);
 
@@ -69,7 +62,7 @@ Plane::~Plane()
 
 void Plane::DrawGizmo()
 {
-	float lineSegmentLength = 1000000.f;
+	float lineSegmentLength = 10000.f;
 	vec2 centerPoint = m_normal * m_distanceToOrigin;
 		//Easy to rotate normal through 90 degrees around z
 	vec2 parallel(m_normal.y, -m_normal.x);
@@ -85,10 +78,10 @@ void Plane::ResolveCollision(RigidBody * other)
 	glm::vec2 relVelocity = other->velocity();
 
 	//Average the elasticities
-	float elasticity = (m_elasticity + other->getElasticity()) / 2.0f;
+	float elasticityAvg = (m_material->elasticity + other->getMaterial()->elasticity) / 2.0f;
 
 	//Super formula (impulse magnitude)
-	float j = glm::dot(-(1 + elasticity) * (relVelocity), m_normal) / (1 / other->mass());
+	float j = glm::dot(-(1 + elasticityAvg) * (relVelocity), m_normal) / (1 / other->mass());
 
 	//Force to apply (impulsed aimed at the normal)
 	glm::vec2 force = m_normal * j;
@@ -105,13 +98,3 @@ glm::vec2 Plane::closestPoint(const vec2& point) const
 {
 	return point - m_normal * distanceTo(point);
 }
-
-//ePlaneResult Plane::testSide(const glm::vec2 & point) const
-//{
-//	float t = glm::dot(point, m_normal) + m_distanceToOrigin;
-//	if (t < 0)
-//		return ePlaneResult::BACK;
-//	else if (t > 0)
-//		return ePlaneResult::FRONT;
-//	return ePlaneResult::INTERSECTS;
-//}
