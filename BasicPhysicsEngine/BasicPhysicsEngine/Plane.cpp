@@ -45,9 +45,22 @@ Plane::Plane(const vec2& point1, const vec2& point2, ePerpDirection pdir) :
 	m_distanceToOrigin = glm::dot(point1, m_normal);
 }
 
-Plane::Plane(const vec2 & normalStart, const vec2 & normalEnd, PhysicsMaterial* material) :
+Plane::Plane(const vec2& normalStart, const vec2& normalEnd, const vec4& colour, float friction, float elasticity) :
 	PhysicsObject(eShapeType::PLANE),
-	m_material(material)
+	m_material(new PhysicsMaterial(friction, elasticity, eMaterial::NIL)),
+	m_colour(colour)
+{
+	//Get normal vector
+	m_normal = glm::normalize(normalEnd - normalStart);
+
+	//Find distance to origin
+	m_distanceToOrigin = glm::dot(normalStart, m_normal);
+}
+
+Plane::Plane(const vec2 & normalStart, const vec2 & normalEnd, const vec4& colour, PhysicsMaterial* material) :
+	PhysicsObject(eShapeType::PLANE),
+	m_material(material),
+	m_colour(colour)
 {
 	//Get normal vector
 	m_normal = glm::normalize(normalEnd - normalStart);
@@ -64,12 +77,11 @@ void Plane::DrawGizmo()
 {
 	float lineSegmentLength = 10000.f;
 	vec2 centerPoint = m_normal * m_distanceToOrigin;
-		//Easy to rotate normal through 90 degrees around z
+	//Easy to rotate normal through 90 degrees around z
 	vec2 parallel(m_normal.y, -m_normal.x);
-	col colour(1, 1, 1, 1);
 	vec2 start = centerPoint + (parallel * lineSegmentLength);
 	vec2 end = centerPoint - (parallel * lineSegmentLength);
-	aie::Gizmos::add2DLine(start, end, colour);
+	aie::Gizmos::add2DLine(start, end,m_colour);
 }
 
 void Plane::ResolveCollision(RigidBody * other)

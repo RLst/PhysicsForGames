@@ -60,7 +60,6 @@ public:
 	void		ApplyForce(const vec2& newForce);
 	void		ApplyForceToActor(RigidBody* actor2, const vec2& newForce);
 
-	//virtual bool	CheckCollision(PhysicsObject* other) = 0;	//TODO Is this even required???
 	void		ResolveCollision(RigidBody* other);
 
 	//Properties
@@ -74,7 +73,7 @@ public:
 
 	//Drag
 	float		getLinearDrag() const { return m_linearDrag; }
-	void		setLinearDrag(const float lDrag) { m_linearDrag = std::clamp(lDrag, 0.0f, 1.0f); }
+	void		setLinearDrag(const float linDrag) { m_linearDrag = std::clamp(linDrag, 0.0f, 1.0f); }
 	float		getAngularDrag() const { return m_angularDrag; }
 	void		setAngularDrag(const float angDrag) { m_angularDrag = std::clamp(angDrag, 0.0f, 1.0f); }
 

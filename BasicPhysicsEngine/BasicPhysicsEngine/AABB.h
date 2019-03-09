@@ -6,11 +6,12 @@ class PhysicsMaterial;
 class AABB : public RigidBody
 {
 protected:
-	vec2				m_extents;	//Top right half extents
-	vec4				m_colour;
+	vec2		m_extents;	//Top right half extents
+	vec4		m_colour;
 
 public:
-	AABB(const vec2& pos, const vec2& vel, float width, float height, vec4 colour, PhysicsMaterial* material, bool isKinematic = false);
+	AABB(const vec2& pos, const vec2& vel, float width, float height, const vec4& colour, float mass, float friction, float elasticity, bool isKinematic = false);
+	AABB(const vec2& pos, const vec2& vel, float width, float height, const vec4& colour, PhysicsMaterial* material, bool isKinematic = false);
 	~AABB();
 
 	void		DrawGizmo() override;

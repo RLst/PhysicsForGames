@@ -36,6 +36,8 @@ RigidBody::RigidBody(eShapeType shapeID,
 
 RigidBody::~RigidBody()
 {
+	if (m_material != nullptr)
+		delete m_material;
 }
 
 void RigidBody::FixedUpdate(const vec2& gravity, float timeStep)

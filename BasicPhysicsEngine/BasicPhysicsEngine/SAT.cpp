@@ -31,7 +31,24 @@ SAT::SAT(const vec2 & position, const vec2 & velocity, float mass, const vec4 & 
 	}
 }
 
-SAT::SAT(const vec2 & pos, const vec2 & vel, float rot, float size, int sides, vec4 colour, PhysicsMaterial* material, bool isKinematic) :
+SAT::SAT(const vec2& pos, const vec2& vel, float rot, float size, unsigned int sides, const vec4& colour, float friction, float elasticity, float mass, bool isKinematic) :
+	RigidBody(eShapeType::SAT, pos, vel, rot, isKinematic, new PhysicsMaterial(friction, elasticity, eMaterial::NIL), mass),
+	m_colour(colour)
+{
+	float radius = size * 0.5f;
+	//MOI
+	m_moment = 0.5f * m_mass * radius * radius;		//Just use Circle formula
+
+	//Generate regular polygon
+	float angleRad;
+	for (int i = 0; i < sides; ++i)
+	{
+		angleRad = i * 2.0f * PI / (float)sides;
+		m_vextents.push_back(vec2(radius * sinf(angleRad), radius * cosf(angleRad)));
+	}
+}
+
+SAT::SAT(const vec2 & pos, const vec2 & vel, float rot, float size, unsigned int sides, const vec4& colour, PhysicsMaterial* material, bool isKinematic) :
 	RigidBody(eShapeType::SAT, pos, vel, rot, isKinematic),
 	m_colour(colour)
 {

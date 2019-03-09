@@ -14,7 +14,8 @@ public:
 	SAT(const vec2& position, const vec2& velocity, float mass, const vec4& colour, const vec2array& vextents);	//Defaults to an empty list of vertices
 	SAT(const vec2& position, const vec2& velocity, float mass, const vec4& colour, int sides, float radius);	//Regular polygon constructor
 
-	SAT(const vec2& pos, const vec2& vel, float rot, float size, int sides, vec4 colour, PhysicsMaterial* material, bool isKinematic = false);
+	SAT(const vec2& pos, const vec2& vel, float rot, float size, unsigned int sides, const vec4& colour, float friction, float elasticity, float mass, bool isKinematic = false);
+	SAT(const vec2& pos, const vec2& vel, float rot, float size, unsigned int sides, const vec4& colour, PhysicsMaterial* material, bool isKinematic = false);
 	~SAT();
 
 	void			DrawGizmo() override;

@@ -10,7 +10,8 @@ protected:
 	vec4				m_colour;
 
 public:
-	Circle(const vec2& pos, const vec2& vel, float rot, float radius, vec4 colour, PhysicsMaterial* material, bool isKinematic = false);
+	Circle(const vec2& pos, const vec2& vel, float rot, float radius, const vec4& colour, float mass, float friction, float elasticity, bool isKinematic = false);
+	Circle(const vec2& pos, const vec2& vel, float rot, float radius, const vec4& colour, PhysicsMaterial* material, bool isKinematic = false);
 	~Circle();
 
 	void		DrawGizmo() override;
