@@ -519,11 +519,19 @@ void drawPlaneSurfaceCursor(const glm::ivec2 & normalStart, const glm::ivec2 & n
 		vec2 planeNormal = vec2(normalEnd - normalStart);		//Get the normal
 		vec2 plane = vec2(planeNormal.y, -planeNormal.x);	//Get the plane's surface parallel
 		vec2 planeStart = static_cast<vec2>(normalStart) + (plane * drawlength);		//Get start point of cursor
-		vec2 planeEnd = static_cast<vec2>(normalStart) + (plane * drawlength);		//Get end point of cursor
+		vec2 planeEnd = static_cast<vec2>(normalStart) - (plane * drawlength);		//Get end point of cursor
 		aie::Gizmos::add2DLine(planeStart, planeEnd, colour);
 	}
 }
 
+//if (mouseStart != mouseEnd) {
+//	aie::Gizmos::add2DLine(mouseStart, mouseEnd, pkr::colour::get(pkr::eColours::COLOUR_RED));
+//	paint.plane.normal = vec2(mouseEnd - mouseStart);
+//	paint.plane.surface = vec2(paint.plane.normal.y, -paint.plane.normal.x);
+//	paint.plane.start = static_cast<vec2>(mouseStart) + (paint.plane.surface * paint.plane.length);
+//	paint.plane.end = static_cast<vec2>(mouseStart) - (paint.plane.surface * paint.plane.length);
+//	aie::Gizmos::add2DLine(paint.plane.start, paint.plane.end, pkr::colour::get(pkr::eColours::COLOUR_ORANGE));
+//}
 
 //void drawDragCursor(glm::ivec2& start, glm::ivec2& end, col& colour) 
 //{
