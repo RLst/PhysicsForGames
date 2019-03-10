@@ -358,7 +358,7 @@ bool PhysicsScene::SAT2Circle(PhysicsObject * obj1, PhysicsObject * obj2)
 			float circleMaxProject = glm::dot(axis, circle->position()) + circle->radius();
 			vec2 circleProject = vec2(circleMinProject, circleMaxProject);
 
-			float o = pkr::overlap(satProject, circleProject);
+			float o = FindOverlap(satProject, circleProject);
 			if (o < 0) {
 				//No collision, exit
 				return false;
@@ -406,7 +406,7 @@ bool PhysicsScene::SAT2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 			//Horizontal
 			auto aabbHProjection = vec2(aabb->min().y, aabb->max().y);
 			auto satHProjection = sat->projection(horizontalAxis);
-			auto o = pkr::overlap(satHProjection, aabbHProjection);
+			auto o = FindOverlap(satHProjection, aabbHProjection);
 			if (o < 0) {
 				return false;	//No collision
 			}
@@ -417,7 +417,7 @@ bool PhysicsScene::SAT2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 			//Vertical
 			auto aabbVProjection = vec2(aabb->min().x, aabb->max().x);
 			auto satVProjection = sat->projection(verticalAxis);
-			o = pkr::overlap(satVProjection, aabbVProjection);
+			o = FindOverlap(satVProjection, aabbVProjection);
 			if (o < 0) {
 				return false;	//No collision
 			}
@@ -432,7 +432,7 @@ bool PhysicsScene::SAT2AABB(PhysicsObject * obj1, PhysicsObject * obj2)
 		{
 			vec2 projectionSat = sat->projection(axis);
 			vec2 projectionAABB = aabb->projection(axis);
-			float o = findOverlap(projectionSat, projectionAABB);
+			float o = FindOverlap(projectionSat, projectionAABB);
 			
 			if (o < 0) {
 				return false;
@@ -480,7 +480,7 @@ bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 
 			//3. Determine if there's any overlap
 			//If there's a negative overlap then there's definitely NO COLLISION
-			float o = pkr::overlap(projection1, projection2);
+			float o = FindOverlap(projection1, projection2);
 			if (o < 0) {
 				//No collision, get out
 				return false;
@@ -497,7 +497,7 @@ bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 
 			//3. Determine if there's any overlap
 			//If there's a negative overlap then there's definitely NO COLLISION
-			float o = pkr::overlap(projection1, projection2);
+			float o = FindOverlap(projection1, projection2);
 			if (o < 0) {
 				//No collision, get out
 				return false;
@@ -527,7 +527,7 @@ bool PhysicsScene::SAT2SAT(PhysicsObject * obj1, PhysicsObject * obj2)
 	return false;
 }
 
-float PhysicsScene::findOverlap(const vec2 & projection1, const vec2 & projection2)
+float PhysicsScene::FindOverlap(const vec2 & projection1, const vec2 & projection2)
 {
 	//Find mins
 	float a = projection1.y - projection2.x;

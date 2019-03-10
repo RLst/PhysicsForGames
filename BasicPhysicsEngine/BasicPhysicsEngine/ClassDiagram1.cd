@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="AABB">
+    <Position X="6.75" Y="13.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>ARAAEAAAACAQAAAAAAAAAAACAAQSAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>AABB.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Circle">
+    <Position X="9.5" Y="13.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAACCgIAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Circle.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BasicPhysicsEngine">
+    <Position X="13" Y="8" Width="2.75" />
+    <NestedTypes>
+      <Struct Name="BasicPhysicsEngine::__unnamed_struct_0017_1" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>BasicPhysicsEngine.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AACABApAIAAAABABAAIABAAhBAAAAAAABAAAAAAEAAA=</HashCode>
+      <FileName>BasicPhysicsEngine.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PhysicsMaterial">
+    <Position X="12.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>QAAABAQAAAAAABAAAAAAAAAAAQRAAIAQAAEIAAAAAAA=</HashCode>
+      <FileName>PhysicsMaterial.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PhysicsObject">
+    <Position X="8.25" Y="1.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACiAAAIIAAACAAAAAAAAAAAAAAgAABAAAAAA=</HashCode>
+      <FileName>PhysicsObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PhysicsScene">
+    <Position X="17.75" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>hASCBQAAcEAAgAgAlQIAAYAGABAEAIIIlAEQAAAAACA=</HashCode>
+      <FileName>PhysicsScene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Plane">
+    <Position X="6.25" Y="4.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAqAAAIBAAgAAAAgAIEQAAAAABAIAAEAAAAA=</HashCode>
+      <FileName>Plane.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RigidBody">
+    <Position X="9.5" Y="4.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>QIAABAAAAiAAAIABAACAIAAE6AQAAQQABAQAEQUAaQQ=</HashCode>
+      <FileName>RigidBody.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SAT">
+    <Position X="12.25" Y="13.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>ABBAAAAAAKAAAAAAAQAAIAQCAAQQACEAAAAAAAAAgAA=</HashCode>
+      <FileName>SAT.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="pkr::Random">
+    <Position X="15" Y="13.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>IQAAAAAIAAIAAAAAAAAAAAAAAAAABAQAAAIBAAABAAA=</HashCode>
+      <FileName>Random.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="pkr::colour">
+    <Position X="17.75" Y="17.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAQBAEAAAAA=</HashCode>
+      <FileName>GameDefines.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Typedef Name="col" Collapsed="true">
+    <Position X="6.75" Y="17.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameDefines.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="vec2array" Collapsed="true">
+    <Position X="6.75" Y="18.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PhysicsObject.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="fn" Collapsed="true">
+    <Position X="6.75" Y="19.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PhysicsScene.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Enum Name="eMaterial">
+    <Position X="15.25" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ASAYAAAIAIggAMABAAgAAAAAAABAIBANEAMsAARABAM=</HashCode>
+      <FileName>PhysicsMaterial.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="eShapeType">
+    <Position X="10.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAACAAAAAAAAAAAACAAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>PhysicsObject.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ePerpDirection">
+    <Position X="4.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Plane.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="pkr::eColours">
+    <Position X="17.75" Y="13.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AIAEoAABEggAQIAAAAAAAAAAAkAAEAEAEAAAAgAAAAA=</HashCode>
+      <FileName>GameDefines.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

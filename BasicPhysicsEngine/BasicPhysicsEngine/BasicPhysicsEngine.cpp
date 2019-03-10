@@ -49,7 +49,7 @@ bool BasicPhysicsEngine::startup()
 #endif
 
 	//Initialize the physics scene
-	m_physicsScene = new PhysicsScene(fixedTimeStep, m_gravity);
+	m_physicsScene = new PhysicsScene(m_fixedTimeStep, m_gravity);
 	m_physicsScene->AddActor(new Plane());	//Required so that update runs properly
 
 	createMaterials();
@@ -98,17 +98,7 @@ void BasicPhysicsEngine::draw() {
 	m_2dRenderer->end();
 }
 
-float BasicPhysicsEngine::calcMass(float radius, float density)
-{
-	return PI * radius * radius * density / 1000.f;
-}
-
-float BasicPhysicsEngine::calcMass(float width, float height, float density)
-{
-	return width * height * density / 1000.f;
-}
-
-void BasicPhysicsEngine::createMaterials()
+bool BasicPhysicsEngine::createMaterials()
 {
 	float friction = 0.5f;
 	float elasticity = 0.5f;
@@ -135,6 +125,8 @@ void BasicPhysicsEngine::createMaterials()
 	m_material.dead = new PhysicsMaterial(0, 0, eMaterial::MAGNESIUM);
 
 	m_material.custom = new PhysicsMaterial(friction, elasticity, 1000);
+
+	return true;
 }
 
 void BasicPhysicsEngine::playground()

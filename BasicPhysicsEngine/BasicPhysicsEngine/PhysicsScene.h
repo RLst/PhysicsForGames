@@ -32,6 +32,8 @@ public:
 	void		DebugScene();
 
 	void		CheckForCollisions();
+	static float FindOverlap(const vec2 &projection1, const vec2 &projection2); 
+
 	static bool	Plane2Plane(PhysicsObject*, PhysicsObject*) { return false;	} //DO NOT REMOVE! Place holder
 	static bool Plane2Circle(PhysicsObject*, PhysicsObject*);
 	static bool Plane2AABB(PhysicsObject*, PhysicsObject*);
@@ -52,15 +54,13 @@ public:
 	static bool SAT2AABB(PhysicsObject*, PhysicsObject*);
 	static bool SAT2SAT(PhysicsObject*, PhysicsObject*);
 
-	static float	findOverlap(const vec2 &projection1, const vec2 &projection2); 
-
-	void		setGravity(const vec2 gravity) { m_gravity = gravity; }
 	vec2		getGravity() const { return m_gravity; }
+	void		setGravity(const vec2 gravity) { m_gravity = gravity; }
 
-	void		setTimeStep(const float timeStep) { m_timeStep = timeStep; }
 	float		getTimeStep() const { return m_timeStep; }
+	void		setTimeStep(const float timeStep) { m_timeStep = timeStep; }
 
-	void		setCollisionOn() { m_isCollisionEnabled = true; }
-	void		setCollisionOff() { m_isCollisionEnabled = false; }
+	void		setCollisionsOn() { m_isCollisionEnabled = true; }
+	void		setCollisionsOff() { m_isCollisionEnabled = false; }
 };
 

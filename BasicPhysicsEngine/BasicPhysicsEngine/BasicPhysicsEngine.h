@@ -31,16 +31,12 @@ public:
 	void draw() override;
 
 	//Demos
-	void createMaterials();
+	bool createMaterials();
 	void playground();
-
-	//Utilities
-	float calcMass(float radius, float density);					//Calc mass for circles
-	float calcMass(float width, float height, float density);		//Calc mass for AABBs
 
 protected:
 	//The smaller the time step, the more accurate the numerical integration solution will be
-	float				fixedTimeStep = 0.02f;			//Physics engine time step		
+	float				m_fixedTimeStep = 0.02f;			//Physics engine time step		
 	vec2				m_gravity = vec2(0, -98.1f);	//9.81 too slow
 
 	aie::Renderer2D*	m_2dRenderer;

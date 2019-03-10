@@ -16,7 +16,18 @@ typedef glm::vec4 col;
 namespace pkr
 {
 	class Random;
-	//int random(int min, int max);
+
+	//Utility functions
+	static float min(float a, float b) { return a < b ? a : b; }
+	static float max(float a, float b) { return a > b ? a : b; }
+	static float clamp(float val, float minVal, float maxVal) { return max(minVal, min(maxVal, val)); }
+	static float DegsToRad(float degrees) { return degrees * PI / 180.0f; }
+	static float RadsToDeg(float radians) { return radians * 180.0f / PI; }
+
+	//Zero values
+	const vec2 zero2 = vec2(0, 0);
+	const vec3 zero3 = vec3(0, 0, 0);
+	const vec4 zero4 = vec4(0, 0, 0, 0);
 
 	//Colour stuff
 	enum eColours {
@@ -91,26 +102,8 @@ namespace pkr
 
 		static col shade(float intensity)
 		{
-			intensity = std::clamp(intensity, 0.0f, 1.0f);
+			intensity = clamp(intensity, 0, 1);
 			return col(intensity, intensity, intensity, 1);
 		}
 	};
-
-	//Utilities
-	static float min(float a, float b) { return a < b ? a : b; }
-	static float max(float a, float b) { return a > b ? a : b; }
-	static float clamp(float val, float minVal, float maxVal) { return max(minVal, min(maxVal, val)); }
-
-	//static float overlap(glm::vec2 projection1, glm::vec2 projection2) 
-	//{ return min(projection1.y - projection2.x, projection2.y - projection1.x); }
-	static float overlap(glm::vec2 projection1, glm::vec2 projection2) 
-	{ return min(projection1.y - projection2.x, projection2.y - projection1.x); }
-
-	static float DegsToRad(float degrees) { return degrees * PI / 180.0f; }
-	static float RadsToDeg(float radians) { return radians * 180.0f / PI; }
-
-	//Zero values
-	const vec2 zero2 = vec2(0, 0);
-	const vec3 zero3 = vec3(0, 0, 0);
-	const vec4 zero4 = vec4(0, 0, 0, 0);
 }
