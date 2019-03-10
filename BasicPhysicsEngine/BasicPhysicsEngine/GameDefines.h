@@ -20,19 +20,21 @@ namespace pkr
 
 	//Colour stuff
 	enum eColours {
-		COLOUR_RED = 0,
-		COLOUR_GREEN,
-		COLOUR_BLUE,
-		COLOUR_CYAN,
-		COLOUR_MAGENTA,
-		COLOUR_YELLOW,
-		COLOUR_ORANGE,
-		COLOUR_LIMEGREEN,
-		COLOUR_MINT,
-		COLOUR_DODGERBLUE,
-		COLOUR_INDIGO,
-		COLOUR_PURPLE,
-		COLOUR_FUSCHIA,
+		WHITE,
+		RED,
+		GREEN,
+		BLUE,
+		CYAN,
+		MAGENTA,
+		YELLOW,
+		ORANGE,
+		LIMEGREEN,
+		MINT,
+		DODGERBLUE,
+		INDIGO,
+		PURPLE,
+		FUSCHIA,
+		GREY,
 		COLOUR_COUNT
 	};
 
@@ -45,19 +47,21 @@ namespace pkr
 		{
 			switch (colour)
 			{
-			case COLOUR_RED: return col(1, 0, 0, 1); break;
-			case COLOUR_GREEN: return col(0.1f, 0.9f, 0, 1); break;
-			case COLOUR_BLUE: return col(0, 0, 1, 1); break;
-			case COLOUR_CYAN: return col(0, 1, 1, 1); break;
-			case COLOUR_MAGENTA: return col(1, 0, 1, 1); break;
-			case COLOUR_YELLOW: return col(1, 0.85f, 0, 1); break;
-			case COLOUR_ORANGE: return col(1, 0.5f, 0, 1); break;
-			case COLOUR_LIMEGREEN: return col(0.75f, 1, 0, 1); break;
-			case COLOUR_MINT: return col(0, 1, 0.5f, 1); break;
-			case COLOUR_DODGERBLUE: return col(0, 0.5f, 1, 1); break;
-			case COLOUR_INDIGO: return col(0.25f, 0, 1, 1); break;
-			case COLOUR_PURPLE: return col(0.5f, 0, 1, 1); break;
-			case COLOUR_FUSCHIA: return col(1, 0, 0.5f, 1); break;
+			case WHITE: return col(1, 1, 1, 1); break;
+			case RED: return col(1, 0, 0, 1); break;
+			case GREEN: return col(0.1f, 0.9f, 0, 1); break;
+			case BLUE: return col(0, 0, 1, 1); break;
+			case CYAN: return col(0, 1, 1, 1); break;
+			case MAGENTA: return col(1, 0, 1, 1); break;
+			case YELLOW: return col(1, 0.85f, 0, 1); break;
+			case ORANGE: return col(1, 0.5f, 0, 1); break;
+			case LIMEGREEN: return col(0.75f, 1, 0, 1); break;
+			case MINT: return col(0, 1, 0.5f, 1); break;
+			case DODGERBLUE: return col(0, 0.5f, 1, 1); break;
+			case INDIGO: return col(0.25f, 0, 1, 1); break;
+			case PURPLE: return col(0.5f, 0, 1, 1); break;
+			case FUSCHIA: return col(1, 0, 0.5f, 1); break;
+			case GREY: return col(0.5f, 0.5f, 0.5f, 1); break;
 			default: return col(1, 1, 1, 0.5f); break;
 			}
 		}
@@ -73,13 +77,13 @@ namespace pkr
 			int rnd = pkr::Random::range(0, 6);
 			switch (rnd)
 			{
-			case 0: return get(COLOUR_GREEN); break;
-			case 1: return get(COLOUR_RED); break;
-			case 2: return get(COLOUR_YELLOW); break;
-			case 3: return get(COLOUR_ORANGE); break;
-			case 4: return get(COLOUR_DODGERBLUE); break;
-			case 5: return get(COLOUR_PURPLE); break;
-			case 6: return get(COLOUR_FUSCHIA); break;
+			case 0: return get(GREEN); break;
+			case 1: return get(RED); break;
+			case 2: return get(YELLOW); break;
+			case 3: return get(ORANGE); break;
+			case 4: return get(DODGERBLUE); break;
+			case 5: return get(PURPLE); break;
+			case 6: return get(FUSCHIA); break;
 			//case 4: return get(COLOUR_LIMEGREEN); break;
 			default: return shade(1);	//default to white
 			}

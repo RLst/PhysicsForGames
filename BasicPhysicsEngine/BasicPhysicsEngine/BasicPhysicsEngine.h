@@ -13,6 +13,11 @@ class PhysicsMaterial;
 
 using glm::vec2;
 
+/* References
+- https://gamedevelopment.tutsplus.com/tutorials/collision-detection-using-the-separating-axis-theorem--gamedev-169
+- http://www.dyn4j.org/2010/01/sat/
+*/
+
 class BasicPhysicsEngine : public aie::Application {
 public:
 
@@ -27,27 +32,21 @@ public:
 
 	//Demos
 	void createMaterials();
-	void demoloop();
+	void playground();
 
 	//Utilities
 	float calcMass(float radius, float density);					//Calc mass for circles
 	float calcMass(float width, float height, float density);		//Calc mass for AABBs
-	void tempStartup();
 
 protected:
 	//The smaller the time step, the more accurate the numerical integration solution will be
 	float				fixedTimeStep = 0.02f;			//Physics engine time step		
-	vec2				 m_gravity = vec2(0, -98.1f);	//9.81 too slow
+	vec2				m_gravity = vec2(0, -98.1f);	//9.81 too slow
 
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Font*			m_font;
 
 	PhysicsScene*		m_physicsScene;
-
-	//std::vector<PhysicsMaterial*>	m_materials;
-	//std::unordered_map<std::string, PhysicsMaterial*>	m_materials;
-
-	//const char* m_material_names[];
 
 	struct {
 		PhysicsMaterial* hydrogen;
@@ -72,37 +71,14 @@ protected:
 		PhysicsMaterial* bouncy;
 		PhysicsMaterial* dampened;
 		PhysicsMaterial* dead;
+		unsigned int	count = 21;
+		
+		const char* names;
+		PhysicsMaterial* custom;
+		PhysicsMaterial* final;	//Points to the material to be used when creating objects
 	} m_material;
 };
 
+//Playground assist functions
 void drawDragCursor(const glm::ivec2 & start, const glm::ivec2 & end, const glm::vec4 & colour);
 void drawPlaneSurfaceCursor(const glm::ivec2 & normalStart, const glm::ivec2 & normalEnd, const glm::vec4 & colour);
-
-//static class Cursor
-//{
-//private:
-//	aie::Input* m_input;	
-//
-//	struct {
-//		float length = 2000;
-//		vec2 normal;
-//		vec2 surface;
-//		vec2 start;
-//		vec2 end;
-//	} plane;
-//public:
-//	Cursor(aie::Input* input);
-//	~Cursor() = default;
-//	void drawMouseDragLine(const vec2& mouseStart, const vec2& mouseEnd, int mouseButton = 0);	//Left click default
-//	void drawBlueprintPlaneSurface(const vec2& mouseStart, const vec2& mouseEnd) const;
-//
-//
-//};
-
-/* References
-- https://gamedevelopment.tutsplus.com/tutorials/collision-detection-using-the-separating-axis-theorem--gamedev-169
-- http://www.dyn4j.org/2010/01/sat/
-
-
-*/
-

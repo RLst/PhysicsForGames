@@ -2,7 +2,7 @@
 
 enum class eMaterial
 {
-	NIL,
+	NIL = -1,
 	HYDROGEN,
 	HELIUM,
 	AEROGRAPHITE,
@@ -60,9 +60,4 @@ public:
 
 	float		getDensity() const { return m_density; }
 	void		setDensity(const float density);
-
-	//float		getFriction() const;
-	//void		setFriction(const float friction);
-	//float		getElasticity() const;
-	//void		setElasticity(const float elasticity);
 };

@@ -19,10 +19,13 @@
 #include "PhysicsMaterial.h"
 
 BasicPhysicsEngine::BasicPhysicsEngine() {
+	m_material.names = "Hydrogen\0Air\0Styrofoam\0Lithium\0Wood\0Ice\0Water\0Plastics\0Diamond\0Copper\0Silver\0Lead\0Mercury\0Gold\0Platinum\0Osmium\0Grippy\0Slippery\0Bouncy\0Dampened\0Dead";
 }
 
 BasicPhysicsEngine::~BasicPhysicsEngine() {
 }
+
+//const char* BasicPhysicsEngine::m_material
 
 void BasicPhysicsEngine::shutdown() {
 	delete m_font;
@@ -65,7 +68,7 @@ void BasicPhysicsEngine::update(float deltaTime) {
 	m_physicsScene->UpdateGizmos();
 
 	//Run demo
-	demoloop();
+	playground();
 
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
@@ -105,134 +108,10 @@ float BasicPhysicsEngine::calcMass(float width, float height, float density)
 	return width * height * density / 1000.f;
 }
 
-//void BasicPhysicsEngine::tempStartup()
-//{
-//	//m_physicsScene->setGravity(m_gravity);
-//
-//	//Material densities
-//	struct {
-//		float hydrogen = 0.0898f;
-//		float helium = 0.179f;
-//		float aerographite = 0.2f;
-//		float air = 1.2f;
-//		float tungsten_hexaflouride = 12.4f;
-//		float styrofoam = 75;
-//		float cork = 240;
-//		float pine = 373;
-//		float lithium = 535;
-//		float wood = 700;
-//		float ice = 916.7f;
-//		float water = 1000;
-//		float salt_water = 1030;
-//		float plastics = 1175;
-//		float magnesium = 1740;
-//		float concrete = 2400;
-//		float diamond = 3500;
-//		float vanadium = 6100;
-//		float brass = 8600;
-//		float copper = 8940;
-//		float silver = 10500;
-//		float lead = 11340;
-//		float rhodium = 12410;
-//		float mercury = 13546;
-//		float tungsten = 19300;
-//		float gold = 19320;
-//		float platinum = 21450;
-//		float iridium = 22420;
-//		float osmium = 22570;	//Heaviest Metal: 14.3% denser than gold, 39.99% denser than mercury, around twice a dense as lead
-//	} density; //g/cm3
-//
-//	//Straight cushions
-//	int cushionSize = 15;
-//	Plane *bottomCushion = new Plane();
-//	m_physicsScene->AddActor(bottomCushion);
-//	Plane *topCushion = new Plane(vec2(0.0f, -1.0f), (float)-285 + cushionSize);
-//	m_physicsScene->AddActor(topCushion);
-//	//Plane *leftCushion = new Plane(vec2(1.0f, 0.0f), (float)cushionSize);
-//	//m_physicsScene->AddActor(leftCushion);
-//	Plane *rightCushion = new Plane(vec2(-1.0f, 0.0f), (float)-500 + cushionSize);
-//	m_physicsScene->AddActor(rightCushion);
-//	//Angled cushions
-//	Plane *angCushionLeft = new Plane(vec2(3, 2.0f), 110.f);	//Normal override
-//	m_physicsScene->AddActor(angCushionLeft);
-//	Plane *angCushionRight = new Plane(-1, 4, -40);			//ax + by + d override
-//	m_physicsScene->AddActor(angCushionRight);
-//	Plane *angCushionTop = new Plane(vec2(0, 160), vec2(150, 230), RIGHT);	//2 points override
-//	m_physicsScene->AddActor(angCushionTop);
-//
-//	//////////////////////////
-//	//// OBJECT CREATION
-//	////////////////////////
-//	float initialForce = 300.0f;
-//	float elasticity = 0.99f;	//Anything less than 0.98 is boring
-//
-//	//Circles
-//	int circleCount = 0;
-//	float minRadius = 2.5f;
-//	float maxRadius = 12.5f;
-//	float circleDensity = density.gold;
-//
-//	for (int i = 0; i < circleCount; ++i)	//Circles
-//	{
-//		float radius = pkr::Random::range(minRadius, maxRadius);
-//		float mass = calcMass(radius, circleDensity);
-//
-//		m_physicsScene->AddActor(new Circle(
-//			vec2(50 + 25 * i, 100),
-//			pkr::Random::range_v2(-initialForce, initialForce),
-//			mass,
-//			radius,
-//			pkr::colour::nice_random(),
-//			elasticity));
-//	}
-//
-//	//AABBs
-//	int AABBCount = 0;
-//	float aabbDensity = density.copper;
-//	float minSize = 5.f;
-//	float maxSize = 20.f;
-//
-//	for (int i = 0; i < AABBCount; ++i)		//AABBs
-//	{
-//		float width = pkr::Random::range(minSize, maxSize);
-//		float height = pkr::Random::range(minSize, maxSize);
-//		float mass = calcMass(width, height, aabbDensity);
-//
-//		m_physicsScene->AddActor(new AABB(
-//			vec2(50 + 25 * i, 200),
-//			pkr::Random::range_v2(-initialForce, initialForce),
-//			mass,
-//			width,
-//			height,
-//			pkr::colour::nice_random()));
-//	}
-//
-//	//SATs
-//	int SATCount = 1;
-//	float satDensity = density.osmium;
-//	float satForce = 100.0f;
-//	vec2array trapezoid = { vec2(0,0), vec2(6,12.5f), vec2(24, 12.5f), vec2(30,0) };
-//
-//	for (int i = 0; i < SATCount; ++i)		//SATs
-//	{
-//		float size = pkr::Random::range(minSize, maxSize);
-//		float mass = calcMass(size, size, satDensity);
-//		SAT* newSat = new SAT(
-//			vec2(50 + 25 * i, 150),
-//			pkr::Random::range_v2(-initialForce, initialForce),
-//			mass,
-//			pkr::colour::nice_random(),
-//			pkr::Random::range(3, 8), 10);
-//		newSat->CentralisePosition();
-//
-//		m_physicsScene->AddActor(newSat);
-//	}
-//}
-
 void BasicPhysicsEngine::createMaterials()
 {
-	float friction = 0.4f;
-	float elasticity = 0.8f;
+	float friction = 0.5f;
+	float elasticity = 0.5f;
 	m_material.hydrogen = new PhysicsMaterial(friction, elasticity, eMaterial::HYDROGEN);
 	m_material.air = new PhysicsMaterial(friction, elasticity, eMaterial::AIR);
 	m_material.styrofoam = new PhysicsMaterial(friction, elasticity, eMaterial::STYROFOAM);
@@ -255,9 +134,10 @@ void BasicPhysicsEngine::createMaterials()
 	m_material.dampened = new PhysicsMaterial(0.5f, 0.3f, eMaterial::MAGNESIUM);
 	m_material.dead = new PhysicsMaterial(0, 0, eMaterial::MAGNESIUM);
 
+	m_material.custom = new PhysicsMaterial(friction, elasticity, 1000);
 }
 
-void BasicPhysicsEngine::demoloop()
+void BasicPhysicsEngine::playground()
 {
 	//// BEWARE! Spaghetti prototype code
 
@@ -267,6 +147,7 @@ void BasicPhysicsEngine::demoloop()
 	//// MOUSE
 	///////////////
 	static struct {
+		int velocityFineTune = 5;
 		glm::ivec2 start;
 		glm::ivec2 end;
 		glm::ivec2 drag;
@@ -290,108 +171,146 @@ void BasicPhysicsEngine::demoloop()
 	if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT))
 	{
 		input->getMouseXY(&mouse.end.x, &mouse.end.y);
-	}	
-	//if (input->isMouseButtonUp(aie::INPUT_MOUSE_BUTTON_LEFT))
-	//{
-	//	input->getMouseXY(&mouse.start.x, &mouse.start.y);
-	//}
-
+	}
 
 	///////////////
 	//// GUI
 	/////////////
 	static int currentObjectType = 0; //0 Plane, 1 Circle, 2 AABB, 3 SAT
 	static struct {
+		int choiceDensity = 0;	//0 Presets, 1 Custom
+		int choiceColour = 0;	//0 Presets, 1 Custom
+
 		//Physics Material
-		float friction;
-		float elasticity;
-		float density;
-		eMaterial material;
+		float friction = 0.4f;
+		float elasticity = 0.9f;
+		float density = 1000;
+		PhysicsMaterial* material /*= new PhysicsMaterial(friction, elasticity, eMaterial::NIL)*/;
 
-		//Kinematic
-		bool isKinematic;
+		//Colour
+		vec4 colour = vec4(1,1,1,1);
 
-		//Other
-		float genericSize1 = 1;
-		float genericSize2 = 1;
+		//Creation
+		bool isKinematic = false;
+		float genericfloat1 = 25;
+		float genericfloat2 = 50;
+		int genericInt1 = 3;
 	} GUI;
-	static const char* materials[] = {
-		"Hydrogen",
-		"Air",
-		"Styrofoam",
-		"Lithium",
-		"Wood",
-		"Ice",
-		"Water",
-		"Plastics",
-		"Diamond",
-		"Copper",
-		"Silver",
-		"Lead",
-		"Mercury",
-		"Gold",
-		"Platinum",
-		"Osmium",
 
-		"Sticky",
-		"Slippery",
-		"Bouncy",
-		"Dampening"
-	};
-
-	ImGui::Begin("2D Physics Demo");
+	ImGui::Begin("Physics Playground"/*, &test, ImGuiWindowFlags_AlwaysAutoResize*/);
 	{
 		//Settings
-		ImGui::BeginGroup();
+		ImGui::PushStyleVar(ImGuiStyleVar_ChildWindowRounding, 5.0f);
+		ImGui::BeginChild("World", ImVec2(0, 55), true);
 		{
-			ImGui::Text("Settings");
+			ImGui::Text("General");
 			ImGui::SliderFloat2("Gravity", glm::value_ptr(m_gravity), -500, 500);
 			m_physicsScene->setGravity(m_gravity);
 		}
-		ImGui::EndGroup();
-		ImGui::Spacing();
-		ImGui::Spacing();
+		ImGui::EndChild();
 
-		//Create Physics Materials
-		ImGui::BeginGroup();
+		//Physics Materials
+		ImGui::BeginChild("PhysicsMaterials", ImVec2(0, 119), true);
 		{
+			static int currentPreset = 0;
+
 			ImGui::Text("Physics Materials");
-			/* Layout
-			- slider(0, 1): friction
-			- slider(-10, 10): elasticity
-			- CHOICE between:
-				- combo list of preset materials
-				- input: density "kg.m-3"
-			*/
-			ImGui::SliderFloat("Friction", &GUI.friction, -1, 1);
-			ImGui::SliderFloat("Elasticity", &GUI.elasticity, -10, 10);
+			ImGui::RadioButton("Presets", &GUI.choiceDensity, 0); ImGui::SameLine();
+			ImGui::RadioButton("Custom", &GUI.choiceDensity, 1);
 
-			ImGui::Text("Density");
-			static int choice = 0;
-			ImGui::RadioButton("Presets", &choice, 0);
-			ImGui::RadioButton("Custom", &choice, 1);
-
-			static int currentPreset = 17;
-			switch (choice)
+			switch (GUI.choiceDensity)
 			{
 			case 0:		//Presets
+				ImGui::Combo("Presets", &currentPreset, m_material.names, m_material.count);
+				ImGui::SameLine(); ImGui::Text("(%i)", currentPreset);
+				switch (currentPreset)
+				{
+				case 0: GUI.material = m_material.hydrogen; break;
+				case 1: GUI.material = m_material.air; break;
+				case 2: GUI.material = m_material.styrofoam; break;
+				case 3: GUI.material = m_material.lithium; break;
+				case 4: GUI.material = m_material.wood; break;
+				case 5: GUI.material = m_material.ice; break;
+				case 6: GUI.material = m_material.water; break;
+				case 7: GUI.material = m_material.plastics; break;
+				case 8: GUI.material = m_material.diamond; break;
+				case 9: GUI.material = m_material.copper; break;
+				case 10: GUI.material = m_material.silver; break;
+				case 11: GUI.material = m_material.lead; break;
+				case 12: GUI.material = m_material.mercury; break;
+				case 13: GUI.material = m_material.gold; break;
+				case 14: GUI.material = m_material.platinum; break;
+				case 15: GUI.material = m_material.osmium; break;
+				case 16: GUI.material = m_material.grippy; break;
+				case 17: GUI.material = m_material.slippery; break;
+				case 18: GUI.material = m_material.bouncy; break;
+				case 19: GUI.material = m_material.dampened; break;
+				case 20: GUI.material = m_material.dead; break;
+				//case 0: m_material.main->setMaterial(eMaterial::HYDROGEN); break;
+				//case 1: m_material.main->setMaterial(eMaterial::STYROFOAM); break;
+				//case 2: m_material.main->setMaterial(eMaterial::LITHIUM); break;
+				//case 3: m_material.main->setMaterial(eMaterial::WOOD); break;
+				//case 4: m_material.main->setMaterial(eMaterial::ICE); break;
+				//case 5: m_material.main->setMaterial(eMaterial::WATER); break;
+				//case 6: m_material.main->setMaterial(eMaterial::PLASTICS); break;
+				//case 7: m_material.main->setMaterial(eMaterial::DIAMOND); break;
+				//case 8: m_material.main->setMaterial(eMaterial::COPPER); break;
+				//case 9: m_material.main->setMaterial(eMaterial::SILVER); break;
+				//case 10: m_material.main->setMaterial(eMaterial::LEAD); break;
+				//case 11: m_material.main->setMaterial(eMaterial::MERCURY); break;
+				//case 12: m_material.main->setMaterial(eMaterial::GOLD); break;
+				//case 13: m_material.main->setMaterial(eMaterial::PLATINUM); break;
+				//case 14: m_material.main->setMaterial(eMaterial::OSMIUM); break;
+				default: assert(false);	//Invalid!!!
+				}
 
-				ImGui::Combo("Presets", &currentPreset, materials, 15);
+				//Point the final material appropriately
+				m_material.final = GUI.material;
 				break;
 			case 1:		//Custom density
-				ImGui::InputFloat("Density", &GUI.density, 10, 100);
+				ImGui::SliderFloat("Friction", &GUI.friction, 0, 1);
+				ImGui::SliderFloat("Elasticity", &GUI.elasticity, 0, 1);
+				ImGui::InputFloat("Density", &GUI.density, 10, 200);
+				
+				//Set custom material
+				m_material.custom->friction = GUI.friction;
+				m_material.custom->elasticity = GUI.elasticity;
+				m_material.custom->setDensity(GUI.density);
+
+				//Point the final material appropriately
+				m_material.final = m_material.custom;
 				break;
 			}
 		}
-		ImGui::EndGroup();
-		ImGui::Spacing();
-		ImGui::Spacing();
+		ImGui::EndChild();
 
-		//Create Objects
-		ImGui::BeginGroup();
+		//Colours
+		ImGui::BeginChild("Colour", ImVec2(0, 77), true);
+		{
+			static int currentPreset = 0;
+			static const char* colour_names= "White\0Red\0Green\0Blue\0Cyan\0Magenta\0Yellow\0Orange\0Lime Green\0Mint\0Dodge Blue\0Indigo\0Purple\0Fuschia\0Grey";
+
+			ImGui::Text("Colour");
+			ImGui::RadioButton("Presets", &GUI.choiceColour, 0); ImGui::SameLine();
+			ImGui::RadioButton("Custom", &GUI.choiceColour, 1);
+
+			switch (GUI.choiceColour)
+			{
+			case 0:	//Presets
+				ImGui::Combo("Presets", &currentPreset, colour_names, static_cast<int>(pkr::eColours::COLOUR_COUNT));
+				GUI.colour = pkr::colour::get(static_cast<pkr::eColours>(currentPreset));
+				break;
+			case 1:	//Custom
+				ImGui::SliderFloat4("RGBA", glm::value_ptr(GUI.colour), 0, 1);
+				break;
+			}
+		}
+		ImGui::EndChild();
+
+		//Create
+		ImGui::BeginChild("Create", ImVec2(0, 177), true);
 		{
 			ImGui::Text("Create Objects");
-
 			ImGui::RadioButton("Plane", &currentObjectType, 0); ImGui::SameLine();
 			ImGui::RadioButton("Circle", &currentObjectType, 1); ImGui::SameLine();
 			ImGui::RadioButton("AABB", &currentObjectType, 2); ImGui::SameLine();
@@ -404,23 +323,29 @@ void BasicPhysicsEngine::demoloop()
 				//ImGui::text
 				break;
 			case 1:	//Circle
-				ImGui::TextWrapped("To create a circle, click to spawn a random circle at cursor. Click and drag to spawn with velocity. Check Kinematic to create a kinematic object.");
+				ImGui::TextWrapped("Click to spawn a Circle at cursor. Click and drag to spawn with velocity. Check Kinematic to create a kinematic object.");
 				ImGui::Checkbox("Kinematic", &GUI.isKinematic);
+				ImGui::SliderFloat("Diameter", &GUI.genericfloat1, 10, 100);
 				break;
 			case 2:	//AABB
-				ImGui::TextWrapped("To create a AABB, click to spawn a random AABB at cursor. Click and drag to spawn with velocity. Check Kinematic to create a kinematic object.");
+				ImGui::TextWrapped("Click to spawn a AABB at cursor. Click and drag to spawn with velocity. Check Kinematic to create a kinematic object.");
 				ImGui::Checkbox("Kinematic", &GUI.isKinematic);
+				ImGui::SliderFloat("Width", &GUI.genericfloat1, 10, 100);
+				ImGui::SliderFloat("Height", &GUI.genericfloat2, 10, 100);
 				break;
 			case 3:	//SAT
-				ImGui::TextWrapped("To create a SAT, click to spawn a random SAT at cursor. Click and drag to spawn with velocity. Check Kinematic to create a kinematic object.");
+				ImGui::TextWrapped("Click to spawn a SAT at cursor. Click and drag to spawn with velocity. Check Kinematic to create a kinematic object.");
 				ImGui::Checkbox("Kinematic", &GUI.isKinematic);
+				ImGui::SliderFloat("Size", &GUI.genericfloat1, 10, 100);
+				ImGui::SliderInt("Sides", &GUI.genericInt1, 3, 12);
 				break;
 			}
 		}
-		ImGui::EndGroup();
+		ImGui::EndChild();
+		ImGui::PopStyleVar();
 	}
 	ImGui::End();
-	
+
 	/////////////////////
 	//// Draw tool cursors
 	/////////////////////
@@ -437,26 +362,24 @@ void BasicPhysicsEngine::demoloop()
 		} dynamic;
 	} cursor;
 
-	if (!ImGui::IsMouseHoveringAnyWindow()) {
+	if (!ImGui::IsMouseHoveringAnyWindow()) {	//Prevents unintended objects being created
 
 		//Drag
 		if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT))
-			drawDragCursor(mouse.start, mouse.end, pkr::colour::get(pkr::eColours::COLOUR_DODGERBLUE));
+			drawDragCursor(mouse.start, mouse.end, pkr::colour::get(pkr::eColours::RED));
 
 		switch (currentObjectType)
 		{
 		case 0: //Plane
 			//If mouse is in drag mode then draw normal and plane to create
-			if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT)) 
-			{
-				drawPlaneSurfaceCursor(mouse.start, mouse.end, pkr::colour::get(pkr::eColours::COLOUR_ORANGE));
-			}
+			if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT))
+				drawPlaneSurfaceCursor(mouse.start, mouse.end, pkr::colour::get(pkr::eColours::ORANGE));
 
 			//If mouse release then create
 			if (input->wasMouseButtonReleased(0)) {
 				if (mouse.start != mouse.end) {
 					//Make the plane
-					m_physicsScene->AddActor(new Plane(mouse.start, mouse.end, m_material.gold));
+					m_physicsScene->AddActor(new Plane(static_cast<vec2>(mouse.start), static_cast<vec2>(mouse.end), GUI.colour, m_material.final));
 				}
 			}
 			break;
@@ -464,39 +387,24 @@ void BasicPhysicsEngine::demoloop()
 		case 1: //Circle
 			if (input->wasMouseButtonReleased(aie::INPUT_MOUSE_BUTTON_LEFT))
 			{
-				//Temps
-				glm::ivec2 pos = mouse.start;
-				auto vel = mouse.drag * 5;
-				float rot = 0;
-				float radius = pkr::Random::range(20.f, 40.f);
-				col colour = pkr::colour::nice_random();
-				m_physicsScene->AddActor(new Circle(pos, vel, rot, radius, colour, m_material.bouncy, GUI.isKinematic));
+				auto vel = mouse.drag * mouse.velocityFineTune;
+				m_physicsScene->AddActor(new Circle(mouse.start, vel, 0, GUI.genericfloat1 * 0.5f, GUI.colour, m_material.final, GUI.isKinematic));
 			}
 			break;
 
 		case 2: //AABB
 			if (input->wasMouseButtonReleased(aie::INPUT_MOUSE_BUTTON_LEFT))
 			{
-				glm::ivec2 pos = mouse.start;
-				auto vel = mouse.drag * 5;
-				float rot = 0;
-				float width = pkr::Random::range(40.f, 80.f);
-				float height = pkr::Random::range(40.f, 80.f);
-				col colour = pkr::colour::nice_random();
-				m_physicsScene->AddActor(new AABB(pos, vel, width, height, colour, m_material.dampened, GUI.isKinematic));
+				auto vel = mouse.drag * mouse.velocityFineTune;
+				m_physicsScene->AddActor(new AABB(mouse.start, vel, GUI.genericfloat1, GUI.genericfloat2, GUI.colour, m_material.final, GUI.isKinematic));
 			}
 			break;
 
 		case 3: //SAT
 			if (input->wasMouseButtonReleased(aie::INPUT_MOUSE_BUTTON_LEFT))
 			{
-				glm::ivec2 pos = mouse.start;
-				auto vel = mouse.drag * 5;
-				float rot = 0;
-				float size = pkr::Random::range(40, 80);
-				int sides = pkr::Random::range(3, 8);
-				col colour = pkr::colour::nice_random();
-				m_physicsScene->AddActor(new SAT(pos, vel, rot, size, sides, colour, m_material.osmium, GUI.isKinematic));
+				auto vel = mouse.drag * mouse.velocityFineTune;
+				m_physicsScene->AddActor(new SAT(mouse.start, vel, 0, GUI.genericfloat1, GUI.genericInt1, GUI.colour, m_material.final, GUI.isKinematic));
 			}
 			break;
 		}
@@ -504,6 +412,9 @@ void BasicPhysicsEngine::demoloop()
 
 }
 
+///////////////////////////////////
+//// Playground only functions
+////////////////////////////////
 void drawDragCursor(const glm::ivec2 & start, const glm::ivec2 & end, const glm::vec4 & colour)
 {
 	if (start != end) {
@@ -523,62 +434,3 @@ void drawPlaneSurfaceCursor(const glm::ivec2 & normalStart, const glm::ivec2 & n
 		aie::Gizmos::add2DLine(planeStart, planeEnd, colour);
 	}
 }
-
-//if (mouseStart != mouseEnd) {
-//	aie::Gizmos::add2DLine(mouseStart, mouseEnd, pkr::colour::get(pkr::eColours::COLOUR_RED));
-//	paint.plane.normal = vec2(mouseEnd - mouseStart);
-//	paint.plane.surface = vec2(paint.plane.normal.y, -paint.plane.normal.x);
-//	paint.plane.start = static_cast<vec2>(mouseStart) + (paint.plane.surface * paint.plane.length);
-//	paint.plane.end = static_cast<vec2>(mouseStart) - (paint.plane.surface * paint.plane.length);
-//	aie::Gizmos::add2DLine(paint.plane.start, paint.plane.end, pkr::colour::get(pkr::eColours::COLOUR_ORANGE));
-//}
-
-//void drawDragCursor(glm::ivec2& start, glm::ivec2& end, col& colour) 
-//{
-//	if (start != end) {
-//		aie::Gizmos::add2DLine(start, end, colour);
-//	}
-//}
-//
-//void drawPlaneSurfaceCursor(glm::ivec2& mouseStart, glm::ivec2& mouseEnd, col& colour) 
-//{
-//	if (mouseStart != mouseEnd)
-//	{
-//		float drawlength = 5000;
-//		vec2 planeNormal = vec2(mouseEnd - mouseStart);		//Get the normal
-//		vec2 plane = vec2(planeNormal.y, -planeNormal.x);	//Get the plane's surface parallel
-//		vec2 planeStart = static_cast<vec2>(mouseStart) + (plane * drawlength);		//Get start point of cursor
-//		vec2 planeEnd = static_cast<vec2>(mouseStart) + (plane * drawlength);		//Get end point of cursor
-//		aie::Gizmos::add2DLine(planeStart, planeEnd, colour);
-//	}
-//}
-
-//////////////////
-// Paint Gizmo Definitions
-//////////////////
-//
-//void PaintGizmo::drawMouseDragLine(const vec2& mouseStart, const vec2& mouseEnd, int mouseButton)
-//{
-//	if (m_input->isMouseButtonDown(mouseButton))
-//	{
-//		if (mouseStart != mouseEnd)
-//		{
-//			aie::Gizmos::add2DLine(mouseStart, mouseEnd, pkr::colour::get(pkr::eColours::COLOUR_RED));
-//		}
-//	}
-//}
-//
-//void PaintGizmo::drawBlueprintPlaneSurface(const vec2 & mouseStart, const vec2 & mouseEnd) const
-//{
-//	if (mouseLHold) {
-//		if (mouseStart != mouseEnd) {
-//			aie::Gizmos::add2DLine(mouseStart, mouseEnd, pkr::colour::get(pkr::eColours::COLOUR_RED));
-//			paint.plane.normal = vec2(mouseEnd - mouseStart);
-//			paint.plane.surface = vec2(paint.plane.normal.y, -paint.plane.normal.x);
-//			paint.plane.start = static_cast<vec2>(mouseStart) + (paint.plane.surface * paint.plane.length);
-//			paint.plane.end = static_cast<vec2>(mouseStart) - (paint.plane.surface * paint.plane.length);
-//			aie::Gizmos::add2DLine(paint.plane.start, paint.plane.end, pkr::colour::get(pkr::eColours::COLOUR_ORANGE));
-//		}
-//	}
-//}
-
