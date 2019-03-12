@@ -73,9 +73,9 @@ public:
 
 	//Drag
 	float		getLinearDrag() const { return m_linearDrag; }
-	void		setLinearDrag(const float linDrag) { m_linearDrag = std::clamp(linDrag, 0.0f, 1.0f); }
+	void		setLinearDrag(const float linDrag) { m_linearDrag = pkr::clamp(linDrag, 0.0f, 1.0f); }
 	float		getAngularDrag() const { return m_angularDrag; }
-	void		setAngularDrag(const float angDrag) { m_angularDrag = std::clamp(angDrag, 0.0f, 1.0f); }
+	void		setAngularDrag(const float angDrag) { m_angularDrag = pkr::clamp(angDrag, 0.0f, 1.0f); }
 
 	//Material
 	PhysicsMaterial*	getMaterial() const { return m_material; }

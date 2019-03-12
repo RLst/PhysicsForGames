@@ -2,14 +2,6 @@
 #include <Gizmos.h>
 #include "PhysicsMaterial.h"
 
-SAT::SAT() :	//Test
-	RigidBody(eShapeType::SAT, vec2(0,0), vec2(20, 20), 0, 10)
-{
-	m_vextents.push_back(vec2(-9, 0));
-	m_vextents.push_back(vec2(0, 16));
-	m_vextents.push_back(vec2(9, 0));
-}
-
 SAT::SAT(const vec2& position, const vec2& velocity, float mass, const vec4& colour, const vec2array& vextents = vec2array()) :
 	RigidBody(eShapeType::SAT, position, velocity, 0, mass),
 	m_colour(colour)
@@ -41,7 +33,7 @@ SAT::SAT(const vec2& pos, const vec2& vel, float rot, float size, unsigned int s
 
 	//Generate regular polygon
 	float angleRad;
-	for (int i = 0; i < sides; ++i)
+	for (int i = 0; i < (int)sides; ++i)
 	{
 		angleRad = i * 2.0f * PI / (float)sides;
 		m_vextents.push_back(vec2(radius * sinf(angleRad), radius * cosf(angleRad)));
@@ -61,7 +53,7 @@ SAT::SAT(const vec2 & pos, const vec2 & vel, float rot, float size, unsigned int
 
 	//Generate regular polygon
 	float angleRad;
-	for (int i = 0; i < sides; ++i)
+	for (int i = 0; i < (int)sides; ++i)
 	{
 		angleRad = i * 2.0f * PI / (float)sides;
 		m_vextents.push_back(vec2(radius * sinf(angleRad), radius * cosf(angleRad)));

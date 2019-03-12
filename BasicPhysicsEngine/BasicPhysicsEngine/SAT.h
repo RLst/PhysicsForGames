@@ -10,7 +10,6 @@ protected:
 	vec4				m_colour = pkr::colour::random();
 
 public:
-	SAT();
 	SAT(const vec2& position, const vec2& velocity, float mass, const vec4& colour, const vec2array& vextents);	//Defaults to an empty list of vertices
 	SAT(const vec2& position, const vec2& velocity, float mass, const vec4& colour, int sides, float radius);	//Regular polygon constructor
 

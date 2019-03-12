@@ -85,14 +85,10 @@ void BasicPhysicsEngine::draw() {
 
 	// draw your stuff here!
 	static float aspectRatio = 16 / 9.0f;
-	aie::Gizmos::draw2D(glm::ortho<float>(0, 1440, 0, 900, -1, 1));
+	aie::Gizmos::draw2D(glm::ortho<float>(0, (float)getWindowWidth(), 0, (float)getWindowHeight(), -1, 1));
 
 	// output some text, uses the last used colour
 	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
-
-	char fps[10];
-	sprintf_s(fps, 10, "%i", getFPS());
-	m_2dRenderer->drawText(m_font, fps, 0, (float)(getWindowHeight() - 22));
 
 	// done drawing sprites
 	m_2dRenderer->end();
@@ -126,7 +122,7 @@ bool BasicPhysicsEngine::createMaterials()
 	m_material.dead = new PhysicsMaterial(0, 0, defaultMaterial);
 
 	m_material.custom = new PhysicsMaterial(defaultFriction, defaultElasticity, 1000);
-
+	//TODO Do these materials need to be deleted?
 	return true;
 }
 
@@ -211,9 +207,10 @@ void BasicPhysicsEngine::playground()
 
 		//Settings
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildWindowRounding, 5.0f);
-		ImGui::BeginChild("World", ImVec2(0, 55), true);
+		ImGui::BeginChild("World", ImVec2(0, 80), true);
 		{
-			ImGui::Text("General");
+			ImGui::Text("FPS %i", static_cast<int>(getFPS()));
+			ImGui::Text("Object count: %i", m_physicsScene->getActorCount());
 			ImGui::SliderFloat2("Gravity", glm::value_ptr(m_gravity), -500, 500);
 			m_physicsScene->setGravity(m_gravity);
 		}

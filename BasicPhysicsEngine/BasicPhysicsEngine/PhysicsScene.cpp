@@ -23,11 +23,10 @@ PhysicsScene::PhysicsScene(float timeStep, vec2 gravity, bool collisionEnabled) 
 
 PhysicsScene::~PhysicsScene()
 {
-	//Clean up m_actors
+	//Clean up m_actors (TODO Buggy)
 	for (auto actor : m_actors)
-	{
-		delete actor;
-	}
+		if (actor != nullptr)
+			delete actor;
 }
 
 void PhysicsScene::AddActor(PhysicsObject * actor)
@@ -43,7 +42,8 @@ bool PhysicsScene::RemoveActor(PhysicsObject * targetActor)
 		//If the matching actor is found...
 		if (m_actors[i] == targetActor)
 		{
-			//Erase
+			//TODO Delete pointer then erase from array?
+			delete m_actors[i];
 			m_actors.erase(m_actors.begin() + i);
 			return true;
 		}

@@ -62,5 +62,7 @@ public:
 
 	void		setCollisionsOn() { m_isCollisionEnabled = true; }
 	void		setCollisionsOff() { m_isCollisionEnabled = false; }
+
+	size_t		getActorCount() const { return m_actors.size(); }
 };
 

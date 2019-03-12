@@ -95,8 +95,7 @@ namespace pkr
 			case 4: return get(DODGERBLUE); break;
 			case 5: return get(PURPLE); break;
 			case 6: return get(FUSCHIA); break;
-			//case 4: return get(COLOUR_LIMEGREEN); break;
-			default: return shade(1);	//default to white
+			default: return get(WHITE);	//default to white
 			}
 		}
 
