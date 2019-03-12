@@ -75,13 +75,23 @@ Plane::~Plane()
 
 void Plane::DrawGizmo()
 {
+	//Draw the actual plane
 	float lineSegmentLength = 10000.f;
 	vec2 centerPoint = m_normal * m_distanceToOrigin;
-	//Easy to rotate normal through 90 degrees around z
 	vec2 parallel(m_normal.y, -m_normal.x);
 	vec2 start = centerPoint + (parallel * lineSegmentLength);
 	vec2 end = centerPoint - (parallel * lineSegmentLength);
 	aie::Gizmos::add2DLine(start, end,m_colour);
+
+	//Draw ground hatching
+	//float hatchingIncrements = 5.f;
+	//vec2 hatchingExtents(5, -5);
+	//vec2 something(glm::normalize(parallel));
+	//float i = 0;
+	//while (i < lineSegmentLength)
+	//{
+		//Don't understand dot product well enough, too hard, do later maybe
+	//}
 }
 
 void Plane::ResolveCollision(RigidBody * other)

@@ -2,6 +2,7 @@
 
 #include "Application.h"
 #include "Renderer2D.h"
+#include <Input.h>
 #include <glm/ext.hpp>
 #include <string>
 
@@ -78,3 +79,6 @@ protected:
 //Playground assist functions
 void drawDragCursor(const glm::ivec2 & start, const glm::ivec2 & end, const glm::vec4 & colour);
 void drawPlaneSurfaceCursor(const glm::ivec2 & normalStart, const glm::ivec2 & normalEnd, const glm::vec4 & colour);
+bool anyMouseButtonWasPressed(aie::Input * input);
+bool anyMouseButtonWasReleased(aie::Input * input);
+bool anyMouseButtonIsDown(aie::Input * input);

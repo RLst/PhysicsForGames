@@ -100,31 +100,32 @@ void BasicPhysicsEngine::draw() {
 
 bool BasicPhysicsEngine::createMaterials()
 {
-	float friction = 0.5f;
-	float elasticity = 0.5f;
-	m_material.hydrogen = new PhysicsMaterial(friction, elasticity, eMaterial::HYDROGEN);
-	m_material.air = new PhysicsMaterial(friction, elasticity, eMaterial::AIR);
-	m_material.styrofoam = new PhysicsMaterial(friction, elasticity, eMaterial::STYROFOAM);
-	m_material.lithium = new PhysicsMaterial(friction, elasticity, eMaterial::LITHIUM);
-	m_material.wood = new PhysicsMaterial(friction, elasticity, eMaterial::WOOD);
-	m_material.ice = new PhysicsMaterial(friction, elasticity, eMaterial::ICE);
-	m_material.water = new PhysicsMaterial(friction, elasticity, eMaterial::WATER);
-	m_material.plastics = new PhysicsMaterial(friction, elasticity, eMaterial::PLASTICS);
-	m_material.diamond = new PhysicsMaterial(friction, elasticity, eMaterial::DIAMOND);
-	m_material.copper = new PhysicsMaterial(friction, elasticity, eMaterial::COPPER);
-	m_material.silver = new PhysicsMaterial(friction, elasticity, eMaterial::SILVER);
-	m_material.lead = new PhysicsMaterial(friction, elasticity, eMaterial::LEAD);
-	m_material.mercury = new PhysicsMaterial(friction, elasticity, eMaterial::MERCURY);
-	m_material.gold = new PhysicsMaterial(friction, elasticity, eMaterial::GOLD);
-	m_material.platinum = new PhysicsMaterial(friction, elasticity, eMaterial::PLATINUM);
-	m_material.osmium = new PhysicsMaterial(friction, elasticity, eMaterial::OSMIUM);
-	m_material.grippy = new PhysicsMaterial(1, 0.5f, eMaterial::MAGNESIUM);
-	m_material.slippery = new PhysicsMaterial(0, 0.5f, eMaterial::MAGNESIUM);
-	m_material.bouncy = new PhysicsMaterial(0.5f, 1, eMaterial::MAGNESIUM);
-	m_material.dampened = new PhysicsMaterial(0.5f, 0.3f, eMaterial::MAGNESIUM);
-	m_material.dead = new PhysicsMaterial(0, 0, eMaterial::MAGNESIUM);
+	float defaultFriction = 0.5f;
+	float defaultElasticity = 0.5f;
+	eMaterial defaultMaterial = eMaterial::PLASTICS;
+	m_material.hydrogen = new PhysicsMaterial(defaultFriction, 0.99f, eMaterial::HYDROGEN);
+	m_material.air = new PhysicsMaterial(defaultFriction, 0.99f, eMaterial::AIR);
+	m_material.styrofoam = new PhysicsMaterial(defaultFriction, 0.2f, eMaterial::STYROFOAM);
+	m_material.lithium = new PhysicsMaterial(defaultFriction, defaultElasticity, eMaterial::LITHIUM);
+	m_material.wood = new PhysicsMaterial(defaultFriction, 0.4f, eMaterial::WOOD);
+	m_material.ice = new PhysicsMaterial(defaultFriction, 0.15f, eMaterial::ICE);
+	m_material.water = new PhysicsMaterial(defaultFriction, 0.8f, eMaterial::WATER);
+	m_material.plastics = new PhysicsMaterial(defaultFriction, 0.9f, eMaterial::PLASTICS);
+	m_material.diamond = new PhysicsMaterial(defaultFriction, 0.3f, eMaterial::DIAMOND);
+	m_material.copper = new PhysicsMaterial(defaultFriction, 0.1f, eMaterial::COPPER);
+	m_material.silver = new PhysicsMaterial(defaultFriction, 0.3f, eMaterial::SILVER);
+	m_material.lead = new PhysicsMaterial(defaultFriction, 0.05f, eMaterial::LEAD);
+	m_material.mercury = new PhysicsMaterial(defaultFriction, 0.95f, eMaterial::MERCURY);
+	m_material.gold = new PhysicsMaterial(defaultFriction, 0.2f, eMaterial::GOLD);
+	m_material.platinum = new PhysicsMaterial(defaultFriction, 0.97f, eMaterial::PLATINUM);
+	m_material.osmium = new PhysicsMaterial(defaultFriction, defaultElasticity, eMaterial::OSMIUM);
+	m_material.grippy = new PhysicsMaterial(1, 0.5f, defaultMaterial);
+	m_material.slippery = new PhysicsMaterial(0, 0.5f, defaultMaterial);
+	m_material.bouncy = new PhysicsMaterial(0.5f, 1, defaultMaterial);
+	m_material.dampened = new PhysicsMaterial(0.5f, 0.3f, defaultMaterial);
+	m_material.dead = new PhysicsMaterial(0, 0, defaultMaterial);
 
-	m_material.custom = new PhysicsMaterial(friction, elasticity, 1000);
+	m_material.custom = new PhysicsMaterial(defaultFriction, defaultElasticity, 1000);
 
 	return true;
 }
@@ -142,28 +143,33 @@ void BasicPhysicsEngine::playground()
 		int velocityFineTune = 5;
 		glm::ivec2 start;
 		glm::ivec2 end;
-		glm::ivec2 drag;
+		glm::ivec2 dragging;
+		glm::ivec2 dragged;
 	} mouse;
 	////Set mouse vars
 	//If the mouse WAS pressed then record the start point
-	if (input->wasMouseButtonPressed(aie::INPUT_MOUSE_BUTTON_LEFT))
+	if (anyMouseButtonWasPressed(input))
 	{
 		if (!ImGui::IsMouseHoveringAnyWindow())
 		{
 			input->getMouseXY(&mouse.start.x, &mouse.start.y);
 		}
 	}
-	//If the mouse WAS released then record the mouse drag vector
-	if (input->wasMouseButtonReleased(aie::INPUT_MOUSE_BUTTON_LEFT))
+	//If the mouse is being held down then constantly set the mouse end point
+	if (anyMouseButtonIsDown(input))
 	{
-		mouse.drag = mouse.end - mouse.start;
+		input->getMouseXY(&mouse.dragging.x, &mouse.dragging.y);
+		//mouse.drag = mouse.end - mouse.start;
+	}
+	//If the mouse WAS released then record the mouse drag vector
+	if (anyMouseButtonWasReleased(input))
+	{
+		//Set mouse end, set dragged, clear dragging
+		input->getMouseXY(&mouse.end.x, &mouse.end.y);
+		mouse.dragged = mouse.end - mouse.start;
+		mouse.dragging = glm::ivec2(0, 0);
 	}
 
-	//If the mouse is being held down then constantly set the mouse end point
-	if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT))
-	{
-		input->getMouseXY(&mouse.end.x, &mouse.end.y);
-	}
 
 	///////////////
 	//// GUI
@@ -191,6 +197,18 @@ void BasicPhysicsEngine::playground()
 
 	ImGui::Begin("Physics Playground"/*, &test, ImGuiWindowFlags_AlwaysAutoResize*/);
 	{
+		//DEBUG
+		//ImGui::BeginChild("DEBUG");
+		//{
+		//	ImGui::Text("mouseStart: %i, %i", mouse.start.x, mouse.start.y);
+		//	ImGui::Text("mouseDrag: %i, %i", mouse.drag.x, mouse.drag.y);
+		//	ImGui::Text("mouseEnd: %i, %i", mouse.end.x, mouse.end.y);
+		//	ImGui::Text("anyMouseWasPressed: %i", anyMouseButtonWasPressed(input));
+		//	ImGui::Text("anyMouseIsDown: %i", anyMouseButtonIsDown(input));
+		//	ImGui::Text("anyMouseWasReleased: %i", anyMouseButtonWasReleased(input));
+		//}
+		//ImGui::EndChild();
+
 		//Settings
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildWindowRounding, 5.0f);
 		ImGui::BeginChild("World", ImVec2(0, 55), true);
@@ -214,7 +232,6 @@ void BasicPhysicsEngine::playground()
 			{
 			case 0:		//Presets
 				ImGui::Combo("Presets", &currentPreset, m_material.names, m_material.count);
-				ImGui::SameLine(); ImGui::Text("(%i)", currentPreset);
 				switch (currentPreset)
 				{
 				case 0: GUI.material = m_material.hydrogen; break;
@@ -283,16 +300,25 @@ void BasicPhysicsEngine::playground()
 			static const char* colour_names= "White\0Red\0Green\0Blue\0Cyan\0Magenta\0Yellow\0Orange\0Lime Green\0Mint\0Dodge Blue\0Indigo\0Purple\0Fuschia\0Grey";
 
 			ImGui::Text("Colour");
-			ImGui::RadioButton("Presets", &GUI.choiceColour, 0); ImGui::SameLine();
-			ImGui::RadioButton("Custom", &GUI.choiceColour, 1);
+			ImGui::RadioButton("Random", &GUI.choiceColour, 0); ImGui::SameLine();
+			ImGui::RadioButton("Preset", &GUI.choiceColour, 1); ImGui::SameLine();
+			ImGui::RadioButton("Custom", &GUI.choiceColour, 2);
 
 			switch (GUI.choiceColour)
 			{
-			case 0:	//Presets
-				ImGui::Combo("Presets", &currentPreset, colour_names, static_cast<int>(pkr::eColours::COLOUR_COUNT));
+			case 0: //Random
+				ImGui::Text("A nice random colour will be chosen.");
+				//Only choose a colour if mouse was just released to reduce CPU
+				if (input->wasMouseButtonReleased(aie::INPUT_MOUSE_BUTTON_LEFT))
+				{
+					GUI.colour = pkr::colour::nice_random();
+				}
+				break;
+			case 1:	//Preset
+				ImGui::Combo("Preset", &currentPreset, colour_names, static_cast<int>(pkr::eColours::COLOUR_COUNT));
 				GUI.colour = pkr::colour::get(static_cast<pkr::eColours>(currentPreset));
 				break;
-			case 1:	//Custom
+			case 2:	//Custom
 				ImGui::SliderFloat4("RGBA", glm::value_ptr(GUI.colour), 0, 1);
 				break;
 			}
@@ -358,14 +384,14 @@ void BasicPhysicsEngine::playground()
 
 		//Drag
 		if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT))
-			drawDragCursor(mouse.start, mouse.end, pkr::colour::get(pkr::eColours::RED));
+			drawDragCursor(mouse.start, mouse.dragging, pkr::colour::get(pkr::eColours::RED));
 
 		switch (currentObjectType)
 		{
 		case 0: //Plane
 			//If mouse is in drag mode then draw normal and plane to create
 			if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_LEFT))
-				drawPlaneSurfaceCursor(mouse.start, mouse.end, pkr::colour::get(pkr::eColours::ORANGE));
+				drawPlaneSurfaceCursor(mouse.start, mouse.dragging, pkr::colour::get(pkr::eColours::ORANGE));
 
 			//If mouse release then create
 			if (input->wasMouseButtonReleased(0)) {
@@ -379,7 +405,7 @@ void BasicPhysicsEngine::playground()
 		case 1: //Circle
 			if (input->wasMouseButtonReleased(aie::INPUT_MOUSE_BUTTON_LEFT))
 			{
-				auto vel = mouse.drag * mouse.velocityFineTune;
+				auto vel = mouse.dragged * mouse.velocityFineTune;
 				m_physicsScene->AddActor(new Circle(mouse.start, vel, 0, GUI.genericfloat1 * 0.5f, GUI.colour, m_material.final, GUI.isKinematic));
 			}
 			break;
@@ -387,7 +413,7 @@ void BasicPhysicsEngine::playground()
 		case 2: //AABB
 			if (input->wasMouseButtonReleased(aie::INPUT_MOUSE_BUTTON_LEFT))
 			{
-				auto vel = mouse.drag * mouse.velocityFineTune;
+				auto vel = mouse.dragged * mouse.velocityFineTune;
 				m_physicsScene->AddActor(new AABB(mouse.start, vel, GUI.genericfloat1, GUI.genericfloat2, GUI.colour, m_material.final, GUI.isKinematic));
 			}
 			break;
@@ -395,17 +421,26 @@ void BasicPhysicsEngine::playground()
 		case 3: //SAT
 			if (input->wasMouseButtonReleased(aie::INPUT_MOUSE_BUTTON_LEFT))
 			{
-				auto vel = mouse.drag * mouse.velocityFineTune;
+				auto vel = mouse.dragged * mouse.velocityFineTune;
 				m_physicsScene->AddActor(new SAT(mouse.start, vel, 0, GUI.genericfloat1, GUI.genericInt1, GUI.colour, m_material.final, GUI.isKinematic));
 			}
 			break;
 		}
 	}
 
+	////// Camera control
+	//if (!ImGui::IsMouseHoveringAnyWindow())
+	//{
+	//	//Drag
+	//	if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_RIGHT))
+	//	{
+	//		m_2dRenderer->setCameraPos(input->getMouseDeltaX(), input->getMouseDeltaY());
+	//	}
+	//}
 }
 
 ///////////////////////////////////
-//// Playground only functions
+//// Playground assist functions
 ////////////////////////////////
 void drawDragCursor(const glm::ivec2 & start, const glm::ivec2 & end, const glm::vec4 & colour)
 {
@@ -425,4 +460,40 @@ void drawPlaneSurfaceCursor(const glm::ivec2 & normalStart, const glm::ivec2 & n
 		vec2 planeEnd = static_cast<vec2>(normalStart) - (plane * drawlength);		//Get end point of cursor
 		aie::Gizmos::add2DLine(planeStart, planeEnd, colour);
 	}
+}
+
+bool anyMouseButtonWasPressed(aie::Input* input)
+{
+	for (int i = 0; i <= 7; ++i)
+	{
+		if (input->wasMouseButtonPressed(i))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool anyMouseButtonIsDown(aie::Input* input)
+{
+	for (int i = 0; i <= 7; ++i)
+	{
+		if (input->isMouseButtonDown(i))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool anyMouseButtonWasReleased(aie::Input* input)
+{
+	for (int i = 0; i <= 7; ++i)
+	{
+		if (input->wasMouseButtonReleased(i))
+		{
+			return true;
+		}
+	}
+	return false;
 }
