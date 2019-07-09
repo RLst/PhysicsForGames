@@ -5,7 +5,6 @@
 //std
 #include <iostream>
 #include <vector>
-#include <list>
 
 //local
 #include "GameDefines.h"
@@ -23,10 +22,13 @@ PhysicsScene::PhysicsScene(float timeStep, vec2 gravity, bool collisionEnabled) 
 
 PhysicsScene::~PhysicsScene()
 {
-	//Clean up m_actors (TODO Buggy)
-	for (auto actor : m_actors)
-		if (actor != nullptr)
-			delete actor;
+	//TODO still a bit problematic
+	for (PhysicsObject* po : m_actors)
+	{
+		if (po != nullptr)
+			delete po;
+	}
+	m_actors.clear();
 }
 
 void PhysicsScene::AddActor(PhysicsObject * actor)
@@ -53,8 +55,6 @@ bool PhysicsScene::RemoveActor(PhysicsObject * targetActor)
 
 void PhysicsScene::Update(float deltaTime)
 {
-	static std::list<PhysicsObject*> dirty;
-
 	//Update physics at a fixed time step
 	static float accumulatedTime = 0.0f;
 	accumulatedTime += deltaTime;
@@ -79,24 +79,13 @@ void PhysicsScene::UpdateGizmos()
 	}
 }
 
-void PhysicsScene::DebugScene()
-{
-	//int count = 0;
-	//for (auto actor : m_actors)
-	//{
-	//	std::cout << count << " : ";
-	//	actor->Debug();
-	//	++count;
-	//}
-}
-
 //Setup the collision function array
 static fn collisionFuncArray[] =
 {
-	PhysicsScene::Plane2Plane,	PhysicsScene::Plane2Circle,		PhysicsScene::Plane2AABB,	PhysicsScene::Plane2SAT,
-	PhysicsScene::Circle2Plane, PhysicsScene::Circle2Circle,	PhysicsScene::Circle2AABB,	PhysicsScene::Circle2SAT,
-	PhysicsScene::AABB2Plane,	PhysicsScene::AABB2Circle,		PhysicsScene::AABB2AABB,		PhysicsScene::AABB2SAT,
-	PhysicsScene::SAT2Plane,	PhysicsScene::SAT2Circle,		PhysicsScene::SAT2AABB,		PhysicsScene::SAT2SAT,
+	PhysicsScene::Plane2Plane,		PhysicsScene::Plane2Circle,		PhysicsScene::Plane2AABB,		PhysicsScene::Plane2SAT,
+	PhysicsScene::Circle2Plane,		PhysicsScene::Circle2Circle,	PhysicsScene::Circle2AABB,		PhysicsScene::Circle2SAT,
+	PhysicsScene::AABB2Plane,		PhysicsScene::AABB2Circle,		PhysicsScene::AABB2AABB,		PhysicsScene::AABB2SAT,
+	PhysicsScene::SAT2Plane,		PhysicsScene::SAT2Circle,		PhysicsScene::SAT2AABB,			PhysicsScene::SAT2SAT,
 };
 
 void PhysicsScene::CheckForCollisions()

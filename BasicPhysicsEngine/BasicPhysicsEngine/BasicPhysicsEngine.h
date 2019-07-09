@@ -33,6 +33,7 @@ public:
 
 	//Demos
 	bool createMaterials();
+	void deleteMaterials();
 	void playground();
 
 protected:

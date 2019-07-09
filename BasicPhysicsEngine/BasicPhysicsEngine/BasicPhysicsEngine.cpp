@@ -28,6 +28,7 @@ BasicPhysicsEngine::~BasicPhysicsEngine() {
 //const char* BasicPhysicsEngine::m_material
 
 void BasicPhysicsEngine::shutdown() {
+	deleteMaterials();
 	delete m_font;
 	delete m_2dRenderer;
 	delete m_physicsScene;
@@ -124,6 +125,32 @@ bool BasicPhysicsEngine::createMaterials()
 	m_material.custom = new PhysicsMaterial(defaultFriction, defaultElasticity, 1000);
 	//TODO Do these materials need to be deleted?
 	return true;
+}
+
+void BasicPhysicsEngine::deleteMaterials()
+{
+	delete m_material.hydrogen;
+	delete m_material.air;
+	delete m_material.styrofoam;
+	delete m_material.lithium;
+	delete m_material.wood;
+	delete m_material.ice;
+	delete m_material.water;
+	delete m_material.plastics;
+	delete m_material.diamond;
+	delete m_material.copper;
+	delete m_material.silver;
+	delete m_material.lead;
+	delete m_material.mercury;
+	delete m_material.gold;
+	delete m_material.platinum;
+	delete m_material.osmium;
+	delete m_material.grippy;
+	delete m_material.slippery;
+	delete m_material.bouncy;
+	delete m_material.dampened;
+	delete m_material.dead;
+	delete m_material.custom;
 }
 
 void BasicPhysicsEngine::playground()

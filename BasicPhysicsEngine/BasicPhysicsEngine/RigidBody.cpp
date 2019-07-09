@@ -4,6 +4,8 @@
 
 void RigidBody::displace(const vec2& displacement)
 {
+	if (m_isKinematic) return;
+
 	m_position += displacement;
 }
 

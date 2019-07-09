@@ -29,7 +29,6 @@ public:
 	bool		RemoveActor(PhysicsObject* actor);
 	void		Update(float deltaTime);
 	void		UpdateGizmos();		//Redraws gizmos
-	void		DebugScene();
 
 	void		CheckForCollisions();
 	static float FindOverlap(const vec2 &projection1, const vec2 &projection2); 
