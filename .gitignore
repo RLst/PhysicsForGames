@@ -1,0 +1,14 @@
+*.vs/
+
+# This ignores everything except Bootstrap.lib
+# This is pretty dodgy way of doing it
+# But git exceptions don't work
+*.obj
+*.exe
+*.tlog
+*.idb
+*.pdb
+*.log
+*.ilk
+*.iobj
+*.ipdb
